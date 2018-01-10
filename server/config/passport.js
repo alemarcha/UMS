@@ -25,13 +25,14 @@ const localLogin = new LocalStrategy(localOptions, function(email, password, don
 // JWT authentication options
 const jwtOptions = {  
     // Telling Passport to check authorization headers for JWT
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("JWT"),
     // Telling Passport where to find the secret
     secretOrKey: config.secret
 };
 
 // Setting up JWT login strategy
-const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done) {  
+const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done) { 
+  console.log(jwtOptions); 
     User.findById(payload._id, function(err, user) {
       if (err) { return done(err, false); }
   

@@ -35,7 +35,8 @@ module.exports = function(app) {
     app.use('/api', apiRoutes);
 
     // Private routes
-    apiRoutes.get('/dashboard', requireAuth, function(req, res, next) {  res.status(200).json({
-       pruebita: req.user
-      });})
+    apiRoutes.get('/protected', requireAuth, function(req, res, next) {  res.status(200).json({
+           content: "Respuesta desde api protected"
+      });
+    })
 };
