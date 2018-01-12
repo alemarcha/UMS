@@ -31,12 +31,25 @@ module.exports = function(app) {
     // Login route
     authRoutes.post('/login', requireLogin, AuthenticationController.login);
 
-    // Set url for API group routes
-    app.use('/api', apiRoutes);
+    apiRoutes.get('/users', function(req, res) {  res.status(200).json({
+        ok: true,
+        users: [{id: "1",firstName: "nombre", lastName: "lastName"}]
+    }
+    );
+  });
 
+  apiRoutes.get('/prueba', function(req, res) {  res.status(200).json({
+    ok: true
+}
+);
+});
     // Private routes
-    apiRoutes.get('/protected', requireAuth, function(req, res, next) {  res.status(200).json({
+    apiRoutes.get('/protected', requireAuth,  function(req, res, next) {  res.status(200).json({
            content: "Respuesta desde api protected"
       });
-    })
+    });
+      // Set url for API group routes
+    app.use('/api', apiRoutes);
+   
+
 };
