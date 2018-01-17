@@ -1,0 +1,49 @@
+swagger: "2.0"
+info:
+  description: "REST API with Swagger docgfsd"
+  version: "1.0.0"
+  title: "REST - Swagger Babelomics"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "babelomics@babelomics.es"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "localhost:3000"
+basePath: "/api"
+tags:
+- name: "auth"
+  description: "Auth endpoints"
+schemes:
+- "http"
+paths:
+  /auth/login:
+    post:
+      description: "Lofgin to the application"
+      tags:
+      - "auth"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "email"
+        description: "Email to use for login."
+        in: "formData"
+        required: true
+        type: "string"
+      - name: "password"
+        description: "User's password."
+        in: "formData"
+        required: true
+        type: "string"
+        format: "password"
+      responses:
+         200:
+           description: "login"
+  /prueba:
+    get:
+      description: "Login to the application"
+      produces:
+      - application/json
+      responses:
+        200:
+        description: probandoooo
