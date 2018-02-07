@@ -29,3 +29,7 @@ After that you should follow next steps:
 9. npm install
 10. npm dev
 11. After npm start it should open a browser screen in localhost:8081 with app in ReacJS.
+
+# Developers
+
+Alexis Martínez Chacón (alexis.martinez@juntadeandalucia.es)
