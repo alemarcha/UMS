@@ -1,21 +1,20 @@
-module.exports.swagger_init = function (app, express) {
+module.exports.swagger_init = function(app, express) {
   // const swaggerJSDoc = require('swagger-jsdoc')
-  const YAML = require('yamljs');
-  const swaggerUi = require('swagger-ui-express')
-  const swaggerModelValidator = require('swagger-model-validator')
+  const YAML = require("yamljs");
+  const swaggerUi = require("swagger-ui-express");
+  const swaggerModelValidator = require("swagger-model-validator");
 
-  const routerSwagger = express.Router()
-  const options = YAML.load('./data/swagger/doc.yaml')
+  const routerSwagger = express.Router();
+  const options = YAML.load("./data/swagger/doc.yaml");
   // const swaggerDoc = swaggerJSDoc(options)
   // swaggerModelValidator(swaggerDoc)
-
 
   // router.get('/json', function (req, res) {
   //   res.setHeader('Content-Type', 'application/json')
   //   res.send(options)
   // })
 
-  routerSwagger.use('/', swaggerUi.serve, swaggerUi.setup(options))
+  routerSwagger.use("/", swaggerUi.serve, swaggerUi.setup(options));
 
   // function validateModel (name, model) {
   //   const responseValidation = swaggerDoc.validateModel(name, model, false, true)
@@ -26,5 +25,5 @@ module.exports.swagger_init = function (app, express) {
   // }
 
   // Set auth routes as subgroup/middleware to /api/docs
-  app.use('/api/docs', routerSwagger)
-}
+  app.use("/api/docs", routerSwagger);
+};

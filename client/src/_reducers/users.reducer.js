@@ -1,4 +1,4 @@
-import { userConstants } from '../_constants';
+import { userConstants } from "../_constants";
 
 export function users(state = {}, action) {
   switch (action.type) {
@@ -11,10 +11,10 @@ export function users(state = {}, action) {
         items: action.users
       };
     case userConstants.GETALL_FAILURE:
-      return { 
+      return {
         error: action.error
       };
     default:
-      return state
+      return state;
   }
 }
