@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  description: "REST API with Swagger docgfsd"
+  description: "REST API with Swagger doc"
   version: "1.0.0"
   title: "REST - Swagger Babelomics"
   termsOfService: "http://swagger.io/terms/"
