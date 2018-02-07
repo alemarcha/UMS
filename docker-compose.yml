@@ -1,0 +1,40 @@
+version: "3"
+services:
+  web:
+    build:
+      context: .
+      dockerfile: DockerfileClient
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    ports:
+      - "8081:8081"
+    command: "npm start"
+    links:
+      - server
+  server:
+    build:
+      context: .
+      dockerfile: DockerfileServer
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    command: "npm start"
+    links:
+      - mongodb
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ~/data/mongodb_data/:/data/db
+  mongo-seed:
+    build: 
+      context: .
+      dockerfile: DockerfileMongo
+    links:
+      - mongodb
+
+      

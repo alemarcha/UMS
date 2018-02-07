@@ -1,0 +1,9 @@
+FROM node:8
+
+RUN mkdir -p /app
+WORKDIR /app
+
+COPY server/package.json /app
+WORKDIR /app
+RUN npm install
+RUN npm install --global nodemon
