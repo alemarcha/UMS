@@ -1,56 +1,42 @@
-const AuthenticationController = require('./controllers/authentication'),  
-      express = require('express'),
-      passportService = require('./config/passport'),
-      passport = require('passport');
+const AuthenticationController = require("./controllers/authenticationController"),
+  express = require("express"),
+  passportService = require("./config/passport"),
+  passport = require("passport");
+const authRouter = require("./router/authRouter");
 
 // Middleware to require login/auth
-const requireAuth = passport.authenticate('jwt', { session: false });  
-const requireLogin = passport.authenticate('local', { session: false });  
+const requireAuth = passport.authenticate("jwt", { session: false });
+const requireLogin = passport.authenticate("local", { session: false });
 
 // Constants for role types
-const REQUIRE_ADMIN = "Admin",  
-      REQUIRE_OWNER = "Owner",
-      REQUIRE_CLIENT = "Client",
-      REQUIRE_MEMBER = "Member";
+const REQUIRE_ADMIN = "Admin",
+  REQUIRE_OWNER = "Owner",
+  REQUIRE_CLIENT = "Client",
+  REQUIRE_MEMBER = "Member";
 
-module.exports = function(app) {  
-    // Initializing route groups
-    const apiRoutes = express.Router(),
-          authRoutes = express.Router();
+module.exports = function(app) {
+  // Initializing route groups
 
-    //=========================
-    // Auth Routes
-    //=========================
+  const apiRoutes = express.Router();
+  authRouter.init(apiRoutes, requireAuth, requireLogin);
+  //=========================
+  // Auth Routes
+  //=========================
 
-    // Set auth routes as subgroup/middleware to apiRoutes
-    apiRoutes.use('/auth', authRoutes);
+  // Set url for API group routes
+  app.use("/api", apiRoutes);
 
-
-    authRoutes.post('/register', AuthenticationController.register);
-
-    // Login route
-    authRoutes.post('/login', requireLogin, AuthenticationController.login);
-
-    apiRoutes.get('/users', function(req, res) {  res.status(200).json({
-            ok: true,
-            users: [{id: "1",firstName: "nombre", lastName: "lastName"}]
-        });
+  // Ping routes
+  apiRoutes.get("/ping", function(req, res) {
+    res.status(200).json({
+      ok: true
     });
+  });
 
-    // Registration route
-    apiRoutes.get('/prueba', function(req, res) {  res.status(200).json({
-            ok: true
-        });
+  // Private routes
+  apiRoutes.get("/protected", requireAuth, function(req, res, next) {
+    res.status(200).json({
+      content: "Respuesta desde api protected"
     });
-
-    // Private routes
-    apiRoutes.get('/protected', requireAuth,  function(req, res, next) {  res.status(200).json({
-           content: "Respuesta desde api protected"
-      });
-    });
-
-    // Set url for API group routes
-    app.use('/api', apiRoutes);
-   
-
+  });
 };
