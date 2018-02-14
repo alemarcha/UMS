@@ -1,8 +1,7 @@
-const AuthenticationController = require("./controllers/authenticationController"),
-  express = require("express"),
+const express = require("express"),
   passportService = require("./config/passport"),
   passport = require("passport");
-const authRouter = require("./router/authRouter");
+const userRouter = require("./router/userRouter");
 const roleRouter = require("./router/roleRouter");
 const permissionRouter = require("./router/permissionRouter");
 
@@ -20,7 +19,7 @@ module.exports = function(app) {
   // Initializing route groups
 
   const apiRoutes = express.Router();
-  authRouter.init(apiRoutes, requireAuth, requireLogin);
+  userRouter.init(apiRoutes, requireAuth, requireLogin);
   roleRouter.init(apiRoutes, requireAuth);
   permissionRouter.init(apiRoutes, requireAuth);
   //=========================
