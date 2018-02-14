@@ -12,13 +12,14 @@ function generateToken(user) {
 }
 
 // Set user info from request
-function setUserInfo(request) {
+function setUserInfo(user) {
   return {
-    _id: request._id,
-    firstName: request.profile.firstName,
-    lastName: request.profile.lastName,
-    email: request.email,
-    role: request.role
+    _id: user._id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    isActive: user.isActive
+    // role: user.role
   };
 }
 
@@ -44,6 +45,7 @@ exports.register = function(req, res, next) {
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
   const password = req.body.password;
+  const isActive = true;
 
   // Return error if no email provided
   if (!email) {
@@ -69,29 +71,30 @@ exports.register = function(req, res, next) {
     if (existingUser) {
       return res
         .status(422)
-        .send({ error: "That email address is already in use." });
+        .send({ ok: false, error: "That email address is already in use." });
     }
 
     // If email is unique and password was provided, create account
     let user = new User({
       email: email,
       password: password,
-      profile: { firstName: firstName, lastName: lastName }
+      firstName: firstName,
+      lastName: lastName,
+      isActive: isActive
     });
 
     user.save(function(err, user) {
       if (err) {
-        return next(err);
+        return res.status(400).send({ ok: false, error: err });
       }
 
       // Subscribe member to Mailchimp list
       // mailchimp.subscribeToNewsletter(user.email);
 
       // Respond with JWT if user was created
-
       let userInfo = setUserInfo(user);
-
       res.status(201).json({
+        ok: true,
         token: "JWT " + generateToken(userInfo),
         user: userInfo
       });
