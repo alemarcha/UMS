@@ -27,7 +27,7 @@ exports.authAttemptLogger = function(req, res, next) {
 
   authAttempt.save(function(err, user) {
     if (err) {
-      return next(err);
+      return res.status(400).send({ ok: false, error: err });
     }
     next();
   });
