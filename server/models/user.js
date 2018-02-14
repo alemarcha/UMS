@@ -3,6 +3,11 @@ const mongoose = require("mongoose"),
   bcrypt = require("bcrypt-nodejs"),
   config = require("../config/main");
 
+var validateEmail = function(email) {
+  var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  return re.test(email);
+};
+
 //================================
 // User Schema
 //================================
@@ -12,7 +17,12 @@ const UserSchema = new Schema(
       type: String,
       lowercase: true,
       unique: true,
-      required: true
+      required: true,
+      validate: [validateEmail, "Please fill a valid email address"],
+      match: [
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        "Please fill a valid email address"
+      ]
     },
     password: {
       type: String,
@@ -34,8 +44,7 @@ UserSchema.pre("save", function(next) {
 
   if (!user.isModified("password")) return next();
 
-  this.hashPassword(user.password, 5, function(err, hash) {
-    if (err) return next(err);
+  this.constructor.hashPassword(user.password, 5, function(hash) {
     user.password = hash;
     next();
   });
