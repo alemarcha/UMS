@@ -44,3 +44,5 @@ app.use(function(req, res, next) {
 });
 
 router(app);
+
+module.exports = app;

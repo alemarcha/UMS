@@ -71,6 +71,16 @@ paths:
       responses:
          200:
            description: "Register"
+  /users/search:
+    get:
+      description: "Search users"
+      tags:
+      - "users"
+      produces:
+      - "application/json"
+      responses:
+         200:
+           description: "Search users"
   /roles/search:
     get:
       description: "Search roles"
