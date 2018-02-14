@@ -17,11 +17,11 @@ tags:
 schemes:
 - "http"
 paths:
-  /auth/login:
+  /users/login:
     post:
       description: "Lofgin to the application"
       tags:
-      - "auth"
+      - "users"
       produces:
       - "application/json"
       parameters:
@@ -39,6 +39,38 @@ paths:
       responses:
          200:
            description: "login"
+  /users/register:
+    post:
+      description: "Register to the application"
+      tags:
+      - "users"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "email"
+        description: "Email to use for login."
+        in: "formData"
+        required: true
+        type: "string"
+      - name: "password"
+        description: "User's password."
+        in: "formData"
+        required: true
+        type: "string"
+        format: "password"
+      - name: "firstName"
+        description: "User's first name."
+        in: "formData"
+        required: true
+        type: "string"
+      - name: "lastName"
+        description: "User's last name."
+        in: "formData"
+        required: true
+        type: "string"
+      responses:
+         200:
+           description: "Register"
   /roles/search:
     get:
       description: "Search roles"
