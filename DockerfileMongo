@@ -4,4 +4,4 @@ RUN mkdir -p /babelomics
 COPY ./server/data/backups/babelomics/ /babelomics
 WORKDIR /babelomics
 
-CMD mongorestore --host mongodb:27017 --db babelomics --drop /babelomics
+CMD mongorestore --host mongodb:27017 --db UMS_babelomics --drop ./

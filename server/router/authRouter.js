@@ -1,5 +1,6 @@
 const express = require("express");
 const AuthenticationController = require("../controllers/authenticationController");
+const AuthAttemptController = require("../controllers/authAttemptController");
 
 module.exports.init = function(apiRoutes, requireAuth, requireLogin) {
   const authRoutes = express.Router();
@@ -14,5 +15,10 @@ module.exports.init = function(apiRoutes, requireAuth, requireLogin) {
   //AUTH
   authRoutes.post("/register", AuthenticationController.register);
   // Login route
-  authRoutes.post("/login", requireLogin, AuthenticationController.login);
+  authRoutes.post(
+    "/login",
+    AuthAttemptController.authAttemptLogger,
+    requireLogin,
+    AuthenticationController.login
+  );
 };

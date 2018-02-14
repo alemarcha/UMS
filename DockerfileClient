@@ -1,8 +1,0 @@
-FROM node:8
-
-RUN mkdir -p /app
-WORKDIR /app
-
-COPY client/package.json /app
-WORKDIR /app
-RUN npm install

@@ -39,11 +39,31 @@ paths:
       responses:
          200:
            description: "login"
-  /prueba:
+  /roles/search:
     get:
-      description: "Login to the application"
+      description: "Search roles"
+      tags:
+      - "roles"
+      produces:
+      - "application/json"
+      responses:
+         200:
+           description: "Search roles"
+  /permissions/search:
+    get:
+      description: "Search permissions"
+      tags:
+      - "permission"
+      produces:
+      - "application/json"
+      responses:
+         200:
+           description: "Search permissions"
+  /ping:
+    get:
+      description: "Ping Api Rest"
       produces:
       - application/json
       responses:
         200:
-          description: probandoooo
+          description: Ping

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose"),
   Schema = mongoose.Schema,
-  bcrypt = require("bcrypt-nodejs");
+  bcrypt = require("bcrypt-nodejs"),
+  config = require("../config/main");
 
 //================================
 // User Schema
@@ -17,15 +18,9 @@ const UserSchema = new Schema(
       type: String,
       required: true
     },
-    profile: {
-      firstName: { type: String },
-      lastName: { type: String }
-    },
-    role: {
-      type: String,
-      enum: ["Member", "Client", "Owner", "Admin"],
-      default: "Member"
-    },
+    firstName: { type: String },
+    lastName: { type: String },
+    roles: [{ type: Schema.Types.ObjectId, ref: "Role" }],
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date }
   },
@@ -33,22 +28,16 @@ const UserSchema = new Schema(
     timestamps: true
   }
 );
-
 // Pre-save of user to database, hash password if password is modified or new
 UserSchema.pre("save", function(next) {
-  const user = this,
-    SALT_FACTOR = 5;
+  const user = this;
 
   if (!user.isModified("password")) return next();
 
-  bcrypt.genSalt(SALT_FACTOR, function(err, salt) {
+  this.hashPassword(user.password, 5, function(err, hash) {
     if (err) return next(err);
-
-    bcrypt.hash(user.password, salt, null, function(err, hash) {
-      if (err) return next(err);
-      user.password = hash;
-      next();
-    });
+    user.password = hash;
+    next();
   });
 });
 
@@ -61,6 +50,16 @@ UserSchema.methods.comparePassword = function(candidatePassword, cb) {
 
     cb(null, isMatch);
   });
+};
+
+UserSchema.statics.hashPassword = function(
+  plainPassword,
+  saltRounds = config.SALT_FACTOR,
+  cb
+) {
+  var salt = bcrypt.genSaltSync(saltRounds);
+  var hash = bcrypt.hashSync(plainPassword, salt);
+  cb(hash);
 };
 
 module.exports = mongoose.model("User", UserSchema);
