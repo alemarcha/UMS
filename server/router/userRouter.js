@@ -6,12 +6,9 @@ module.exports.init = function(apiRoutes, requireAuth, requireLogin) {
   const authRoutes = express.Router();
   // Set auth routes as subgroup/middleware to apiRoutes
   apiRoutes.use("/users", authRoutes);
-  apiRoutes.get("/search", function(req, res) {
-    res.status(200).json({
-      ok: true,
-      users: [{ id: "1", firstName: "nombre", lastName: "lastName" }]
-    });
-  });
+  //ROUTES
+  // Search
+  authRoutes.get("/search", UserController.search);
   //AUTH
   authRoutes.post("/register", UserController.register);
   // Login route
