@@ -62,6 +62,15 @@ After that you should follow next steps:
 
 You should see at localhost:3000 our Swagger docs now.
 
+## Info for development
+
+We are using vscode to program, we recommend you to install the following extensions:
+
+* Docker
+* ESLint
+* Prettier - Code formatter
+* YAML support for vscode
+
 ## Developers
 
 Alexis Martínez Chacón (alexis.martinez@juntadeandalucia.es)
