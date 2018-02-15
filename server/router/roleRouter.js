@@ -8,6 +8,8 @@ module.exports.init = function(apiRoutes, requireAuth) {
 
   // Roles
   roleRoutes.get("/search", RoleController.search);
+  roleRoutes.post("/create", RoleController.create);
+
   //AUTH
   //   authRoutes.post("/register", AuthenticationController.register);
   // Login route

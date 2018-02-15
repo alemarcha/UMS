@@ -1,15 +1,16 @@
 const mongoose = require("mongoose"),
-  Schema = mongoose.Schema;
+  Schema = mongoose.Schema,
+  bcrypt = require("bcrypt-nodejs"),
+  config = require("../config/main");
 
 //================================
-//
 // Role Schema
 //================================
+
 const RoleSchema = new Schema(
   {
-    name: {
+    roleName: {
       type: String,
-      lowercase: true,
       unique: true,
       required: true
     },
@@ -20,7 +21,7 @@ const RoleSchema = new Schema(
   }
 );
 
-// Pre-save of user to database, hash password if password is modified or new
+// Pre-save of role to database
 RoleSchema.pre("save", function(next) {
   console.log("Saving Role");
   next();

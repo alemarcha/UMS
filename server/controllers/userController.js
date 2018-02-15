@@ -114,7 +114,7 @@ exports.search = function(req, res) {
       }
       return res.status(200).json({
         ok: true,
-        permissions: response
+        users: response
       });
     });
 };

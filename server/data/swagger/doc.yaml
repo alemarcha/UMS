@@ -19,7 +19,7 @@ schemes:
 paths:
   /users/login:
     post:
-      description: "Lofgin to the application"
+      description: "Login to the application"
       tags:
       - "users"
       produces:
@@ -70,7 +70,7 @@ paths:
         type: "string"
       responses:
          200:
-           description: "Register"
+           description: "User added"
   /users/search:
     get:
       description: "Search users"
@@ -91,6 +91,22 @@ paths:
       responses:
          200:
            description: "Search roles"
+  /roles/create:
+    post:
+      description: "Create a new role"
+      tags:
+      - "roles"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "roleName"
+        description: "Descriptive role name."
+        in: "formData"
+        required: true
+        type: "string"
+      responses:
+         200:
+           description: "Role save"
   /permissions/search:
     get:
       description: "Search permissions"
