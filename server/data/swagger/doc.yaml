@@ -1,11 +1,13 @@
 swagger: "2.0"
 info:
   description: "REST API with Swagger doc"
-  version: "1.0.0"
+  version: "1.0.1"
   title: "REST - Swagger Babelomics"
   termsOfService: "http://swagger.io/terms/"
   contact:
-    email: "babelomics@babelomics.es"
+    name: "APP Support"
+    url: "https://github.com/alemarcha/UMS"
+    email: "alexis.martinez@juntadeandalucia.es"
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
@@ -25,11 +27,11 @@ paths:
       consumes:
         - application/json
       produces:
-      - "application/json"
+        - application/json
       parameters:
         - in: "body"
           name: "Login user"
-          description: "Email to use for login."
+          description: "User info in order to login."
           schema:
             type: object
             required: 
@@ -41,20 +43,25 @@ paths:
               password:
                 type: string
                 format: "password"
+            example:
+              email: user@email.com
+              password: mypass
       responses:
-         200:
-           description: "login"
+         '200':
+           description: User login
   /users/register:
     post:
       description: "Register to the application"
       tags:
       - "users"
+      consumes:
+        - application/json
       produces:
       - "application/json"
       parameters:
       - name: "email"
-        description: "Email to use for login."
-        in: "formData"
+        description: "User info in order to register."
+        in: "body"
         required: true
         type: "string"
       - name: "password"
@@ -73,45 +80,59 @@ paths:
         in: "formData"
         required: true
         type: "string"
+      # example:
+      #   email: user@email.com
+      #   password: passw
+      #   firstName: Jack
+      #   lastName: Jackson
       responses:
-         200:
-           description: "User added"
+         '200':
+           description: "User add response"
   /users/search:
     get:
-      description: "Search users"
+      description: "Return the users"
       tags:
       - "users"
       produces:
-      - "application/json"
+      - application/json
       responses:
-         200:
-           description: "Search users"
+         '200':
+           description: "users response"
   /roles/search:
     get:
-      description: "Search roles"
+      description: "Return the roles"
       tags:
       - "roles"
+      consumes:
+        - application/json
       produces:
-      - "application/json"
+        - application/json
       responses:
-         200:
-           description: "Search roles"
+         '200':
+           description: "roles response"
   /roles/create:
     post:
       description: "Create a new role"
       tags:
       - "roles"
+      consumes:
+        - application/json
       produces:
-      - "application/json"
+        - application/json
       parameters:
       - name: "roleName"
+        in: "body"
         description: "Descriptive role name."
-        in: "formData"
         required: true
-        type: "string"
+        schema:
+          type: string
+          example:
+            roleName: adminApp
       responses:
-         200:
-           description: "Role save"
+        '200':
+           description: "Role save response"
+        default:
+          description: Unexpected error
   /permissions/search:
     get:
       description: "Search permissions"
@@ -120,7 +141,7 @@ paths:
       produces:
       - "application/json"
       responses:
-         200:
+         '200':
            description: "Search permissions"
   /ping:
     get:
@@ -128,5 +149,5 @@ paths:
       produces:
       - application/json
       responses:
-        200:
-          description: Ping
+        '200':
+          description: Ping response
