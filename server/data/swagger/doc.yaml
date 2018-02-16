@@ -7,7 +7,7 @@ info:
   contact:
     name: "APP Support"
     url: "https://github.com/alemarcha/UMS"
-    email: "alexis.martinez@juntadeandalucia.es"
+    email: "babelomics6@clinbioinfosspa.es"
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
@@ -51,7 +51,7 @@ paths:
            description: User login
   /users/register:
     post:
-      description: "Register to the application"
+      description: "Register user account to the application"
       tags:
       - "users"
       consumes:
@@ -59,35 +59,41 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - name: "email"
-        description: "User info in order to register."
-        in: "body"
-        required: true
-        type: "string"
-      - name: "password"
-        description: "User's password."
-        in: "formData"
-        required: true
-        type: "string"
-        format: "password"
-      - name: "firstName"
-        description: "User's first name."
-        in: "formData"
-        required: true
-        type: "string"
-      - name: "lastName"
-        description: "User's last name."
-        in: "formData"
-        required: true
-        type: "string"
-      # example:
-      #   email: user@email.com
-      #   password: passw
-      #   firstName: Jack
-      #   lastName: Jackson
+      - in: body
+        name: Register user
+        description: User info in order to register.
+        schema:
+          type: object
+          required: 
+            - email
+            - password
+            - firstName
+            - lastName
+          properties:
+            email:
+              type: string
+              example: jack@email.com
+              description: User's email.
+            password:
+              type: string
+              description: User's password.
+              example: passw
+              format: "password"
+            firstName:
+              type: string
+              description: User's first name.
+              example: Jack
+            lastName:
+              type: string
+              description: User's last name.
+              example: Jackson
       responses:
-         '200':
-           description: "User add response"
+        '200':
+          description: User add response
+        '201':
+          description: Created
+        '405':
+          description: Invalid input
   /users/search:
     get:
       description: "Return the users"
@@ -103,8 +109,6 @@ paths:
       description: "Return the roles"
       tags:
       - "roles"
-      consumes:
-        - application/json
       produces:
         - application/json
       responses:
@@ -130,19 +134,23 @@ paths:
             roleName: adminApp
       responses:
         '200':
-           description: "Role save response"
+           description: Role save response
+        '201':
+          description: Created
+        '405':
+          description: Invalid input
         default:
           description: Unexpected error
   /permissions/search:
     get:
-      description: "Search permissions"
+      description: Search permissions
       tags:
       - "permission"
       produces:
       - "application/json"
       responses:
          '200':
-           description: "Search permissions"
+           description: Permissions response
   /ping:
     get:
       description: "Ping Api Rest"
