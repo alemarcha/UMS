@@ -30,6 +30,10 @@ const UserSchema = new Schema(
     },
     firstName: { type: String },
     lastName: { type: String },
+    isActive: {
+      default: true,
+      type: Boolean
+    },
     roles: [{ type: Schema.Types.ObjectId, ref: "Role" }],
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date }

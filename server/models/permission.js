@@ -11,6 +11,10 @@ const PermissionSchema = new Schema(
       lowercase: true,
       unique: true,
       required: true
+    },
+    isActive: {
+      default: true,
+      type: Boolean
     }
   },
   {
