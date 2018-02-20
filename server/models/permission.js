@@ -1,14 +1,16 @@
 const mongoose = require("mongoose"),
-  Schema = mongoose.Schema;
+  Schema = mongoose.Schema,
+  bcrypt = require("bcrypt-nodejs"),
+  config = require("../config/main");
+
 //================================
-//
 // Permission Schema
 //================================
+
 const PermissionSchema = new Schema(
   {
-    name: {
+    permissionName: {
       type: String,
-      lowercase: true,
       unique: true,
       required: true
     },
@@ -22,7 +24,7 @@ const PermissionSchema = new Schema(
   }
 );
 
-// Pre-save of user to database, hash password if password is modified or new
+// Pre-save of permission to database
 PermissionSchema.pre("save", function(next) {
   console.log("Saving Permission");
   next();
