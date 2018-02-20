@@ -72,6 +72,12 @@ We are using vscode to program, we recommend you to install the following extens
 * YAML support for vscode
 * Swagger Viewer (in order to preview the doc)
 
+## Execute test with Mocha, chai and Supertest
+
+* cd UMS/server
+* npm run test-server
+  * You will see results of testing in command line
+
 ## Developers
 
 Alexis Martínez Chacón (alexis.martinez@juntadeandalucia.es)
