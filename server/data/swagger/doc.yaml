@@ -244,6 +244,7 @@ paths:
           description: Unexpected error
   /permissions/create:
     post:
+      description: "Create permissions"
       tags:
       - "permission"
       consumes:
@@ -251,10 +252,10 @@ paths:
       produces:
         - application/json
       parameters:
-      - in: body
-        name: Create permission
-      description: "Create a new permission"
-      schema:
+      - name: Create permission
+        in: body
+        description: "Create a new permission"
+        schema:
           type: object
           required: 
             - permissionName
