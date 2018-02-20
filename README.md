@@ -5,7 +5,7 @@ User management system with MongoDB, Express and NodeJS app. Using Swagger for D
 ## Installation with Docker
 
 Firstable you need [Docker](https://www.docker.com/) and [docker-compose](https://docs.docker.com/compose/install/) installed and MongoDB installed.
-You can follow this links to install <https://www.digitalocean.com/community/tutorials/como-instalar-y-usar-docker-en-ubuntu-16-04-es> and <https://www.digitalocean.com/community/tutorials/how-to-install-docker-compose-on-ubuntu-16-04>
+You can follow this links to [install docker on ubuntu 16-04es](https://www.digitalocean.com/community/tutorials/como-instalar-y-usar-docker-en-ubuntu-16-04-es) and [install docker-compose on ubuntu 16-04](https://www.digitalocean.com/community/tutorials/how-to-install-docker-compose-on-ubuntu-16-04).
 
 We are using docker-compose file _version 3.0_, so maybe you need to update to at least that version:
 
@@ -70,6 +70,7 @@ We are using vscode to program, we recommend you to install the following extens
 * ESLint
 * Prettier - Code formatter
 * YAML support for vscode
+* Swagger Viewer (in order to preview the doc)
 
 ## Developers
 
