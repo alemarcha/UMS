@@ -7,10 +7,14 @@ module.exports.init = function(apiRoutes, requireAuth) {
   // Set auth permission as subgroup/middleware to apiRoutes
   apiRoutes.use("/permissions", permissionRoutes);
 
-  // Permissions
+  // Search Routes
   permissionRoutes.get("/search", PermissionController.search);
+
+  // Create Routes
   permissionRoutes.post("/create", PermissionController.create);
-  // permissionRoutes.put("/update", PermissionController.update);
+  
+  // Update Routes
+  permissionRoutes.put("/update", PermissionController.update);
 
   //AUTH
   //   authRoutes.post("/register", AuthenticationController.register);

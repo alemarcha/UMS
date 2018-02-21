@@ -89,3 +89,30 @@ exports.search = function(req, res) {
       });
     });
 };
+
+//========================================
+// Update Route
+//========================================
+
+exports.update = function(req, res) {
+  let permission = { permissionName: req.body.newPermissionName, isActive: req.body.isActive };
+
+  if (
+    permission.permissionName == null ||
+    permission.isActive == null ||
+    permission.isActive == '' ||
+    permission.permissionName  == ''
+  ) {
+    res.send(err);
+  } else {
+    // use our permission model to find the permission we want
+    Permission.findOneAndUpdate({ permissionName: req.body.permissionName }, permission, function(
+      err,
+      permission
+    ) {
+      if (err) res.send(err);
+
+      return res.status(200).json({ ok: true, permissions: permission });
+    });
+  }
+};
