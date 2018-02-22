@@ -49,20 +49,6 @@ paths:
       responses:
          '200':
            description: User login
-    # /users/logout: 
-    #   get: 
-    #     description: Logout application
-    #     tags:
-    #     - "users"
-    #     summary: Logs out current logged in user session
-    #     operationId: "logoutUser"
-    #     produces: 
-    #       - "application/json"
-    #     parameters: []
-    #     responses:
-    #      '200':
-    #       default: 
-    #         description: successful operation
   /users/register:
     post:
       description: Register user account to the application.
@@ -108,58 +94,58 @@ paths:
           description: Created
         '405':
           description: Invalid input
-  /users/update:
-    put:
-      description: "Update a user"
-      tags:
-      - "users"
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-      - in: body
-        name: Update
-        description: User info in order to register.
-        schema:
-          type: object
-          required: 
-            - email
-            - password
-            - firstName
-            - lastName
-            - isActive
-          properties:
-            email:
-              type: string
-              example: jack@email.com
-              description: User's email.
-            password:
-              type: string
-              description: User's password.
-              example: passw
-              format: "password"
-            firstName:
-              type: string
-              description: User's first name.
-              example: Jack
-            lastName:
-              type: string
-              description: User's last name.
-              example: Jackson
-            isActive:
-              type: boolean
-              example: true
-              description: Activation of the user.
-      responses:
-        '200':
-           description: User update response
-        '201':
-          description: Updated
-        '405':
-          description: Invalid input
-        default:
-          description: Unexpected error
+  # /users/update:
+  #   put:
+  #     description: "Update a user"
+  #     tags:
+  #     - "users"
+  #     consumes:
+  #       - application/json
+  #     produces:
+  #       - application/json
+  #     parameters:
+  #     - in: body
+  #       name: Update
+  #       description: User info in order to register.
+  #       schema:
+  #         type: object
+  #         required: 
+  #           - email
+  #           - password
+  #           - firstName
+  #           - lastName
+  #           - isActive
+  #         properties:
+  #           email:
+  #             type: string
+  #             example: jack@email.com
+  #             description: User's email.
+  #           password:
+  #             type: string
+  #             description: User's password.
+  #             example: passw
+  #             format: "password"
+  #           firstName:
+  #             type: string
+  #             description: User's first name.
+  #             example: Jack
+  #           lastName:
+  #             type: string
+  #             description: User's last name.
+  #             example: Jackson
+  #           isActive:
+  #             type: boolean
+  #             example: true
+  #             description: Activation of the user.
+  #     responses:
+  #       '200':
+  #          description: User update response
+  #       '201':
+  #         description: Updated
+  #       '405':
+  #         description: Invalid input
+  #       default:
+  #         description: Unexpected error
   /users/search:
     get:
       description: "Return the users"
@@ -223,12 +209,17 @@ paths:
           type: object
           required: 
             - roleName
+            - newRoleName
             - isActive
           properties:
             roleName:
               type: string
               example: adminCSVS
-              description: role name.
+              description: old role name.
+            newRoleName:
+              type: string
+              example: adminHipathia
+              description: new role name.  
             isActive:
               type: boolean
               example: true
@@ -289,12 +280,17 @@ paths:
           type: object
           required: 
             - permissionName
+            - newPermissionName
             - isActive
           properties:
             permissionName:
               type: string
               example: editCSVS
-              description: Update a permission name.
+              description: Old permission name.
+            newPermissionName: 
+              type: string
+              example: readCSVS
+              description: Update a permission name with a new one.
             isActive:
               type: boolean
               example: true
