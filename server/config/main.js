@@ -8,7 +8,7 @@ module.exports = {
   // Database connection information
   database: process.env.DB,
   //host
-  host: process.env.HOST || "localhost",
+  host_swagger: process.env.HOST_SWAGGER || "localhost",
   // Setting port for server
   port: process.env.PORT || 3000,
   // SALT_FACTOR for hash bcrypt password
