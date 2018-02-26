@@ -16,7 +16,9 @@ module.exports = {
   // SALT_FACTOR for hash bcrypt password
   SALT_FACTOR: process.env.SALT_FACTOR || 5,
   // Default user/password for testing
-  user_default_test: process.env.USER_TEST || test,
-  password_default_test: process.env.PASSWORD_TEST || test,
-  role_test: process.env.ROLE_TEST || ADMIN_TEST
+  email_default_test: process.env.EMAIL_TEST || "test",
+  password_default_test: process.env.PASSWORD_TEST || "test",
+  user_name_default_test: process.env.USER_TEST || "test",
+  last_name_default_test: process.env.LAST_NAME_TEST || "test",
+  role_test: process.env.ROLE_TEST || "ADMIN_TEST"
 };
