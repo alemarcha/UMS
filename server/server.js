@@ -24,8 +24,8 @@ const server = app.listen(config.port);
 console.log(
   "Your server is running on port " +
     config.port +
-    ". Enviroment " +
-    config.enviroment
+    ". Environment " +
+    config.environment
 );
 
 // Setting up basic middleware for all Express requests
