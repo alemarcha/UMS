@@ -24,5 +24,15 @@ module.exports = {
   password_default_test: process.env.PASSWORD_TEST || "test",
   user_name_default_test: process.env.USER_TEST || "test",
   last_name_default_test: process.env.LAST_NAME_TEST || "test",
-  role_test: process.env.ROLE_TEST || "ADMIN_TEST"
+
+  // Activate
+  isActive: process.env.isActive || false,
+
+  // role
+  role_test: process.env.ROLE_TEST || "ADMIN_TEST",
+  role_testNew: process.env.ROLE_TEST_NEW || "ROLE_UPDATED",
+
+  // permission
+  permission_test: process.env.PERMISSION_TEST || "PERMISSION_TEST",
+  permission_testNew: process.env.PERMISSION_TESTNEW || "PERMISSION_UPDATED"
 };

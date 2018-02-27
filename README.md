@@ -75,6 +75,7 @@ We are using vscode to program, we recommend you to install the following extens
 ## Execute test with Mocha, chai and Supertest
 
 * cd UMS/server
+* npm install
 * npm run test-server
   * You will see results of testing in command line
 
