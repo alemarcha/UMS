@@ -54,7 +54,7 @@ describe("POST correct role /api/users/register", function() {
       })
       .expect(function(res) {
         assert.equal(res.body.ok, true);
-        assert.equal(res.body.user.email, "email_test@env.com");
+        assert.equal(res.body.user.email, config.email_default_test);
       })
       .expect(201, done);
   });
@@ -103,8 +103,9 @@ describe("POST correct role /api/roles/create", function() {
       })
       .expect(function(res) {
         assert.equal(res.body.ok, true);
+        assert.equal(res.body.role.roleName, config.role_test);
       })
-      .expect(200, done);
+      .expect(201, done);
   });
 });
 
@@ -138,8 +139,12 @@ describe("POST correct permission /api/permissions/create", function() {
       })
       .expect(function(res) {
         assert.equal(res.body.ok, true);
+        assert.equal(
+          res.body.permission.permissionName,
+          config.permission_test
+        );
       })
-      .expect(200, done);
+      .expect(201, done);
   });
 });
 

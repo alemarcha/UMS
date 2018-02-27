@@ -67,7 +67,7 @@ exports.create = function(req, res, next) {
       if (err) {
         return res.status(400).send({ ok: false, error: err });
       }
-      return res.status(200).json({ ok: true, permission: permission });
+      return res.status(201).json({ ok: true, permission: permission });
     });
   });
 };
@@ -95,24 +95,29 @@ exports.search = function(req, res) {
 //========================================
 
 exports.update = function(req, res) {
-  let permission = { permissionName: req.body.newPermissionName, isActive: req.body.isActive };
+  let permission = {
+    permissionName: req.body.newPermissionName,
+    isActive: req.body.isActive
+  };
 
   if (
     permission.permissionName == null ||
     permission.isActive == null ||
-    permission.isActive == '' ||
-    permission.permissionName  == ''
+    permission.isActive == "" ||
+    permission.permissionName == ""
   ) {
     res.send(err);
   } else {
     // use our permission model to find the permission we want
-    Permission.findOneAndUpdate({ permissionName: req.body.permissionName }, permission, function(
-      err,
-      permission
-    ) {
-      if (err) res.send(err);
+    Permission.findOneAndUpdate(
+      { permissionName: req.body.permissionName },
+      permission,
+      { new: true },
+      function(err, permissionParam) {
+        if (err) res.send(err);
 
-      return res.status(200).json({ ok: true, permissions: permission });
-    });
+        return res.status(200).json({ ok: true, permissions: permissionParam });
+      }
+    );
   }
 };

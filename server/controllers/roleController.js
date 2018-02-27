@@ -73,7 +73,7 @@ exports.create = function(req, res, next) {
             error: err
           });
         }
-        return res.status(200).json({
+        return res.status(201).json({
           ok: true,
           role: role
         });
@@ -110,19 +110,20 @@ exports.update = function(req, res) {
   if (
     role.roleName == null ||
     role.isActive == null ||
-    role.isActive == '' ||
-    role.roleName  == ''
+    role.isActive == "" ||
+    role.roleName == ""
   ) {
     res.send(err);
   } else {
     // use our role model to find the role we want
-    Role.findOneAndUpdate({ roleName: req.body.roleName }, role, function(
-      err,
-      role
-    ) {
-      if (err) res.send(err);
-
-      return res.status(200).json({ ok: true, roles: role });
-    });
+    Role.findOneAndUpdate(
+      { roleName: req.body.roleName },
+      role,
+      { new: true },
+      function(err, roleParam) {
+        if (err) res.send(err);
+        return res.status(200).json({ ok: true, roles: roleParam });
+      }
+    );
   }
 };
