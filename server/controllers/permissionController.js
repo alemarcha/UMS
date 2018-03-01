@@ -114,7 +114,19 @@ exports.update = function(req, res) {
       permission,
       { new: true },
       function(err, permissionParam) {
-        if (err) res.send(err);
+        if (err) {
+          if (err.code === 11000) {
+            return res.status(409).send({
+              ok: false,
+              error: "That permissionName is already in use."
+            });
+          } else {
+            res.status(400).send({
+              ok: false,
+              error: err
+            });
+          }
+        }
 
         return res.status(200).json({ ok: true, permissions: permissionParam });
       }

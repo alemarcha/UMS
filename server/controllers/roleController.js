@@ -120,7 +120,19 @@ exports.update = function(req, res) {
       role,
       { new: true },
       function(err, roleParam) {
-        if (err) res.send(err);
+        if (err) {
+          if (err.code === 11000) {
+            return res.status(409).send({
+              ok: false,
+              error: "That roleName is already in use."
+            });
+          } else {
+            res.status(400).send({
+              ok: false,
+              error: err
+            });
+          }
+        }
         return res.status(200).json({ ok: true, roles: roleParam });
       }
     );
