@@ -54,7 +54,7 @@ describe("GET /api/ping response", function() {
 });
 
 //User Register created OK
-describe("POST correct role /api/users/register", function() {
+describe("POST correct user /api/users/register", function() {
   it("should render ok", function(done) {
     request
       .post("/api/users/register")
@@ -72,6 +72,76 @@ describe("POST correct role /api/users/register", function() {
       .expect(201, done);
   });
 });
+
+//User Register created to Update OK
+describe("POST correct user /api/users/register", function() {
+  it("should render ok", function(done) {
+    request
+      .post("/api/users/register")
+      .set("Content-Type", "application/json")
+      .send({
+        email: config.email_default_test2,
+        password: config.password_default_test2,
+        firstName: config.user_name_default_test,
+        lastName: config.last_name_default_test
+      })
+      .expect(function(res) {
+        assert.equal(res.body.ok, true);
+        assert.equal(res.body.user.email, config.email_default_test2);
+      })
+      .expect(201, done);
+  });
+});
+
+//User updated user duplicate email OK
+describe(
+  "PUT Update incorrect user /api/users/" +
+    config.email_default_test2 +
+    "/update",
+  function() {
+    it("should render ok", function(done) {
+      request
+        .put("/api/users/" + config.email_default_test2 + "/update")
+        .set("Content-Type", "application/json")
+        .send({
+          email: config.email_default_test,
+          firstName: config.user_name_default_test,
+          lastName: config.last_name_default_test
+        })
+        .expect(function(res) {
+          console.log(res.body);
+          assert.equal(res.body.ok, false);
+        })
+        .expect(409, done);
+    });
+  }
+);
+
+//User updated user OK
+describe(
+  "PUT Update correct user /api/users/" +
+    config.email_default_test2 +
+    "/update",
+  function() {
+    it("should render ok", function(done) {
+      request
+        .put("/api/users/" + config.email_default_test2 + "/update")
+        .set("Content-Type", "application/json")
+        .send({
+          email: config.email_default_test3,
+          firstName: config.user_name_default_test,
+          lastName: config.last_name_default_test
+        })
+        .expect(function(res) {
+          assert.equal(res.body.ok, true);
+          assert.equal(res.body.user.email, config.email_default_test3);
+          assert.equal(res.body.user.firstName, config.user_name_default_test);
+          assert.equal(res.body.user.lastName, config.last_name_default_test);
+        })
+        .expect(200, done);
+    });
+  }
+);
 
 //User log-in OK
 describe("POST correct user /api/users/login", function() {

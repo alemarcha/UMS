@@ -1,7 +1,10 @@
 module.exports = {
   // Default user/password for testing
   email_default_test: "email_test@mail.com",
+  email_default_test2: "email_test2@mail.com",
+  email_default_test3: "email_test3@mail.com",
   password_default_test: "password",
+  password_default_test2: "password2",
   user_name_default_test: "username",
   last_name_default_test: "lastname",
 
