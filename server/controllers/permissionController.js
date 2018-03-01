@@ -51,7 +51,7 @@ exports.create = function(req, res, next) {
 
     // If permissionName is not unique, return error
     if (existingPermissionName) {
-      return res.status(400).send({
+      return res.status(409).send({
         ok: false,
         error: "That permission name is already in use."
       });

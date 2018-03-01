@@ -42,7 +42,6 @@ exports.create = function(req, res, next) {
       error: "You must enter an role name."
     });
   }
-
   Role.findOne(
     {
       roleName: roleName
@@ -54,7 +53,7 @@ exports.create = function(req, res, next) {
 
       // If roleName is not unique, return error
       if (existingRoleName) {
-        return res.status(400).send({
+        return res.status(409).send({
           ok: false,
           error: "That roleName is already in use."
         });

@@ -18,36 +18,16 @@ tags:
 schemes:
 - "http"
 paths:
-  /users/login:
-    post:
-      description: "Logs user into the system"
+  /users/search:
+    get:
+      description: "Return the users"
       tags:
       - "users"
-      consumes:
-        - application/json
       produces:
-        - application/json
-      parameters:
-        - in: "body"
-          name: "Login user"
-          description: "User info in order to login."
-          schema:
-            type: object
-            required: 
-              - email
-              - password
-            properties:
-              email:
-                type: string
-              password:
-                type: string
-                format: "password"
-            example:
-              email: user@email.com
-              password: mypass
+      - application/json
       responses:
          '200':
-           description: User login
+           description: "users response"
   /users/register:
     post:
       description: Register user account to the application.
@@ -93,6 +73,40 @@ paths:
           description: Created
         '405':
           description: Invalid input
+        '409':
+          description: Unauthorized petition, maybe already in use
+  /users/login:
+    post:
+      description: "Logs user into the system"
+      tags:
+      - "users"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: "body"
+          name: "Login user"
+          description: "User info in order to login."
+          schema:
+            type: object
+            required: 
+              - email
+              - password
+            properties:
+              email:
+                type: string
+              password:
+                type: string
+                format: "password"
+            example:
+              email: user@email.com
+              password: mypass
+      responses:
+         '200':
+           description: User login
+         '400':
+           description: Bad Request
   # /users/update:
   #   put:
   #     description: "Update a user"
@@ -145,16 +159,6 @@ paths:
   #         description: Invalid input
   #       default:
   #         description: Unexpected error
-  /users/search:
-    get:
-      description: "Return the users"
-      tags:
-      - "users"
-      produces:
-      - application/json
-      responses:
-         '200':
-           description: "users response"
   /roles/search:
     get:
       description: "Return the roles"
@@ -230,8 +234,20 @@ paths:
           description: Updated
         '405':
           description: Invalid input
+        '409':
+          description: Unauthorized petition, maybe already in use
         default:
           description: Unexpected error
+  /permissions/search:
+    get:
+      description: Search permissions
+      tags:
+      - "permission"
+      produces:
+      - "application/json"
+      responses:
+         '200':
+           description: Permissions response
   /permissions/create:
     post:
       description: "Create permissions"
@@ -301,18 +317,10 @@ paths:
           description: Created
         '405':
           description: Invalid input
+        '409':
+          description: Unauthorized petition, maybe already in use
         default:
           description: Unexpected error
-  /permissions/search:
-    get:
-      description: Search permissions
-      tags:
-      - "permission"
-      produces:
-      - "application/json"
-      responses:
-         '200':
-           description: Permissions response
   /ping:
     get:
       description: "Ping Api Rest"

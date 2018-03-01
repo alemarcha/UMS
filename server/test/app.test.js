@@ -10,13 +10,25 @@ let assert = require("assert");
 before(function(done) {
   function clearCollections() {
     for (var collection in mongoose.connection.collections) {
-      mongoose.connection.collections[collection].drop(function() {});
-      console.log(collection);
+      mongoose.connection.dropCollection(collection, function(err, result) {});
     }
     return done();
   }
   return clearCollections();
 });
+
+//run once after all tests
+// after(function(done) {
+//   if (true) {
+//     console.log("Deleting test database");
+//     mongoose.connection.db.dropDatabase(done);
+//   } else {
+//     console.log(
+//       "Not deleting test database because it already existed before run"
+//     );
+//     done();
+//   }
+// });
 
 //found 302
 describe("GET /", function() {
@@ -29,8 +41,8 @@ describe("GET /", function() {
 });
 
 //API OK
-describe("GET /api/ping", function() {
-  it("should render ok", function(done) {
+describe("GET /api/ping response", function() {
+  it("should render 200 ok", function(done) {
     request
       .get("/api/ping")
       .expect(200)
@@ -189,7 +201,7 @@ describe("Create another role", function() {
 
 // Update Role exists
 describe("Update a role with a name already in use.", function() {
-  it("should fail, because is a name already in use", function(done) {
+  it("should fail, 409 Conflict", function(done) {
     request
       .put("/api/roles/update")
       .set("Content-Type", "application/json")
@@ -228,7 +240,7 @@ describe("Create another permission", function() {
 
 // Update Permission
 describe("Update a permission with a name already in use.", function() {
-  it("should fail, because is a name already in use", function(done) {
+  it("should fail, 409 Conflict", function(done) {
     request
       .put("/api/permissions/update")
       .set("Content-Type", "application/json")
@@ -243,3 +255,4 @@ describe("Update a permission with a name already in use.", function() {
       .expect(409, done);
   });
 });
+//************* /// In order to check duplicity -end *************//

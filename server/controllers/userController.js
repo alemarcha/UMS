@@ -70,7 +70,7 @@ exports.register = function(req, res, next) {
     // If user is not unique, return error
     if (existingUser) {
       return res
-        .status(422)
+        .status(409)
         .send({ ok: false, error: "That email address is already in use." });
     }
 
@@ -87,10 +87,6 @@ exports.register = function(req, res, next) {
       if (err) {
         return res.status(400).send({ ok: false, error: err });
       }
-
-      // Subscribe member to Mailchimp list
-      // mailchimp.subscribeToNewsletter(user.email);
-
       // Respond with JWT if user was created
       let userInfo = setUserInfo(user);
       res.status(201).json({
@@ -118,6 +114,7 @@ exports.search = function(req, res) {
       });
     });
 };
+
 //========================================
 // Authorization Middleware
 //========================================
@@ -139,7 +136,7 @@ exports.search = function(req, res) {
 //         }
 
 //         res.status(401).json({ error: 'You are not authorized to view this content.' });
-//         return next('Unauthorizdded');
+//         return next('Unauthorized');
 //       })
 //     }
 // }
