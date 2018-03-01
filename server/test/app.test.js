@@ -4,7 +4,7 @@ let mongoose = require("mongoose");
 let app = require("../server.js");
 let config = require("./test_variables.js");
 let request = require("supertest")(app);
-let assert = require("assert");
+let assert = require("chai").assert;
 
 //clean collections
 before(function(done) {
@@ -85,13 +85,14 @@ describe("POST correct user /api/users/login", function() {
       })
       .expect(function(res) {
         assert.equal(res.body.ok, true);
+        assert.exists(res.body.token);
       })
       .expect(200, done);
   });
 });
 
-// 401 Unauthorized
-describe("POST incorrrect user /api/users/login", function() {
+// 401 Unauthorized password
+describe("POST incorrrect password /api/users/login", function() {
   it("should give an error 401, unauthorized", function(done) {
     request
       .post("/api/users/login")
@@ -99,6 +100,20 @@ describe("POST incorrrect user /api/users/login", function() {
       .send({
         email: config.email_default_test,
         password: config.password_default_test + "_fake"
+      })
+      .expect(401, done);
+  });
+});
+
+// 401 Unauthorized user
+describe("POST incorrrect user /api/users/login", function() {
+  it("should give an error 401, unauthorized", function(done) {
+    request
+      .post("/api/users/login")
+      .set("Content-Type", "application/json")
+      .send({
+        email: config.email_default_test + "_fake",
+        password: config.password_default_test
       })
       .expect(401, done);
   });
@@ -211,7 +226,7 @@ describe("Update a role with a name already in use.", function() {
         isActive: true
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, true);
+        assert.equal(res.body.ok, false);
       })
       .expect(409, done);
   });
@@ -250,7 +265,7 @@ describe("Update a permission with a name already in use.", function() {
         isActive: true
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, true);
+        assert.equal(res.body.ok, false);
       })
       .expect(409, done);
   });
