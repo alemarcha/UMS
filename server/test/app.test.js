@@ -1,7 +1,8 @@
 process.env.ENVIRONMENT = "test";
+
 let mongoose = require("mongoose");
 let app = require("../server.js");
-let config = require("../config/main");
+let config = require("./test_variables.js");
 let request = require("supertest")(app);
 let assert = require("assert");
 
@@ -79,7 +80,7 @@ describe("POST correct user /api/users/login", function() {
 
 // 401 Unauthorized
 describe("POST incorrrect user /api/users/login", function() {
-  it("should render ok", function(done) {
+  it("should give an error 401, unauthorized", function(done) {
     request
       .post("/api/users/login")
       .set("Content-Type", "application/json")
@@ -93,7 +94,7 @@ describe("POST incorrrect user /api/users/login", function() {
 
 // Create Role OK
 describe("POST correct role /api/roles/create", function() {
-  it("should render ok", function(done) {
+  it("should render created 201", function(done) {
     request
       .post("/api/roles/create")
       .set("Content-Type", "application/json")
@@ -129,7 +130,7 @@ describe("PUT correct role /api/roles/update", function() {
 
 // Create permission OK
 describe("POST correct permission /api/permissions/create", function() {
-  it("should render ok", function(done) {
+  it("should render created 201 code", function(done) {
     request
       .post("/api/permissions/create")
       .set("Content-Type", "application/json")
@@ -163,5 +164,82 @@ describe("PUT correct permission /api/permissions/update", function() {
         assert.equal(res.body.ok, true);
       })
       .expect(200, done);
+  });
+});
+
+//************* In order to check duplicity *************//
+
+// Create Role OK
+describe("Create another role", function() {
+  it("should render ok", function(done) {
+    request
+      .post("/api/roles/create")
+      .set("Content-Type", "application/json")
+      .send({
+        roleName: config.role_test2,
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.equal(res.body.ok, true);
+        assert.equal(res.body.role.roleName, config.role_test2);
+      })
+      .expect(201, done);
+  });
+});
+
+// Update Role exists
+describe("Update a role with a name already in use.", function() {
+  it("should fail, because is a name already in use", function(done) {
+    request
+      .put("/api/roles/update")
+      .set("Content-Type", "application/json")
+      .send({
+        roleName: config.role_test2,
+        newRoleName: config.role_testNew2,
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.equal(res.body.ok, true);
+      })
+      .expect(409, done);
+  });
+});
+
+// Create permission
+describe("Create another permission", function() {
+  it("should render ok", function(done) {
+    request
+      .post("/api/permissions/create")
+      .set("Content-Type", "application/json")
+      .send({
+        permissionName: config.permission_test2,
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.equal(res.body.ok, true);
+        assert.equal(
+          res.body.permission.permissionName,
+          config.permission_test2
+        );
+      })
+      .expect(201, done);
+  });
+});
+
+// Update Permission
+describe("Update a permission with a name already in use.", function() {
+  it("should fail, because is a name already in use", function(done) {
+    request
+      .put("/api/permissions/update")
+      .set("Content-Type", "application/json")
+      .send({
+        permissionName: config.permission_test2,
+        newPermissionName: config.permission_testNew2,
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.equal(res.body.ok, true);
+      })
+      .expect(409, done);
   });
 });
