@@ -42,4 +42,22 @@ module.exports = function(app) {
       content: "Respuesta desde api protected"
     });
   });
+
+  // Handle Errors in api rest
+  apiRoutes.use((err, req, res, next) => {
+    console.log(err);
+    res.status(err.status || 500).send({
+      ok: false,
+      error: { message: err.message, error: err }
+    });
+  });
+
+  // Handle 404 error.
+  app.use("*", (req, res) => {
+    console.log(req);
+    res.status(404).send({
+      ok: false,
+      error: { message: "Not Found route", error: req.originalUrl }
+    });
+  });
 };

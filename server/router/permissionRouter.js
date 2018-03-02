@@ -12,7 +12,7 @@ module.exports.init = function(apiRoutes, requireAuth) {
 
   // Create Routes
   permissionRoutes.post("/create", PermissionController.create);
-  
+
   // Update Routes
   permissionRoutes.put("/update", PermissionController.update);
 
