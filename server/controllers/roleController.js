@@ -100,41 +100,71 @@ exports.search = function(req, res) {
 };
 
 //========================================
-// Update Route
+// Update Role Route
 //========================================
 
-exports.update = function(req, res) {
-  let role = { roleName: req.body.newRoleName, isActive: req.body.isActive };
+exports.update = function(req, res, next) {
+  const identifyRole = req.params.role;
+  const role = req.body.newRoleName;
+  const isActive = req.body.isActive;
+  const roleUpdate = {};
 
-  if (
-    role.roleName == null ||
-    role.isActive == null ||
-    role.isActive == "" ||
-    role.roleName == ""
-  ) {
-    res.send(err);
-  } else {
-    // use our role model to find the role we want
-    Role.findOneAndUpdate(
-      { roleName: req.body.roleName },
-      role,
-      { new: true },
-      function(err, roleParam) {
-        if (err) {
-          if (err.code === 11000) {
-            return res.status(409).send({
-              ok: false,
-              error: "That roleName is already in use."
-            });
-          } else {
-            res.status(400).send({
-              ok: false,
-              error: err
-            });
-          }
-        }
-        return res.status(200).json({ ok: true, roles: roleParam });
-      }
-    );
+  if (role) {
+    roleUpdate.role = role;
   }
+
+  if (typeof isActive !== "undefined" || isActive !== null) {
+    roleUpdate.isActive = isActive;
+  }
+
+  // use our role model to find the role we want
+  Role.findOneAndUpdate(
+    { role: req.body.identifyRole },
+    roleUpdate,
+    { new: true },
+    function(err, roleUpdated) {
+      if (err) {
+        if (err.code === 11000) {
+          return res.status(409).send({
+            ok: false,
+            error: "That roleName is already in use."
+          });
+        } else {
+          res.status(400).send({
+            ok: false,
+            error: err
+          });
+        }
+      }
+      return res.status(200).json({ ok: true, roles: roleUpdated });
+    }
+  );
+};
+
+//========================================
+// Delete Role Route
+//========================================
+exports.delete = function(req, res, next) {
+  const identifyRole = req.params.role;
+  const isActive = false;
+  const roleUpdate = {};
+
+  if (typeof isActive !== "undefined" || isActive !== null) {
+    roleUpdate.isActive = isActive;
+  }
+
+  Role.findOneAndUpdate(
+    { role: identifyRole },
+    roleUpdate,
+    { new: true },
+    function(err, roleUpdated) {
+      if (err) {
+        res.status(400).send({
+          ok: false,
+          error: err
+        });
+      }
+      return res.status(200).json({ ok: true, user: roleUpdated });
+    }
+  );
 };

@@ -4,14 +4,16 @@ const AuthAttemptController = require("../controllers/authAttemptController");
 
 module.exports.init = function(apiRoutes, requireAuth, requireLogin) {
   const authRoutes = express.Router();
-  // Set auth routes as subgroup/middleware to apiRoutes
+
+  // Set user routes as subgroup/middleware to apiRoutes
   apiRoutes.use("/users", authRoutes);
-  //ROUTES
-  // Search
+
+  // Search Routes
   authRoutes.get("/search", UserController.search);
-  //AUTH
+
+  // Register Routes
   authRoutes.post("/register", UserController.register);
-  authRoutes.put("/:email/update", UserController.update);
+
   // Login route
   authRoutes.post(
     "/login",
@@ -19,4 +21,10 @@ module.exports.init = function(apiRoutes, requireAuth, requireLogin) {
     requireLogin,
     UserController.login
   );
+
+  // Update Routes
+  authRoutes.put("/:email/update", UserController.update);
+
+  // Delete Routes
+  authRoutes.put("/:email/delete", UserController.delete);
 };
