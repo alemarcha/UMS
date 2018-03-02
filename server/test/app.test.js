@@ -253,6 +253,7 @@ describe("Disable user.", function() {
       })
       .expect(function(res) {
         assert.equal(res.body.ok, true);
+        assert.equal(res.body.data.user.isActive, false);
       })
       .expect(200, done);
   });
@@ -335,6 +336,8 @@ describe("Update role /api/roles/:role/update", function() {
       })
       .expect(function(res) {
         assert.equal(res.body.ok, true);
+        assert.equal(res.body.data.role.isActive, true);
+        assert.equal(res.body.data.role.roleName, config.role_testNew);
       })
       .expect(200, done);
   });
@@ -344,13 +347,14 @@ describe("Update role /api/roles/:role/update", function() {
 describe("Disable role.", function() {
   it("should set isActive field to false", function(done) {
     request
-      .put("/api/roles/" + config.role_test + "/update")
+      .put("/api/roles/" + config.role_testNew + "/update")
       .set("Content-Type", "application/json")
       .send({
         isActive: false
       })
       .expect(function(res) {
         assert.equal(res.body.ok, true);
+        assert.equal(res.body.data.role.isActive, false);
       })
       .expect(200, done);
   });
@@ -390,9 +394,10 @@ describe("Update a permission", function() {
       .expect(function(res) {
         assert.equal(res.body.ok, true);
         assert.equal(
-          res.body.data.permissions.permissionName,
+          res.body.data.permission.permissionName,
           config.permission_testNew
         );
+        assert.equal(res.body.data.permission.isActive, true);
       })
       .expect(200, done);
   });
@@ -409,6 +414,7 @@ describe("Disable permission.", function() {
       })
       .expect(function(res) {
         assert.equal(res.body.ok, true);
+        assert.equal(res.body.data.permission.isActive, false);
       })
       .expect(200, done);
   });
