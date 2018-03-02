@@ -22,8 +22,10 @@ exports.permissionName = function(req, res, next) {
   let permissionInfo = setPermissionInfo(req.permission);
   res.status(200).json({
     ok: true,
-    token: "JWT " + generateToken(permissionInfo),
-    roleName: permissionInfo
+    data: {
+      token: "JWT " + generateToken(permissionInfo),
+      roleName: permissionInfo
+    }
   });
 };
 
@@ -67,7 +69,9 @@ exports.create = function(req, res, next) {
       if (err) {
         return res.status(400).send({ ok: false, error: err });
       }
-      return res.status(201).json({ ok: true, permission: permission });
+      return res
+        .status(201)
+        .json({ ok: true, data: { permission: permission } });
     });
   });
 };
@@ -85,7 +89,9 @@ exports.search = function(req, res) {
       }
       return res.status(200).json({
         ok: true,
-        permissions: response
+        data: {
+          permissions: response
+        }
       });
     });
 };
@@ -126,7 +132,9 @@ exports.update = function(req, res, next) {
           });
         }
       }
-      return res.status(200).json({ ok: true, permissions: permissionUpdated });
+      return res
+        .status(200)
+        .json({ ok: true, data: { permissions: permissionUpdated } });
     }
   );
 };
@@ -154,7 +162,9 @@ exports.delete = function(req, res, next) {
           error: err
         });
       }
-      return res.status(200).json({ ok: true, user: permissionUpdated });
+      return res
+        .status(200)
+        .json({ ok: true, data: { user: permissionUpdated } });
     }
   );
 };

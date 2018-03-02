@@ -22,8 +22,10 @@ exports.roleName = function(req, res, next) {
   let roleInfo = setRoleInfo(req.role);
   res.status(200).json({
     ok: true,
-    token: "JWT " + generateToken(roleInfo),
-    roleName: roleInfo
+    data: {
+      token: "JWT " + generateToken(roleInfo),
+      roleName: roleInfo
+    }
   });
 };
 
@@ -74,7 +76,9 @@ exports.create = function(req, res, next) {
         }
         return res.status(201).json({
           ok: true,
-          role: role
+          data: {
+            role: role
+          }
         });
       });
     }
@@ -94,7 +98,9 @@ exports.search = function(req, res) {
       }
       return res.status(200).json({
         ok: true,
-        roles: response
+        data: {
+          roles: response
+        }
       });
     });
 };
@@ -136,7 +142,7 @@ exports.update = function(req, res, next) {
           });
         }
       }
-      return res.status(200).json({ ok: true, roles: roleUpdated });
+      return res.status(200).json({ ok: true, data: { roles: roleUpdated } });
     }
   );
 };
@@ -164,7 +170,7 @@ exports.delete = function(req, res, next) {
           error: err
         });
       }
-      return res.status(200).json({ ok: true, user: roleUpdated });
+      return res.status(200).json({ ok: true, data: { user: roleUpdated } });
     }
   );
 };
