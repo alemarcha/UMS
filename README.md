@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/alemarcha/UMS.svg?branch=master)](https://travis-ci.org/alemarcha/UMS)
 # UMS
 
 User management system with MongoDB, Express and NodeJS app. Using Swagger for Docs Api.
