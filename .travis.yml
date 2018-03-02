@@ -9,4 +9,5 @@ before_script:
 install:
     - npm install 
 script:
+    - cp .env-getting-started .env
     - npm run test-server
