@@ -67,7 +67,7 @@ describe("POST correct user /api/users/register", function() {
       })
       .expect(function(res) {
         assert.equal(res.body.ok, true);
-        assert.equal(res.body.user.email, config.email_default_test);
+        assert.equal(res.body.data.user.email, config.email_default_test);
       })
       .expect(201, done);
   });
@@ -87,7 +87,7 @@ describe("POST correct user /api/users/register", function() {
       })
       .expect(function(res) {
         assert.equal(res.body.ok, true);
-        assert.equal(res.body.user.email, config.email_default_test2);
+        assert.equal(res.body.data.user.email, config.email_default_test2);
       })
       .expect(201, done);
   });
@@ -133,9 +133,15 @@ describe(
         })
         .expect(function(res) {
           assert.equal(res.body.ok, true);
-          assert.equal(res.body.user.email, config.email_default_test3);
-          assert.equal(res.body.user.firstName, config.user_name_default_test);
-          assert.equal(res.body.user.lastName, config.last_name_default_test);
+          assert.equal(res.body.data.user.email, config.email_default_test3);
+          assert.equal(
+            res.body.data.user.firstName,
+            config.user_name_default_test
+          );
+          assert.equal(
+            res.body.data.user.lastName,
+            config.last_name_default_test
+          );
         })
         .expect(200, done);
     });
@@ -170,7 +176,7 @@ describe("Log-in user in the system /api/users/login", function() {
       })
       .expect(function(res) {
         assert.equal(res.body.ok, true);
-        assert.exists(res.body.token);
+        assert.exists(res.body.data.token);
       })
       .expect(200, done);
   });
@@ -216,7 +222,7 @@ describe("Create a new role.", function() {
       })
       .expect(function(res) {
         assert.equal(res.body.ok, true);
-        assert.equal(res.body.role.roleName, config.role_test);
+        assert.equal(res.body.data.role.roleName, config.role_test);
       })
       .expect(201, done);
   });
@@ -269,7 +275,7 @@ describe("Create a new permission.", function() {
       .expect(function(res) {
         assert.equal(res.body.ok, true);
         assert.equal(
-          res.body.permission.permissionName,
+          res.body.data.permission.permissionName,
           config.permission_test
         );
       })
@@ -290,7 +296,7 @@ describe("Update a permission", function() {
       .expect(function(res) {
         assert.equal(res.body.ok, true);
         assert.equal(
-          res.body.permissions.permissionName,
+          res.body.data.permissions.permissionName,
           config.permission_testNew
         );
       })
@@ -326,7 +332,7 @@ describe("Create another role", function() {
       })
       .expect(function(res) {
         assert.equal(res.body.ok, true);
-        assert.equal(res.body.role.roleName, config.role_test2);
+        assert.equal(res.body.data.role.roleName, config.role_test2);
       })
       .expect(201, done);
   });
@@ -363,7 +369,7 @@ describe("Create another permission", function() {
       .expect(function(res) {
         assert.equal(res.body.ok, true);
         assert.equal(
-          res.body.permission.permissionName,
+          res.body.data.permission.permissionName,
           config.permission_test2
         );
       })

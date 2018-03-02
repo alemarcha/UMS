@@ -31,8 +31,10 @@ exports.login = function(req, res, next) {
 
   res.status(200).json({
     ok: true,
-    token: "JWT " + generateToken(userInfo),
-    user: userInfo
+    data: {
+      token: "JWT " + generateToken(userInfo),
+      user: userInfo
+    }
   });
 };
 
@@ -91,8 +93,10 @@ exports.register = function(req, res, next) {
       let userInfo = setUserInfo(user);
       res.status(201).json({
         ok: true,
-        token: "JWT " + generateToken(userInfo),
-        user: userInfo
+        data: {
+          token: "JWT " + generateToken(userInfo),
+          user: userInfo
+        }
       });
     });
   });
@@ -103,6 +107,7 @@ exports.register = function(req, res, next) {
 //========================================
 exports.update = function(req, res, next) {
   const identifyEmail = req.params.email;
+  console.log(identifyEmail);
   const email = req.body.email;
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
@@ -139,7 +144,7 @@ exports.update = function(req, res, next) {
           });
         }
       }
-      return res.status(200).json({ ok: true, user: userUpdated });
+      return res.status(200).json({ ok: true, data: { user: userUpdated } });
     }
   );
 };
@@ -184,7 +189,7 @@ exports.delete = function(req, res, next) {
           error: err
         });
       }
-      return res.status(200).json({ ok: true, user: userDeleted });
+      return res.status(200).json({ ok: true, data: { user: userDeleted } });
     }
   );
 };
