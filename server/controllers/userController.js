@@ -3,7 +3,8 @@
 const jwt = require("jsonwebtoken"),
   crypto = require("crypto"),
   User = require("../models/user"),
-  config = require("../config/main");
+  config = require("../config/main"),
+  utils = require("utils")._;
 
 function generateToken(user) {
   return jwt.sign(user, config.secret, {
@@ -48,18 +49,30 @@ exports.register = function(req, res, next) {
   const isActive = true;
 
   // Return error if no email provided
-  if (!email) {
-    return res.status(422).send({ error: "You must enter an email address." });
+  if (utils.isEmpty(email)) {
+    return next({
+      status: 400,
+      message: "You must enter an email address.",
+      err: 400
+    });
   }
 
   // Return error if full name not provided
-  if (!firstName || !lastName) {
-    return res.status(422).send({ error: "You must enter your full name." });
+  if (utils.isEmpty(firstName) || utils.isEmpty(lastName)) {
+    return next({
+      status: 400,
+      message: "You must enter your full name.",
+      err: 400
+    });
   }
 
   // Return error if no password provided
-  if (!password) {
-    return res.status(422).send({ error: "You must enter a password." });
+  if (utils.isEmpty(password)) {
+    return next({
+      status: 400,
+      message: "You must enter a password.",
+      err: 400
+    });
   }
 
   User.findOne({ email: email }, function(err, existingUser) {
@@ -69,9 +82,11 @@ exports.register = function(req, res, next) {
 
     // If user is not unique, return error
     if (existingUser) {
-      return res
-        .status(409)
-        .send({ ok: false, error: "That email address is already in use." });
+      return next({
+        status: 409,
+        message: "That email address is already in use.",
+        err: existingUser
+      });
     }
 
     // If email is unique and password was provided, create account
@@ -85,7 +100,11 @@ exports.register = function(req, res, next) {
 
     user.save(function(err, user) {
       if (err) {
-        return res.status(400).send({ ok: false, error: err });
+        return next({
+          status: 400,
+          message: err.message,
+          err: err
+        });
       }
       // Respond with JWT if user was created
       let userInfo = setUserInfo(user);
@@ -108,16 +127,22 @@ exports.update = function(req, res, next) {
   const lastName = req.body.lastName;
   const isActive = true;
   const userUpdate = {};
-
-  if (email) {
+  if (utils.isEmpty(identifyEmail)) {
+    return next({
+      status: 400,
+      message: "Email address to update is not correct",
+      err: identifyEmail
+    });
+  }
+  if (!utils.isEmpty(email)) {
     userUpdate.email = email;
   }
 
-  if (firstName) {
+  if (!utils.isEmpty(firstName)) {
     userUpdate.firstName = firstName;
   }
 
-  if (lastName) {
+  if (!utils.isEmpty(lastName)) {
     userUpdate.lastName = lastName;
   }
 
@@ -128,14 +153,16 @@ exports.update = function(req, res, next) {
     function(err, userUpdated) {
       if (err) {
         if (err.code === 11000) {
-          return res.status(409).send({
-            ok: false,
-            error: "That email is already in use."
+          return next({
+            status: 409,
+            message: "That email address is already in use.",
+            err: userUpdated
           });
         } else {
-          res.status(400).send({
-            ok: false,
-            error: err
+          return next({
+            status: 400,
+            message: err.message,
+            err: err
           });
         }
       }
@@ -152,7 +179,11 @@ exports.search = function(req, res) {
     .sort({ name: 1 })
     .exec((err, response) => {
       if (err) {
-        return res.status(400).send({ ok: false, error: err });
+        return next({
+          status: 400,
+          message: err.message,
+          err: err
+        });
       }
       return res.status(200).json({
         ok: true,
@@ -179,38 +210,13 @@ exports.delete = function(req, res, next) {
     { new: true },
     function(err, userDeleted) {
       if (err) {
-        res.status(400).send({
-          ok: false,
-          error: err
+        return next({
+          status: 401,
+          message: err.message,
+          err: err
         });
       }
       return res.status(200).json({ ok: true, user: userDeleted });
     }
   );
 };
-
-//========================================
-// Authorization Middleware
-//========================================
-
-// Role authorization check
-// exports.roleAuthorization = function(role) {
-//     return function(req, res, next) {
-//       const user = req.user;
-
-//       User.findById(user._id, function(err, foundUser) {
-//         if (err) {
-//           res.status(422).json({ error: 'No user was found.' });
-//           return next(err);
-//         }
-
-//         // If user is found, check role.
-//         if (foundUser.role == role) {
-//           return next();
-//         }
-
-//         res.status(401).json({ error: 'You are not authorized to view this content.' });
-//         return next('Unauthorized');
-//       })
-//     }
-// }

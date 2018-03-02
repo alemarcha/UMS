@@ -45,15 +45,17 @@ module.exports = function(app) {
 
   // Handle Errors in api rest
   apiRoutes.use((err, req, res, next) => {
+    //TODO Just for development mode
     console.log(err);
     res.status(err.status || 500).send({
       ok: false,
-      error: { message: err.message, error: err }
+      error: { message: err.message, error: err.err || err }
     });
   });
 
   // Handle 404 error.
   app.use("*", (req, res) => {
+    //TODO Just for development mode
     console.log(req);
     res.status(404).send({
       ok: false,
