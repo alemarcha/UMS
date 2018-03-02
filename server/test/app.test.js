@@ -109,7 +109,6 @@ describe(
           lastName: config.last_name_default_test
         })
         .expect(function(res) {
-          console.log(res.body);
           assert.equal(res.body.ok, false);
         })
         .expect(409, done);
@@ -117,7 +116,7 @@ describe(
   }
 );
 
-//User updated user OK
+//User updated OK
 describe(
   "PUT Update correct user /api/users/" +
     config.email_default_test2 +
@@ -143,8 +142,24 @@ describe(
   }
 );
 
+// Delete User
+describe("Disable user.", function() {
+  it("should set isActive field to false", function(done) {
+    request
+      .put("/api/users/" + config.email_default_test + "/delete")
+      .set("Content-Type", "application/json")
+      .send({
+        isActive: false
+      })
+      .expect(function(res) {
+        assert.equal(res.body.ok, true);
+      })
+      .expect(200, done);
+  });
+});
+
 //User log-in OK
-describe("POST correct user /api/users/login", function() {
+describe("Log-in user in the system /api/users/login", function() {
   it("should render ok", function(done) {
     request
       .post("/api/users/login")
@@ -162,7 +177,7 @@ describe("POST correct user /api/users/login", function() {
 });
 
 // 401 Unauthorized password
-describe("POST incorrrect password /api/users/login", function() {
+describe("Try to access with incorrect password.", function() {
   it("should give an error 401, unauthorized", function(done) {
     request
       .post("/api/users/login")
@@ -176,7 +191,7 @@ describe("POST incorrrect password /api/users/login", function() {
 });
 
 // 401 Unauthorized user
-describe("POST incorrrect user /api/users/login", function() {
+describe("Try to access with incorrect email.", function() {
   it("should give an error 401, unauthorized", function(done) {
     request
       .post("/api/users/login")
@@ -190,7 +205,7 @@ describe("POST incorrrect user /api/users/login", function() {
 });
 
 // Create Role OK
-describe("POST correct role /api/roles/create", function() {
+describe("Create a new role.", function() {
   it("should render created 201", function(done) {
     request
       .post("/api/roles/create")
@@ -208,10 +223,10 @@ describe("POST correct role /api/roles/create", function() {
 });
 
 // Update Role OK
-describe("PUT correct role /api/roles/update", function() {
+describe("Update role /api/roles/:role/update", function() {
   it("should render ok", function(done) {
     request
-      .put("/api/roles/update")
+      .put("/api/roles/" + config.role_test + "/update")
       .set("Content-Type", "application/json")
       .send({
         roleName: config.role_test,
@@ -225,8 +240,24 @@ describe("PUT correct role /api/roles/update", function() {
   });
 });
 
+// Delete Role
+describe("Disable role.", function() {
+  it("should set isActive field to false", function(done) {
+    request
+      .put("/api/roles/" + config.role_test + "/update")
+      .set("Content-Type", "application/json")
+      .send({
+        isActive: false
+      })
+      .expect(function(res) {
+        assert.equal(res.body.ok, true);
+      })
+      .expect(200, done);
+  });
+});
+
 // Create permission OK
-describe("POST correct permission /api/permissions/create", function() {
+describe("Create a new permission.", function() {
   it("should render created 201 code", function(done) {
     request
       .post("/api/permissions/create")
@@ -247,15 +278,34 @@ describe("POST correct permission /api/permissions/create", function() {
 });
 
 // Update Permission OK
-describe("PUT correct permission /api/permissions/update", function() {
+describe("Update a permission", function() {
   it("should render ok", function(done) {
     request
-      .put("/api/permissions/update")
+      .put("/api/permissions/" + config.permission_test + "/update")
       .set("Content-Type", "application/json")
       .send({
-        permissionName: config.permission_test,
         newPermissionName: config.permission_testNew,
         isActive: true
+      })
+      .expect(function(res) {
+        assert.equal(res.body.ok, true);
+        assert.equal(
+          res.body.permissions.permissionName,
+          config.permission_testNew
+        );
+      })
+      .expect(200, done);
+  });
+});
+
+// Delete Permission
+describe("Disable permission.", function() {
+  it("should set isActive field to false", function(done) {
+    request
+      .put("/api/permissions/" + config.permission_testNew + "/delete")
+      .set("Content-Type", "application/json")
+      .send({
+        isActive: false
       })
       .expect(function(res) {
         assert.equal(res.body.ok, true);
@@ -264,9 +314,7 @@ describe("PUT correct permission /api/permissions/update", function() {
   });
 });
 
-//************* In order to check duplicity *************//
-
-// Create Role OK
+// Create role in order to check duplicity
 describe("Create another role", function() {
   it("should render ok", function(done) {
     request
@@ -284,11 +332,11 @@ describe("Create another role", function() {
   });
 });
 
-// Update Role exists
+// Update a role that already exists
 describe("Update a role with a name already in use.", function() {
   it("should fail, 409 Conflict", function(done) {
     request
-      .put("/api/roles/update")
+      .put("/api/roles/" + config.role_test2 + "update")
       .set("Content-Type", "application/json")
       .send({
         roleName: config.role_test2,
@@ -302,7 +350,7 @@ describe("Update a role with a name already in use.", function() {
   });
 });
 
-// Create permission
+// Create permission in order to check duplicity
 describe("Create another permission", function() {
   it("should render ok", function(done) {
     request
@@ -323,11 +371,11 @@ describe("Create another permission", function() {
   });
 });
 
-// Update Permission
+// Update a permission that already exists
 describe("Update a permission with a name already in use.", function() {
   it("should fail, 409 Conflict", function(done) {
     request
-      .put("/api/permissions/update")
+      .put("/api/permissions/" + config.permission_test2 + "update")
       .set("Content-Type", "application/json")
       .send({
         permissionName: config.permission_test2,
@@ -340,4 +388,3 @@ describe("Update a permission with a name already in use.", function() {
       .expect(409, done);
   });
 });
-//************* /// In order to check duplicity -end *************//
