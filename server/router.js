@@ -1,6 +1,8 @@
 const express = require("express"),
   passportService = require("./config/passport"),
-  passport = require("passport");
+  passport = require("passport"),
+  config = require("./config/main");
+
 const userRouter = require("./router/userRouter");
 const roleRouter = require("./router/roleRouter");
 const permissionRouter = require("./router/permissionRouter");
@@ -43,15 +45,39 @@ module.exports = function(app) {
     });
   });
 
-  // Handle Errors in api rest
-  apiRoutes.use((err, req, res, next) => {
-    //TODO Just for development mode
-    console.log(err);
-    res.status(err.status || 500).send({
-      ok: false,
-      error: { message: err.message, error: err.err || err }
+  if (config.environment === "development") {
+    // Handle Errors in api rest
+    apiRoutes.use((err, req, res, next) => {
+      //TODO Just for development mode
+      console.log(err);
+      res.status(err.status || 500).send({
+        ok: false,
+        error: { message: err.message, error: err.err || err }
+      });
     });
-  });
+  }
+
+  if (config.environment === "development" || config.environment === "test") {
+    // Handle Errors in api rest
+    apiRoutes.use((err, req, res, next) => {
+      //TODO Just for development mode
+      console.log(err);
+      res.status(err.status || 500).send({
+        ok: false,
+        error: { message: err.message, error: err.err || err }
+      });
+    });
+  }
+
+  if (config.environment !== "development" && config.environment !== "test") {
+    // Handle Errors in api rest
+    apiRoutes.use((err, req, res, next) => {
+      res.status(err.status || 500).send({
+        ok: false,
+        error: { message: err.message }
+      });
+    });
+  }
 
   // Handle 404 error.
   app.use("*", (req, res) => {
