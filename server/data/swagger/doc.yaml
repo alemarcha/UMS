@@ -107,7 +107,7 @@ paths:
            description: User login
          '400':
            description: Bad Request
-  /users/update:
+  /users/{emailId}/update :
     put:
       description: "Update a user"
       tags:
@@ -117,6 +117,11 @@ paths:
       produces:
         - application/json
       parameters:
+      - name: emailId
+        in: path
+        description: user email to fetch
+        required: true
+        type: string
       - in: body
         name: Update
         description: User info in order to update.
@@ -159,7 +164,7 @@ paths:
           description: Invalid input
         default:
           description: Unexpected error
-  /users/delete:
+  /users/{emailId}/delete:
     put:
       description: "Disable a user"
       tags:
@@ -169,6 +174,11 @@ paths:
       produces:
         - application/json
       parameters:
+      - name: emailId
+        in: path
+        description: user email to fetch
+        required: true
+        type: string                
       - in: body
         name: Disable
         description: User info in order to disable.
@@ -232,7 +242,7 @@ paths:
           description: Invalid input
         default:
           description: Unexpected error
-  /roles/update:
+  /roles/{roleId}/update:
     put:
       tags:
       - "roles"
@@ -241,6 +251,11 @@ paths:
       produces:
         - application/json
       parameters:
+      - name: roleId
+        in: path
+        description: role to fetch
+        required: true
+        type: string        
       - in: body
         name: Update role
         description: Update role info.
@@ -274,7 +289,7 @@ paths:
           description: Unauthorized petition, maybe already in use
         default:
           description: Unexpected error
-  /roles/delete:
+  /roles/{roleId}/delete:
     put:
       tags:
       - "roles"
@@ -283,6 +298,11 @@ paths:
       produces:
         - application/json
       parameters:
+      - name: roleId
+        in: path
+        description: role to fetch
+        required: true
+        type: string           
       - in: body
         name: Disable role
         description: delete role info.
@@ -350,7 +370,7 @@ paths:
           description: Invalid input
         default:
           description: Unexpected error
-  /permissions/update:
+  /permissions/{permissionId}/update:
     put:
       tags:
       - "permission"
@@ -359,6 +379,11 @@ paths:
       produces:
         - application/json
       parameters:
+      - name: permissionId
+        in: path
+        description: permission to fetch
+        required: true
+        type: string           
       - in: body
         name: Update permission
         description: Update permission info.
@@ -392,7 +417,7 @@ paths:
           description: Unauthorized petition, maybe already in use
         default:
           description: Unexpected error
-  /permissions/delete:
+  /permissions/{permissionId}/delete:
     put:
       tags:
       - "permission"
@@ -401,6 +426,11 @@ paths:
       produces:
         - application/json
       parameters:
+      - name: permissionId
+        in: path
+        description: permission to fetch
+        required: true
+        type: string             
       - in: body
         name: Disable permission
         description: delete permission.
