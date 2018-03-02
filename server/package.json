@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js",
     "build": "node server.js",
-    "test-server": "nyc --reporter=html --reporter=text mocha test/"
+    "test-server": "nyc --reporter=html --reporter=text mocha test/ --exit"
   },
   "author": "",
   "license": "ISC",
