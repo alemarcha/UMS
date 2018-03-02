@@ -192,7 +192,7 @@ exports.search = function(req, res) {
       }
       return res.status(200).json({
         ok: true,
-        users: response
+        data: { users: response }
       });
     });
 };
@@ -205,7 +205,7 @@ exports.delete = function(req, res, next) {
   const isActive = false;
   const userUpdate = {};
 
-  if (typeof isActive !== "undefined" || isActive !== null) {
+  if (!utils.isEmpty(isActive)) {
     userUpdate.isActive = isActive;
   }
 

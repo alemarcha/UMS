@@ -142,7 +142,7 @@ exports.update = function(req, res, next) {
           });
         }
       }
-      return res.status(200).json({ ok: true, data: { roles: roleUpdated } });
+      return res.status(200).json({ ok: true, data: { role: roleUpdated } });
     }
   );
 };
@@ -170,7 +170,7 @@ exports.delete = function(req, res, next) {
           error: err
         });
       }
-      return res.status(200).json({ ok: true, data: { user: roleUpdated } });
+      return res.status(200).json({ ok: true, data: { role: roleUpdated } });
     }
   );
 };

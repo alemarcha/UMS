@@ -134,7 +134,7 @@ exports.update = function(req, res, next) {
       }
       return res
         .status(200)
-        .json({ ok: true, data: { permissions: permissionUpdated } });
+        .json({ ok: true, data: { permission: permissionUpdated } });
     }
   );
 };
@@ -164,7 +164,7 @@ exports.delete = function(req, res, next) {
       }
       return res
         .status(200)
-        .json({ ok: true, data: { user: permissionUpdated } });
+        .json({ ok: true, data: { permission: permissionUpdated } });
     }
   );
 };
