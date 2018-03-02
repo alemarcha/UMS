@@ -91,45 +91,70 @@ exports.search = function(req, res) {
 };
 
 //========================================
-// Update Route
+// Update Permission Route
 //========================================
+exports.update = function(req, res, next) {
+  const identifyPermission = req.params.permission;
+  const permission = req.body.newPermissionName;
+  const isActive = req.body.isActive;
+  const permissionUpdate = {};
 
-exports.update = function(req, res) {
-  let permission = {
-    permissionName: req.body.newPermissionName,
-    isActive: req.body.isActive
-  };
-
-  if (
-    permission.permissionName == null ||
-    permission.isActive == null ||
-    permission.isActive == "" ||
-    permission.permissionName == ""
-  ) {
-    res.send(err);
-  } else {
-    // use our permission model to find the permission we want
-    Permission.findOneAndUpdate(
-      { permissionName: req.body.permissionName },
-      permission,
-      { new: true },
-      function(err, permissionParam) {
-        if (err) {
-          if (err.code === 11000) {
-            return res.status(409).send({
-              ok: false,
-              error: "That permissionName is already in use."
-            });
-          } else {
-            res.status(400).send({
-              ok: false,
-              error: err
-            });
-          }
-        }
-
-        return res.status(200).json({ ok: true, permissions: permissionParam });
-      }
-    );
+  if (permission) {
+    permissionUpdate.permissionName = permission;
   }
+
+  if (typeof isActive !== "undefined" || isActive !== null) {
+    permissionUpdate.isActive = isActive;
+  }
+
+  // use our permission model to find the permission we want
+  Permission.findOneAndUpdate(
+    { permissionName: identifyPermission },
+    permissionUpdate,
+    { new: true },
+    function(err, permissionUpdated) {
+      if (err) {
+        if (err.code === 11000) {
+          return res.status(409).send({
+            ok: false,
+            error: "That permissionName is already in use."
+          });
+        } else {
+          res.status(400).send({
+            ok: false,
+            error: err
+          });
+        }
+      }
+      return res.status(200).json({ ok: true, permissions: permissionUpdated });
+    }
+  );
+};
+
+//========================================
+// Delete Permission Route
+//========================================
+exports.delete = function(req, res, next) {
+  const identifyPermission = req.params.permission;
+  const isActive = false;
+  const permissionUpdate = {};
+
+  if (typeof isActive !== "undefined" || isActive !== null) {
+    permissionUpdate.isActive = isActive;
+  }
+
+  Permission.findOneAndUpdate(
+    { permissionName: identifyPermission },
+    permissionUpdate,
+    { new: true },
+    function(err, permissionUpdated) {
+      if (err) {
+        res.status(400).send({
+          ok: false,
+          error: err
+        });
+      }
+      return res.status(200).json({ ok: true, user: permissionUpdated });
+    }
+  );
 };

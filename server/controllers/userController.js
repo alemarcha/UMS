@@ -102,33 +102,24 @@ exports.register = function(req, res, next) {
 // Update User Route
 //========================================
 exports.update = function(req, res, next) {
-  // Check for registration errors
   const identifyEmail = req.params.email;
   const email = req.body.email;
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
-  const password = req.body.password;
   const isActive = true;
   const userUpdate = {};
-  // Return error if no email provided
+
   if (email) {
     userUpdate.email = email;
   }
 
-  // Return error if full name not provided
   if (firstName) {
     userUpdate.firstName = firstName;
   }
 
-  // Return error if full name not provided
   if (lastName) {
     userUpdate.lastName = lastName;
   }
-
-  // Return error if no password provided
-  // if (password) {
-  //   userUpdate.password = password;
-  // }
 
   User.findOneAndUpdate(
     { email: identifyEmail },
@@ -152,6 +143,7 @@ exports.update = function(req, res, next) {
     }
   );
 };
+
 //========================================
 // Search Route
 //========================================
@@ -167,6 +159,34 @@ exports.search = function(req, res) {
         users: response
       });
     });
+};
+
+//========================================
+// Delete User Route
+//========================================
+exports.delete = function(req, res, next) {
+  const identifyEmail = req.params.email;
+  const isActive = false;
+  const userUpdate = {};
+
+  if (typeof isActive !== "undefined" || isActive !== null) {
+    userUpdate.isActive = isActive;
+  }
+
+  User.findOneAndUpdate(
+    { email: identifyEmail },
+    userUpdate,
+    { new: true },
+    function(err, userDeleted) {
+      if (err) {
+        res.status(400).send({
+          ok: false,
+          error: err
+        });
+      }
+      return res.status(200).json({ ok: true, user: userDeleted });
+    }
+  );
 };
 
 //========================================

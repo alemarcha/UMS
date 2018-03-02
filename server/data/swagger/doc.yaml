@@ -107,58 +107,94 @@ paths:
            description: User login
          '400':
            description: Bad Request
-  # /users/update:
-  #   put:
-  #     description: "Update a user"
-  #     tags:
-  #     - "users"
-  #     consumes:
-  #       - application/json
-  #     produces:
-  #       - application/json
-  #     parameters:
-  #     - in: body
-  #       name: Update
-  #       description: User info in order to register.
-  #       schema:
-  #         type: object
-  #         required: 
-  #           - email
-  #           - password
-  #           - firstName
-  #           - lastName
-  #           - isActive
-  #         properties:
-  #           email:
-  #             type: string
-  #             example: jack@email.com
-  #             description: User's email.
-  #           password:
-  #             type: string
-  #             description: User's password.
-  #             example: passw
-  #             format: "password"
-  #           firstName:
-  #             type: string
-  #             description: User's first name.
-  #             example: Jack
-  #           lastName:
-  #             type: string
-  #             description: User's last name.
-  #             example: Jackson
-  #           isActive:
-  #             type: boolean
-  #             example: true
-  #             description: Activation of the user.
-  #     responses:
-  #       '200':
-  #          description: User update response
-  #       '201':
-  #         description: Updated
-  #       '405':
-  #         description: Invalid input
-  #       default:
-  #         description: Unexpected error
+  /users/update:
+    put:
+      description: "Update a user"
+      tags:
+      - "users"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+      - in: body
+        name: Update
+        description: User info in order to update.
+        schema:
+          type: object
+          required: 
+            - email
+            - password
+            - firstName
+            - lastName
+            - isActive
+          properties:
+            email:
+              type: string
+              example: jack@email.com
+              description: User's email.
+            password:
+              type: string
+              description: User's password.
+              example: passw
+              format: "password"
+            firstName:
+              type: string
+              description: User's first name.
+              example: Jack
+            lastName:
+              type: string
+              description: User's last name.
+              example: Jackson
+            isActive:
+              type: boolean
+              example: true
+              description: Activation of the user.
+      responses:
+        '200':
+           description: User update response
+        '201':
+          description: Updated
+        '405':
+          description: Invalid input
+        default:
+          description: Unexpected error
+  /users/delete:
+    put:
+      description: "Disable a user"
+      tags:
+      - "users"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+      - in: body
+        name: Disable
+        description: User info in order to disable.
+        schema:
+          type: object
+          required: 
+            - email
+            - isActive
+          properties:
+            email:
+              type: string
+              example: jack@email.com
+              description: User's email.
+            isActive:
+              type: boolean
+              example: false
+              description: Disable the user.
+      responses:
+        '200':
+           description: User delete response
+        '201':
+          description: Deleted
+        '405':
+          description: Invalid input
+        default:
+          description: Unexpected error          
   /roles/search:
     get:
       description: "Return the roles"
@@ -236,6 +272,41 @@ paths:
           description: Invalid input
         '409':
           description: Unauthorized petition, maybe already in use
+        default:
+          description: Unexpected error
+  /roles/delete:
+    put:
+      tags:
+      - "roles"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+      - in: body
+        name: Disable role
+        description: delete role info.
+        schema:
+          type: object
+          required: 
+            - roleName
+            - isActive
+          properties:
+            roleName:
+              type: string
+              example: adminCSVS
+              description: role to disable.
+            isActive:
+              type: boolean
+              example: false
+              description: Disable the role.
+      responses:
+        '200':
+           description: Role delete response
+        '201':
+          description: deleted
+        '405':
+          description: Invalid input
         default:
           description: Unexpected error
   /permissions/search:
@@ -319,6 +390,40 @@ paths:
           description: Invalid input
         '409':
           description: Unauthorized petition, maybe already in use
+        default:
+          description: Unexpected error
+  /permissions/delete:
+    put:
+      tags:
+      - "permission"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+      - in: body
+        name: Disable permission
+        description: delete permission.
+        schema:
+          type: object
+          required: 
+            - permissionName
+            - isActive
+          properties:
+            permissionName:
+              type: string
+              example: adminCSVS
+            isActive:
+              type: boolean
+              example: false
+              description: Disable the permission.
+      responses:
+        '200':
+           description: Permission delete response
+        '201':
+          description: deleted
+        '405':
+          description: Invalid input
         default:
           description: Unexpected error
   /ping:

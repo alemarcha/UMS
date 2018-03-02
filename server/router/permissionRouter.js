@@ -4,7 +4,7 @@ const PermissionController = require("../controllers/permissionController");
 module.exports.init = function(apiRoutes, requireAuth) {
   const permissionRoutes = express.Router();
 
-  // Set auth permission as subgroup/middleware to apiRoutes
+  // Set permission as subgroup/middleware to apiRoutes
   apiRoutes.use("/permissions", permissionRoutes);
 
   // Search Routes
@@ -14,10 +14,8 @@ module.exports.init = function(apiRoutes, requireAuth) {
   permissionRoutes.post("/create", PermissionController.create);
 
   // Update Routes
-  permissionRoutes.put("/update", PermissionController.update);
+  permissionRoutes.put("/:permission/update", PermissionController.update);
 
-  //AUTH
-  //   authRoutes.post("/register", AuthenticationController.register);
-  // Login route
-  //   authRoutes.post("/login", requireLogin, AuthenticationController.login);
+  // Delete Routes
+  permissionRoutes.put("/:permission/delete", PermissionController.delete);
 };
