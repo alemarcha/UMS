@@ -109,7 +109,7 @@ exports.update = function(req, res, next) {
 
   // use our permission model to find the permission we want
   Permission.findOneAndUpdate(
-    { permission: req.body.identifyPermission },
+    { permissionName: identifyPermission },
     permissionUpdate,
     { new: true },
     function(err, permissionUpdated) {

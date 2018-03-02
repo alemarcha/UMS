@@ -336,7 +336,7 @@ describe("Create another role", function() {
 describe("Update a role with a name already in use.", function() {
   it("should fail, 409 Conflict", function(done) {
     request
-      .put("/api/roles/" + config.role_test2 + "update")
+      .put("/api/roles/" + config.role_test2 + "/update")
       .set("Content-Type", "application/json")
       .send({
         roleName: config.role_test2,
@@ -375,7 +375,7 @@ describe("Create another permission", function() {
 describe("Update a permission with a name already in use.", function() {
   it("should fail, 409 Conflict", function(done) {
     request
-      .put("/api/permissions/" + config.permission_test2 + "update")
+      .put("/api/permissions/" + config.permission_test2 + "/update")
       .set("Content-Type", "application/json")
       .send({
         permissionName: config.permission_test2,

@@ -110,7 +110,7 @@ exports.update = function(req, res, next) {
   const roleUpdate = {};
 
   if (role) {
-    roleUpdate.role = role;
+    roleUpdate.roleName = role;
   }
 
   if (typeof isActive !== "undefined" || isActive !== null) {
@@ -119,7 +119,7 @@ exports.update = function(req, res, next) {
 
   // use our role model to find the role we want
   Role.findOneAndUpdate(
-    { role: req.body.identifyRole },
+    { roleName: identifyRole },
     roleUpdate,
     { new: true },
     function(err, roleUpdated) {
