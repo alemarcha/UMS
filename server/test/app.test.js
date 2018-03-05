@@ -31,7 +31,7 @@ before(function(done) {
 // });
 
 //found 302
-describe("GET /", function() {
+describe("(0.0), GET /", function() {
   it("should render REST - Swagger Babelomics", function(done) {
     request
       .get("/")
@@ -41,7 +41,7 @@ describe("GET /", function() {
 });
 
 //API OK
-describe("GET /api/ping response", function() {
+describe("(0.1), GET /api/ping response", function() {
   it("should render 200 ok", function(done) {
     request
       .get("/api/ping")
@@ -54,7 +54,7 @@ describe("GET /api/ping response", function() {
 });
 
 //User Register created OK
-describe("POST User Register created OK", function() {
+describe("(1.0), POST User Register created OK", function() {
   it("should render ok", function(done) {
     request
       .post("/api/users/register")
@@ -74,7 +74,7 @@ describe("POST User Register created OK", function() {
 });
 
 //User Register duplicated
-describe("POST User Register duplicated", function() {
+describe("(1.1), POST User Register duplicated", function() {
   it("should render ok", function(done) {
     request
       .post("/api/users/register")
@@ -92,7 +92,7 @@ describe("POST User Register duplicated", function() {
   });
 });
 //User Register created to Update OK
-describe("POST User Register created to Update OK", function() {
+describe("(1.2), POST User Register created to Update OK", function() {
   it("should render ok", function(done) {
     request
       .post("/api/users/register")
@@ -112,7 +112,7 @@ describe("POST User Register created to Update OK", function() {
 });
 
 //User Register error email empty
-describe("POST User Register error email empty", function() {
+describe("(1.3), POST User Register error email empty", function() {
   it("should render ok", function(done) {
     request
       .post("/api/users/register")
@@ -131,7 +131,7 @@ describe("POST User Register error email empty", function() {
 });
 
 //User Register error firstName empty
-describe("POST User Register error firstName empty", function() {
+describe("(1.4), POST User Register error firstName empty", function() {
   it("should render ok", function(done) {
     request
       .post("/api/users/register")
@@ -150,7 +150,7 @@ describe("POST User Register error firstName empty", function() {
 });
 
 //User Register error lastname empty
-describe("POST User Register error lastname empty", function() {
+describe("(1.5), POST User Register error lastname empty", function() {
   it("should render ok", function(done) {
     request
       .post("/api/users/register")
@@ -169,7 +169,7 @@ describe("POST User Register error lastname empty", function() {
 });
 
 //User Register error password empty
-describe("POST User Register error password empty", function() {
+describe("(1.6), POST User Register error password empty", function() {
   it("should render ok", function(done) {
     request
       .post("/api/users/register")
@@ -189,7 +189,7 @@ describe("POST User Register error password empty", function() {
 
 //User updated user duplicate email OK
 describe(
-  "PUT Update incorrect user /api/users/" +
+  "(1.7), PUT Update incorrect user /api/users/" +
     config.email_default_test2 +
     "/update",
   function() {
@@ -212,7 +212,7 @@ describe(
 
 //User updated OK
 describe(
-  "PUT Update correct user /api/users/" +
+  "(1.8), PUT Update correct user /api/users/" +
     config.email_default_test2 +
     "/update",
   function() {
@@ -243,7 +243,7 @@ describe(
 );
 
 // Delete User
-describe("Disable user.", function() {
+describe("(1.9), Disable user.", function() {
   it("should set isActive field to false", function(done) {
     request
       .put("/api/users/" + config.email_default_test + "/delete")
@@ -260,7 +260,7 @@ describe("Disable user.", function() {
 });
 
 //User log-in OK
-describe("Log-in user in the system /api/users/login", function() {
+describe("(1.10), Log-in user in the system /api/users/login", function() {
   it("should render ok", function(done) {
     request
       .post("/api/users/login")
@@ -278,7 +278,7 @@ describe("Log-in user in the system /api/users/login", function() {
 });
 
 // 401 Unauthorized password
-describe("Try to access with incorrect password.", function() {
+describe("(1.11), Try to access with incorrect password.", function() {
   it("should give an error 401, unauthorized", function(done) {
     request
       .post("/api/users/login")
@@ -292,7 +292,7 @@ describe("Try to access with incorrect password.", function() {
 });
 
 // 401 Unauthorized user
-describe("Try to access with incorrect email.", function() {
+describe("(1.12), Try to access with incorrect email.", function() {
   it("should give an error 401, unauthorized", function(done) {
     request
       .post("/api/users/login")
@@ -306,7 +306,7 @@ describe("Try to access with incorrect email.", function() {
 });
 
 // Create Role OK
-describe("Create a new role.", function() {
+describe("(2.0), Create a new role.", function() {
   it("should render created 201", function(done) {
     request
       .post("/api/roles/create")
@@ -324,7 +324,7 @@ describe("Create a new role.", function() {
 });
 
 // Update Role OK
-describe("Update role /api/roles/:role/update", function() {
+describe("(2.1), Update role /api/roles/:role/update", function() {
   it("should render ok", function(done) {
     request
       .put("/api/roles/" + config.role_test + "/update")
@@ -344,7 +344,7 @@ describe("Update role /api/roles/:role/update", function() {
 });
 
 // Delete Role
-describe("Disable role.", function() {
+describe("(2.2), Disable role.", function() {
   it("should set isActive field to false", function(done) {
     request
       .put("/api/roles/" + config.role_testNew + "/update")
@@ -360,8 +360,44 @@ describe("Disable role.", function() {
   });
 });
 
+// Create role in order to check duplicity
+describe("(2.3), Create another role", function() {
+  it("should render ok", function(done) {
+    request
+      .post("/api/roles/create")
+      .set("Content-Type", "application/json")
+      .send({
+        roleName: config.role_test2,
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.equal(res.body.ok, true);
+        assert.equal(res.body.data.role.roleName, config.role_test2);
+      })
+      .expect(201, done);
+  });
+});
+
+// Update a role that already exists
+describe("(2.4), Update a role with a name already in use.", function() {
+  it("should fail, 409 Conflict", function(done) {
+    request
+      .put("/api/roles/" + config.role_test2 + "/update")
+      .set("Content-Type", "application/json")
+      .send({
+        roleName: config.role_test2,
+        newRoleName: config.role_testNew2,
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.equal(res.body.ok, false);
+      })
+      .expect(409, done);
+  });
+});
+
 // Create permission OK
-describe("Create a new permission.", function() {
+describe("(3.0), Create a new permission.", function() {
   it("should render created 201 code", function(done) {
     request
       .post("/api/permissions/create")
@@ -382,7 +418,7 @@ describe("Create a new permission.", function() {
 });
 
 // Update Permission OK
-describe("Update a permission", function() {
+describe("(3.1), Update a permission", function() {
   it("should render ok", function(done) {
     request
       .put("/api/permissions/" + config.permission_test + "/update")
@@ -404,7 +440,7 @@ describe("Update a permission", function() {
 });
 
 // Delete Permission
-describe("Disable permission.", function() {
+describe("(3.2), Disable permission.", function() {
   it("should set isActive field to false", function(done) {
     request
       .put("/api/permissions/" + config.permission_testNew + "/delete")
@@ -420,44 +456,8 @@ describe("Disable permission.", function() {
   });
 });
 
-// Create role in order to check duplicity
-describe("Create another role", function() {
-  it("should render ok", function(done) {
-    request
-      .post("/api/roles/create")
-      .set("Content-Type", "application/json")
-      .send({
-        roleName: config.role_test2,
-        isActive: true
-      })
-      .expect(function(res) {
-        assert.equal(res.body.ok, true);
-        assert.equal(res.body.data.role.roleName, config.role_test2);
-      })
-      .expect(201, done);
-  });
-});
-
-// Update a role that already exists
-describe("Update a role with a name already in use.", function() {
-  it("should fail, 409 Conflict", function(done) {
-    request
-      .put("/api/roles/" + config.role_test2 + "/update")
-      .set("Content-Type", "application/json")
-      .send({
-        roleName: config.role_test2,
-        newRoleName: config.role_testNew2,
-        isActive: true
-      })
-      .expect(function(res) {
-        assert.equal(res.body.ok, false);
-      })
-      .expect(409, done);
-  });
-});
-
 // Create permission in order to check duplicity
-describe("Create another permission", function() {
+describe("(3.3), Create another permission", function() {
   it("should render ok", function(done) {
     request
       .post("/api/permissions/create")
@@ -478,7 +478,7 @@ describe("Create another permission", function() {
 });
 
 // Update a permission that already exists
-describe("Update a permission with a name already in use.", function() {
+describe("(3.4), Update a permission with a name already in use.", function() {
   it("should fail, 409 Conflict", function(done) {
     request
       .put("/api/permissions/" + config.permission_test2 + "/update")
