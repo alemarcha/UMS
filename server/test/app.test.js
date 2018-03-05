@@ -75,7 +75,7 @@ describe("(1.0), POST User Register created OK", function() {
 
 //User Register duplicated
 describe("(1.1), POST User Register duplicated", function() {
-  it("should render ok", function(done) {
+  it("should fail, expected a 409 code", function(done) {
     request
       .post("/api/users/register")
       .set("Content-Type", "application/json")
@@ -93,7 +93,7 @@ describe("(1.1), POST User Register duplicated", function() {
 });
 //User Register created to Update OK
 describe("(1.2), POST User Register created to Update OK", function() {
-  it("should render ok", function(done) {
+  it("should give a 201 code, created", function(done) {
     request
       .post("/api/users/register")
       .set("Content-Type", "application/json")
@@ -113,7 +113,7 @@ describe("(1.2), POST User Register created to Update OK", function() {
 
 //User Register error email empty
 describe("(1.3), POST User Register error email empty", function() {
-  it("should render ok", function(done) {
+  it("should fail, expected a 400 code", function(done) {
     request
       .post("/api/users/register")
       .set("Content-Type", "application/json")
@@ -132,7 +132,7 @@ describe("(1.3), POST User Register error email empty", function() {
 
 //User Register error firstName empty
 describe("(1.4), POST User Register error firstName empty", function() {
-  it("should render ok", function(done) {
+  it("should fail, expected a 400 code", function(done) {
     request
       .post("/api/users/register")
       .set("Content-Type", "application/json")
@@ -151,7 +151,7 @@ describe("(1.4), POST User Register error firstName empty", function() {
 
 //User Register error lastname empty
 describe("(1.5), POST User Register error lastname empty", function() {
-  it("should render ok", function(done) {
+  it("should fail, expected a 400 code", function(done) {
     request
       .post("/api/users/register")
       .set("Content-Type", "application/json")
@@ -170,7 +170,7 @@ describe("(1.5), POST User Register error lastname empty", function() {
 
 //User Register error password empty
 describe("(1.6), POST User Register error password empty", function() {
-  it("should render ok", function(done) {
+  it("should fail, expected a 400 code", function(done) {
     request
       .post("/api/users/register")
       .set("Content-Type", "application/json")
@@ -193,7 +193,7 @@ describe(
     config.email_default_test2 +
     "/update",
   function() {
-    it("should render ok", function(done) {
+    it("should fail, expected a 409 code", function(done) {
       request
         .put("/api/users/" + config.email_default_test2 + "/update")
         .set("Content-Type", "application/json")
@@ -323,6 +323,23 @@ describe("(2.0), Create a new role.", function() {
   });
 });
 
+// Create role with empty field
+describe("(2.0.1), Try to create a new role with missing field roleName.", function() {
+  it("should fail, expected a 400 code", function(done) {
+    request
+      .post("/api/roles/create")
+      .set("Content-Type", "application/json")
+      .send({
+        roleName: "",
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.equal(res.body.ok, false);
+      })
+      .expect(400, done);
+  });
+});
+
 // Update Role OK
 describe("(2.1), Update role /api/roles/:role/update", function() {
   it("should render ok", function(done) {
@@ -414,6 +431,23 @@ describe("(3.0), Create a new permission.", function() {
         );
       })
       .expect(201, done);
+  });
+});
+
+// Create permission with empty field
+describe("(3.0.1), Try to create a new permission with missing field permissionName.", function() {
+  it("should fail, expected a 400 code", function(done) {
+    request
+      .post("/api/permissions/create")
+      .set("Content-Type", "application/json")
+      .send({
+        permissionName: "",
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.equal(res.body.ok, false);
+      })
+      .expect(400, done);
   });
 });
 

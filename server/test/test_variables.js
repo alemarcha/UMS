@@ -14,12 +14,14 @@ module.exports = {
   // role
   role_test: "admin_test",
   role_test2: "admin_test2",
+  role_test3: "admin_test3",
   role_testNew: "role_updated",
   role_testNew2: "role_updated",
 
   // permission
   permission_test: "create_test",
   permission_test2: "create_test2",
+  permission_test3: "create_test3",
   permission_testNew: "permission_updated",
   permission_testNew2: "permission_updated"
 };
