@@ -3,7 +3,8 @@
 const Role = require("../models/role"),
   jwt = require("jsonwebtoken"),
   crypto = require("crypto"),
-  config = require("../config/main");
+  config = require("../config/main"),
+  utils = require("utils")._;
 
 // Set role info from request
 function setRoleInfo(role) {
@@ -39,11 +40,14 @@ exports.create = function(req, res, next) {
   const isActive = true;
 
   // Return error if no roleName provided
-  if (!roleName) {
-    return res.status(422).send({
-      error: "You must enter an role name."
+  if (utils.isEmpty(roleName)) {
+    return next({
+      status: 400,
+      message: "You must enter a role name.",
+      err: 400
     });
   }
+
   Role.findOne(
     {
       roleName: roleName
@@ -115,6 +119,14 @@ exports.update = function(req, res, next) {
   const isActive = req.body.isActive;
   const roleUpdate = {};
 
+  if (utils.isEmpty(identifyRole)) {
+    return next({
+      status: 400,
+      message: "Role provided incorrect",
+      err: identifyRole
+    });
+  }
+
   if (role) {
     roleUpdate.roleName = role;
   }
@@ -155,7 +167,7 @@ exports.delete = function(req, res, next) {
   const isActive = false;
   const roleUpdate = {};
 
-  if (typeof isActive !== "undefined" || isActive !== null) {
+  if (!utils.isEmpty(isActive)) {
     roleUpdate.isActive = isActive;
   }
 
@@ -163,14 +175,15 @@ exports.delete = function(req, res, next) {
     { role: identifyRole },
     roleUpdate,
     { new: true },
-    function(err, roleUpdated) {
+    function(err, roleDeleted) {
       if (err) {
-        res.status(400).send({
-          ok: false,
-          error: err
+        return next({
+          status: 401,
+          message: err.message,
+          err: err
         });
       }
-      return res.status(200).json({ ok: true, data: { role: roleUpdated } });
+      return res.status(200).json({ ok: true, data: { role: roleDeleted } });
     }
   );
 };

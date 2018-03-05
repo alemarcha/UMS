@@ -3,7 +3,8 @@
 const Permission = require("../models/permission"),
   jwt = require("jsonwebtoken"),
   crypto = require("crypto"),
-  config = require("../config/main");
+  config = require("../config/main"),
+  utils = require("utils")._;
 
 // Set permission info from request
 function setPermissionInfo(permission) {
@@ -39,8 +40,12 @@ exports.create = function(req, res, next) {
   const isActive = true;
 
   // Return error if no permissionName provided
-  if (!permissionName) {
-    return res.status(422).send({ error: "You must enter a permission name." });
+  if (utils.isEmpty(permissionName)) {
+    return next({
+      status: 400,
+      message: "You must enter a permission name.",
+      err: 400
+    });
   }
 
   Permission.findOne({ permissionName: permissionName }, function(
@@ -105,7 +110,15 @@ exports.update = function(req, res, next) {
   const isActive = req.body.isActive;
   const permissionUpdate = {};
 
-  if (permission) {
+  if (utils.isEmpty(identifyPermission)) {
+    return next({
+      status: 400,
+      message: "Permission provided incorrect",
+      err: identifyPermission
+    });
+  }
+
+  if (!utils.isEmpty(permission)) {
     permissionUpdate.permissionName = permission;
   }
 
@@ -147,7 +160,7 @@ exports.delete = function(req, res, next) {
   const isActive = false;
   const permissionUpdate = {};
 
-  if (typeof isActive !== "undefined" || isActive !== null) {
+  if (!utils.isEmpty(isActive)) {
     permissionUpdate.isActive = isActive;
   }
 
@@ -155,16 +168,17 @@ exports.delete = function(req, res, next) {
     { permissionName: identifyPermission },
     permissionUpdate,
     { new: true },
-    function(err, permissionUpdated) {
+    function(err, permissionDeleted) {
       if (err) {
-        res.status(400).send({
-          ok: false,
-          error: err
+        return next({
+          status: 401,
+          message: err.message,
+          err: err
         });
       }
       return res
         .status(200)
-        .json({ ok: true, data: { permission: permissionUpdated } });
+        .json({ ok: true, data: { permission: permissionDeleted } });
     }
   );
 };

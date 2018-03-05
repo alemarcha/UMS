@@ -132,6 +132,7 @@ exports.update = function(req, res, next) {
   const lastName = req.body.lastName;
   const isActive = true;
   const userUpdate = {};
+
   if (utils.isEmpty(identifyEmail)) {
     return next({
       status: 400,
