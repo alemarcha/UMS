@@ -11,3 +11,9 @@ install:
 script:
     - cp .env-getting-started .env
     - npm run test-server
+notifications:
+  email:
+    recipients:
+        - alexis.martinez@juntadeandalucia.es
+    on_success: always # default: change
+    on_failure: always # default: always
