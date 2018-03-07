@@ -178,7 +178,7 @@ exports.update = async function(req, res, next) {
   if (!utils.isEmpty(roles)) {
     let newRoles = [];
     let getRolesByName = () => {
-      return Role.find({})
+      return Role.find({ isActive: true })
         .where("roleName")
         .in(roles)
         .exec()

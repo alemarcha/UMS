@@ -396,7 +396,7 @@ describe("(2.3), Create another role", function() {
 });
 
 // Update a role that already exists
-describe("(2.4), Update a role with a name already in use.", function() {
+describe("(2.4), Try to update a role with a name already in use.", function() {
   it("should fail, 409 Conflict", function(done) {
     request
       .put("/api/roles/" + config.role_test2 + "/update")
@@ -413,7 +413,7 @@ describe("(2.4), Update a role with a name already in use.", function() {
 });
 
 // Create a role that already exists
-describe("(2.4.1), Create a role with a name already in use.", function() {
+describe("(2.4.1), Try to create a role with a name already in use.", function() {
   it("should fail, 409 Conflict", function(done) {
     request
       .post("/api/roles/create")
@@ -473,9 +473,30 @@ describe(
   }
 );
 
+// Try to update a user with an array of roles with a permission disabled
+describe(
+  "(2.5.2), Try to update user with an array of roles that are disabled /api/users/" +
+    config.email_default_test3 +
+    "/update",
+  function() {
+    it("should try to add certain roles to the array that are disabled", function(done) {
+      request
+        .put("/api/users/" + config.email_default_test3 + "/update")
+        .set("Content-Type", "application/json")
+        .send({
+          roles: config.roles_user_disabledRole
+        })
+        .expect(function(res) {
+          assert.equal(res.body.ok, false);
+        })
+        .expect(400, done);
+    });
+  }
+);
+
 // Update the user with a role array in which one of them does not exist
 describe(
-  "(2.5.2), Try to update a user with a role that does not exist /api/users/" +
+  "(2.5.3), Try to update a user with a role that does not exist /api/users/" +
     config.email_default_test +
     "/update",
   function() {
@@ -589,6 +610,23 @@ describe("(3.3), Create another permission", function() {
         );
       })
       .expect(201, done);
+  });
+});
+
+// Try to create a permission with a name already in use
+describe("(3.3.1), Try to create a permission with a name already in use.", function() {
+  it("should render ok", function(done) {
+    request
+      .post("/api/permissions/create")
+      .set("Content-Type", "application/json")
+      .send({
+        permissionName: config.permission_test2,
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.equal(res.body.ok, false);
+      })
+      .expect(409, done);
   });
 });
 

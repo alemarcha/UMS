@@ -116,8 +116,6 @@ exports.update = async function(req, res, next) {
         .in(permissions)
         .exec()
         .then(response => {
-          console.log("asf " + JSON.stringify(response));
-
           return response;
         });
     };

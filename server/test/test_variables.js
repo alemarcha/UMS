@@ -18,7 +18,8 @@ module.exports = {
   role_test4: "admin_test4",
   role_testNew: "role_updated",
   role_testNew2: "role_updated",
-  roles_user: ["role_updated", "admin_test4"],
+  roles_user: ["admin_test2", "admin_test4"],
+  roles_user_disabledRole: ["role_updated"],
   roles_user_Fake: ["admin_FAKE", "admin_test4"],
 
   // permission
