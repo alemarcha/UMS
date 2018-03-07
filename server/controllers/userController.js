@@ -123,6 +123,27 @@ exports.register = function(req, res, next) {
 };
 
 //========================================
+// Search Route
+//========================================
+exports.search = function(req, res) {
+  User.find({})
+    .sort({ name: 1 })
+    .exec((err, response) => {
+      if (err) {
+        return next({
+          status: 400,
+          message: err.message,
+          err: err
+        });
+      }
+      return res.status(200).json({
+        ok: true,
+        data: { users: response }
+      });
+    });
+};
+
+//========================================
 // Update User Route
 //========================================
 exports.update = async function(req, res, next) {
@@ -152,6 +173,8 @@ exports.update = async function(req, res, next) {
   if (!utils.isEmpty(lastName)) {
     userUpdate.lastName = lastName;
   }
+
+  // roles array
   if (!utils.isEmpty(roles)) {
     let newRoles = [];
     let getRolesByName = () => {
@@ -164,16 +187,19 @@ exports.update = async function(req, res, next) {
         });
     };
     newRoles = await getRolesByName();
-    // console.log("Master" + JSON.stringify(newRoles));
     if (newRoles.length === roles.length) {
       userUpdate.roles = newRoles;
     } else {
       return next({
         status: 400,
-        message: "roles to update is not correct",
+        message: "roles to update are not correct",
         err: roles
       });
     }
+  }
+
+  if (!utils.isEmpty(isActive)) {
+    userUpdate.isActive = isActive;
   }
 
   User.findOneAndUpdate({ email: identifyEmail }, userUpdate, {
@@ -197,27 +223,6 @@ exports.update = async function(req, res, next) {
         }
       }
       return res.status(200).json({ ok: true, data: { user: userUpdated } });
-    });
-};
-
-//========================================
-// Search Route
-//========================================
-exports.search = function(req, res) {
-  User.find({})
-    .sort({ name: 1 })
-    .exec((err, response) => {
-      if (err) {
-        return next({
-          status: 400,
-          message: err.message,
-          err: err
-        });
-      }
-      return res.status(200).json({
-        ok: true,
-        data: { users: response }
-      });
     });
 };
 

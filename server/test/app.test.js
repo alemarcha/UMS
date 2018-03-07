@@ -402,8 +402,24 @@ describe("(2.4), Update a role with a name already in use.", function() {
       .put("/api/roles/" + config.role_test2 + "/update")
       .set("Content-Type", "application/json")
       .send({
-        roleName: config.role_test2,
         newRoleName: config.role_testNew2,
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.equal(res.body.ok, false);
+      })
+      .expect(409, done);
+  });
+});
+
+// Create a role that already exists
+describe("(2.4.1), Create a role with a name already in use.", function() {
+  it("should fail, 409 Conflict", function(done) {
+    request
+      .post("/api/roles/create")
+      .set("Content-Type", "application/json")
+      .send({
+        roleName: config.role_test2,
         isActive: true
       })
       .expect(function(res) {
@@ -463,7 +479,7 @@ describe(
     config.email_default_test +
     "/update",
   function() {
-    it("should add certain roles to the array", function(done) {
+    it("should try to add certain roles to the array", function(done) {
       request
         .put("/api/users/" + config.email_default_test + "/update")
         .set("Content-Type", "application/json")
@@ -593,3 +609,92 @@ describe("(3.4), Update a permission with a name already in use.", function() {
       .expect(409, done);
   });
 });
+
+// Create another permission
+describe("(3.5.0), Create another permission in order to use an array of permissions.", function() {
+  it("should render created 201", function(done) {
+    request
+      .post("/api/permissions/create")
+      .set("Content-Type", "application/json")
+      .send({
+        permissionName: config.permission_test4,
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.equal(res.body.ok, true);
+        assert.equal(
+          res.body.data.permission.permissionName,
+          config.permission_test4
+        );
+      })
+      .expect(201, done);
+  });
+});
+
+// Update role with an array of permissions
+describe(
+  "(3.5.1), Update a role with an array of permissions /api/roles/" +
+    config.role_test4 +
+    "/update",
+  function() {
+    it("should add certain permissions to the array", function(done) {
+      request
+        .put("/api/roles/" + config.role_test4 + "/update")
+        .set("Content-Type", "application/json")
+        .send({
+          permissions: config.permission_roles
+        })
+        .expect(function(res) {
+          assert.equal(res.body.ok, true);
+          assert.equal(res.body.data.role.roleName, config.role_test4);
+          assert.equal(res.body.data.role.permissions.length, 2);
+          res.body.data.role.permissions.forEach(element => {
+            assert.include(config.permission_roles, element.permissionName);
+          });
+        })
+        .expect(200, done);
+    });
+  }
+);
+
+// Update the role with a permission array in which one of them does not exist
+describe(
+  "(3.5.2), Try to update a role with a permission that does not exist /api/roles/" +
+    config.permission_testNew +
+    "/update",
+  function() {
+    it("should try to add certain permissions to the array", function(done) {
+      request
+        .put("/api/roles/" + config.permission_testNew + "/update")
+        .set("Content-Type", "application/json")
+        .send({
+          permissions: config.permission_roles_Fake
+        })
+        .expect(function(res) {
+          assert.equal(res.body.ok, false);
+        })
+        .expect(400, done);
+    });
+  }
+);
+
+// Update role with an array of permissions with a permission disabled
+describe(
+  "(3.5.3), Update a role with an array of permissions with a permission disabled /api/roles/" +
+    config.role_test4 +
+    "/update",
+  function() {
+    it("should try to add certain permissions to the array that are disabled", function(done) {
+      request
+        .put("/api/roles/" + config.role_test4 + "/update")
+        .set("Content-Type", "application/json")
+        .send({
+          permissions: config.permission_roles_disabledPerm
+        })
+        .expect(function(res) {
+          assert.equal(res.body.ok, false);
+        })
+        .expect(400, done);
+    });
+  }
+);

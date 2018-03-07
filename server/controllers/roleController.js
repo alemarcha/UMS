@@ -1,34 +1,9 @@
 "use strict";
 
 const Role = require("../models/role"),
-  jwt = require("jsonwebtoken"),
-  crypto = require("crypto"),
+  Permission = require("../models/permission"),
   config = require("../config/main"),
   utils = require("utils")._;
-
-// Set role info from request
-function setRoleInfo(role) {
-  return {
-    _id: role._id,
-    roleName: roleName,
-    isActive: role.isActive
-  };
-}
-
-//========================================
-// Role Route
-//========================================
-
-exports.roleName = function(req, res, next) {
-  let roleInfo = setRoleInfo(req.role);
-  res.status(200).json({
-    ok: true,
-    data: {
-      token: "JWT " + generateToken(roleInfo),
-      roleName: roleInfo
-    }
-  });
-};
 
 //========================================
 // Creation Route
@@ -113,9 +88,10 @@ exports.search = function(req, res) {
 // Update Role Route
 //========================================
 
-exports.update = function(req, res, next) {
+exports.update = async function(req, res, next) {
   const identifyRole = req.params.role;
   const role = req.body.newRoleName;
+  const permissions = req.body.permissions;
   const isActive = req.body.isActive;
   const roleUpdate = {};
 
@@ -127,36 +103,62 @@ exports.update = function(req, res, next) {
     });
   }
 
-  if (role) {
+  if (!utils.isEmpty(role)) {
     roleUpdate.roleName = role;
   }
 
-  if (typeof isActive !== "undefined" || isActive !== null) {
+  // permissions array
+  if (!utils.isEmpty(permissions)) {
+    let newPermissions = [];
+    let getPermissionsByName = () => {
+      return Permission.find({ isActive: true })
+        .where("permissionName")
+        .in(permissions)
+        .exec()
+        .then(response => {
+          console.log("asf " + JSON.stringify(response));
+
+          return response;
+        });
+    };
+    newPermissions = await getPermissionsByName();
+    if (newPermissions.length === permissions.length) {
+      roleUpdate.permissions = newPermissions;
+    } else {
+      return next({
+        status: 400,
+        message: "permissions to update are not correct",
+        err: permissions
+      });
+    }
+  }
+
+  if (!utils.isEmpty(isActive)) {
     roleUpdate.isActive = isActive;
   }
 
-  // use our role model to find the role we want
-  Role.findOneAndUpdate(
-    { roleName: identifyRole },
-    roleUpdate,
-    { new: true },
-    function(err, roleUpdated) {
+  Role.findOneAndUpdate({ roleName: identifyRole }, roleUpdate, {
+    new: true
+  })
+    .populate("permissions")
+    .exec(function(err, roleUpdated) {
       if (err) {
         if (err.code === 11000) {
-          return res.status(409).send({
-            ok: false,
-            error: "That roleName is already in use."
+          return next({
+            status: 409,
+            message: "That roleName is already in use.",
+            err: roleUpdated
           });
         } else {
-          res.status(400).send({
-            ok: false,
-            error: err
+          return next({
+            status: 400,
+            message: err.message,
+            err: err
           });
         }
       }
       return res.status(200).json({ ok: true, data: { role: roleUpdated } });
-    }
-  );
+    });
 };
 
 //========================================

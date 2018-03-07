@@ -122,7 +122,7 @@ exports.update = function(req, res, next) {
     permissionUpdate.permissionName = permission;
   }
 
-  if (typeof isActive !== "undefined" || isActive !== null) {
+  if (!utils.isEmpty(isActive)) {
     permissionUpdate.isActive = isActive;
   }
 

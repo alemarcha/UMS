@@ -270,6 +270,7 @@ paths:
             - roleName
             - newRoleName
             - isActive
+            - permissions
           properties:
             roleName:
               type: string
@@ -283,6 +284,10 @@ paths:
               type: boolean
               example: true
               description: Activation of the role.
+            permissions:
+              type: array
+              example: ['create_tasks']
+              description: Role's permissions.              
       responses:
         '200':
            description: Role update response
