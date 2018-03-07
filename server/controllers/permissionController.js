@@ -1,34 +1,8 @@
 "use strict";
 
 const Permission = require("../models/permission"),
-  jwt = require("jsonwebtoken"),
-  crypto = require("crypto"),
   config = require("../config/main"),
   utils = require("utils")._;
-
-// Set permission info from request
-function setPermissionInfo(permission) {
-  return {
-    _id: permission._id,
-    permissionName: permissionName,
-    isActive: permission.isActive
-  };
-}
-
-//========================================
-// Permission Route
-//========================================
-
-exports.permissionName = function(req, res, next) {
-  let permissionInfo = setPermissionInfo(req.permission);
-  res.status(200).json({
-    ok: true,
-    data: {
-      token: "JWT " + generateToken(permissionInfo),
-      roleName: permissionInfo
-    }
-  });
-};
 
 //========================================
 // Creation Route
@@ -104,6 +78,7 @@ exports.search = function(req, res) {
 //========================================
 // Update Permission Route
 //========================================
+
 exports.update = function(req, res, next) {
   const identifyPermission = req.params.permission;
   const permission = req.body.newPermissionName;
