@@ -15,6 +15,8 @@ module.exports = {
   role_test: "admin_test",
   role_test2: "admin_test2",
   role_test3: "admin_test3",
+  role_test4: "admin_test4",
+  roles_user: ["admin_test", "admin_test4"],
   role_testNew: "role_updated",
   role_testNew2: "role_updated",
 

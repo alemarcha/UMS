@@ -323,6 +323,50 @@ describe("(2.0), Create a new role.", function() {
   });
 });
 
+// Create Role OK
+describe("(2.0), Create a new role.", function() {
+  it("should render created 201", function(done) {
+    request
+      .post("/api/roles/create")
+      .set("Content-Type", "application/json")
+      .send({
+        roleName: config.role_test4,
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.equal(res.body.ok, true);
+        assert.equal(res.body.data.role.roleName, config.role_test4);
+      })
+      .expect(201, done);
+  });
+});
+
+//User updated OK role
+describe(
+  "(1.13), PUT Update correct user /api/users/" +
+    config.email_default_test3 +
+    "/update",
+  function() {
+    it("should render ok", function(done) {
+      request
+        .put("/api/users/" + config.email_default_test3 + "/update")
+        .set("Content-Type", "application/json")
+        .send({
+          roles: config.roles_user
+        })
+        .expect(function(res) {
+          assert.equal(res.body.ok, true);
+          assert.equal(res.body.data.user.email, config.email_default_test3);
+          assert.equal(res.body.data.user.roles.length, 2);
+          res.body.data.user.roles.forEach(element => {
+            assert.include(config.roles_user, element.roleName);
+          });
+        })
+        .expect(200, done);
+    });
+  }
+);
+
 // Create role with empty field
 describe("(2.0.1), Try to create a new role with missing field roleName.", function() {
   it("should fail, expected a 400 code", function(done) {

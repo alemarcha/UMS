@@ -3,6 +3,7 @@
 const jwt = require("jsonwebtoken"),
   crypto = require("crypto"),
   User = require("../models/user"),
+  Role = require("../models/role"),
   config = require("../config/main"),
   utils = require("utils")._;
 
@@ -124,12 +125,12 @@ exports.register = function(req, res, next) {
 //========================================
 // Update User Route
 //========================================
-exports.update = function(req, res, next) {
+exports.update = async function(req, res, next) {
   const identifyEmail = req.params.email;
-  console.log(identifyEmail);
   const email = req.body.email;
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
+  const roles = req.body.roles;
   const isActive = true;
   const userUpdate = {};
 
@@ -151,12 +152,29 @@ exports.update = function(req, res, next) {
   if (!utils.isEmpty(lastName)) {
     userUpdate.lastName = lastName;
   }
+  if (!utils.isEmpty(roles)) {
+    let newRoles = [];
+    let getRolesByName = () => {
+      return Role.find({})
+        .where("roleName")
+        .in(roles)
+        .exec()
+        .then(response => {
+          return response;
+        });
+    };
+    newRoles = await getRolesByName();
+    // console.log("Master" + JSON.stringify(newRoles));
+    if (newRoles.length === roles.length) {
+      userUpdate.roles = newRoles;
+    }
+  }
 
-  User.findOneAndUpdate(
-    { email: identifyEmail },
-    userUpdate,
-    { new: true },
-    function(err, userUpdated) {
+  User.findOneAndUpdate({ email: identifyEmail }, userUpdate, {
+    new: true
+  })
+    .populate("roles")
+    .exec(function(err, userUpdated) {
       if (err) {
         if (err.code === 11000) {
           return next({
@@ -173,8 +191,7 @@ exports.update = function(req, res, next) {
         }
       }
       return res.status(200).json({ ok: true, data: { user: userUpdated } });
-    }
-  );
+    });
 };
 
 //========================================
