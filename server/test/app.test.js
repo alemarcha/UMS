@@ -54,8 +54,8 @@ describe("(0.1), GET /api/ping response", function() {
 });
 
 //User Register created OK
-describe("(1.0), POST User Register created OK", function() {
-  it("should render ok", function(done) {
+describe("(1.0), Register a new user", function() {
+  it("POST User Register created OK", function(done) {
     request
       .post("/api/users/register")
       .set("Content-Type", "application/json")
@@ -74,7 +74,7 @@ describe("(1.0), POST User Register created OK", function() {
 });
 
 //User Register duplicated
-describe("(1.1), POST User Register duplicated", function() {
+describe("(1.1), User Register that is duplicated", function() {
   it("should fail, expected a 409 code", function(done) {
     request
       .post("/api/users/register")
@@ -92,7 +92,7 @@ describe("(1.1), POST User Register duplicated", function() {
   });
 });
 //User Register created to Update OK
-describe("(1.2), POST User Register created to Update OK", function() {
+describe("(1.2), User Register created to Update.", function() {
   it("should give a 201 code, created", function(done) {
     request
       .post("/api/users/register")
@@ -112,7 +112,7 @@ describe("(1.2), POST User Register created to Update OK", function() {
 });
 
 //User Register error email empty
-describe("(1.3), POST User Register error email empty", function() {
+describe("(1.3), User Register error with a empty email.", function() {
   it("should fail, expected a 400 code", function(done) {
     request
       .post("/api/users/register")
@@ -131,7 +131,7 @@ describe("(1.3), POST User Register error email empty", function() {
 });
 
 //User Register error firstName empty
-describe("(1.4), POST User Register error firstName empty", function() {
+describe("(1.4), User Register error with a empty firstName.", function() {
   it("should fail, expected a 400 code", function(done) {
     request
       .post("/api/users/register")
@@ -150,7 +150,7 @@ describe("(1.4), POST User Register error firstName empty", function() {
 });
 
 //User Register error lastname empty
-describe("(1.5), POST User Register error lastname empty", function() {
+describe("(1.5), User Register error with a empty lastname.", function() {
   it("should fail, expected a 400 code", function(done) {
     request
       .post("/api/users/register")
@@ -169,7 +169,7 @@ describe("(1.5), POST User Register error lastname empty", function() {
 });
 
 //User Register error password empty
-describe("(1.6), POST User Register error password empty", function() {
+describe("(1.6), User Register error with a empty password.", function() {
   it("should fail, expected a 400 code", function(done) {
     request
       .post("/api/users/register")
@@ -323,50 +323,6 @@ describe("(2.0), Create a new role.", function() {
   });
 });
 
-// Create Role OK
-describe("(2.0), Create a new role.", function() {
-  it("should render created 201", function(done) {
-    request
-      .post("/api/roles/create")
-      .set("Content-Type", "application/json")
-      .send({
-        roleName: config.role_test4,
-        isActive: true
-      })
-      .expect(function(res) {
-        assert.equal(res.body.ok, true);
-        assert.equal(res.body.data.role.roleName, config.role_test4);
-      })
-      .expect(201, done);
-  });
-});
-
-//User updated OK role
-describe(
-  "(1.13), PUT Update correct user /api/users/" +
-    config.email_default_test3 +
-    "/update",
-  function() {
-    it("should render ok", function(done) {
-      request
-        .put("/api/users/" + config.email_default_test3 + "/update")
-        .set("Content-Type", "application/json")
-        .send({
-          roles: config.roles_user
-        })
-        .expect(function(res) {
-          assert.equal(res.body.ok, true);
-          assert.equal(res.body.data.user.email, config.email_default_test3);
-          assert.equal(res.body.data.user.roles.length, 2);
-          res.body.data.user.roles.forEach(element => {
-            assert.include(config.roles_user, element.roleName);
-          });
-        })
-        .expect(200, done);
-    });
-  }
-);
-
 // Create role with empty field
 describe("(2.0.1), Try to create a new role with missing field roleName.", function() {
   it("should fail, expected a 400 code", function(done) {
@@ -456,6 +412,71 @@ describe("(2.4), Update a role with a name already in use.", function() {
       .expect(409, done);
   });
 });
+
+// Create another role
+describe("(2.5.0), Create another role in order to use an array of roles.", function() {
+  it("should render created 201", function(done) {
+    request
+      .post("/api/roles/create")
+      .set("Content-Type", "application/json")
+      .send({
+        roleName: config.role_test4,
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.equal(res.body.ok, true);
+        assert.equal(res.body.data.role.roleName, config.role_test4);
+      })
+      .expect(201, done);
+  });
+});
+
+// Update user with an array of roles
+describe(
+  "(2.5.1), PUT Update user with an array of roles /api/users/" +
+    config.email_default_test3 +
+    "/update",
+  function() {
+    it("should add certain roles to the array", function(done) {
+      request
+        .put("/api/users/" + config.email_default_test3 + "/update")
+        .set("Content-Type", "application/json")
+        .send({
+          roles: config.roles_user
+        })
+        .expect(function(res) {
+          assert.equal(res.body.ok, true);
+          assert.equal(res.body.data.user.email, config.email_default_test3);
+          assert.equal(res.body.data.user.roles.length, 2);
+          res.body.data.user.roles.forEach(element => {
+            assert.include(config.roles_user, element.roleName);
+          });
+        })
+        .expect(200, done);
+    });
+  }
+);
+
+// Update the user with a role array in which one of them does not exist
+describe(
+  "(2.5.2), Try to update a user with a role that does not exist /api/users/" +
+    config.email_default_test +
+    "/update",
+  function() {
+    it("should add certain roles to the array", function(done) {
+      request
+        .put("/api/users/" + config.email_default_test + "/update")
+        .set("Content-Type", "application/json")
+        .send({
+          roles: config.roles_user_Fake
+        })
+        .expect(function(res) {
+          assert.equal(res.body.ok, false);
+        })
+        .expect(400, done);
+    });
+  }
+);
 
 // Create permission OK
 describe("(3.0), Create a new permission.", function() {

@@ -133,6 +133,7 @@ paths:
             - firstName
             - lastName
             - isActive
+            - roles
           properties:
             email:
               type: string
@@ -155,6 +156,10 @@ paths:
               type: boolean
               example: true
               description: Activation of the user.
+            roles:
+              type: array
+              example: ['admin']
+              description: User's roles.
       responses:
         '200':
            description: User update response

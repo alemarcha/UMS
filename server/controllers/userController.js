@@ -167,6 +167,12 @@ exports.update = async function(req, res, next) {
     // console.log("Master" + JSON.stringify(newRoles));
     if (newRoles.length === roles.length) {
       userUpdate.roles = newRoles;
+    } else {
+      return next({
+        status: 400,
+        message: "roles to update is not correct",
+        err: roles
+      });
     }
   }
 
