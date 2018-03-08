@@ -66,8 +66,8 @@ describe("(1.0), Register a new user", function() {
         lastName: config.last_name_default_test
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, true);
-        assert.equal(res.body.data.user.email, config.email_default_test);
+        assert.isOk(res.body.ok);
+        assert.strictEqual(res.body.data.user.email, config.email_default_test);
       })
       .expect(201, done);
   });
@@ -86,7 +86,7 @@ describe("(1.1), User Register that is duplicated", function() {
         lastName: config.last_name_default_test
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, false);
+        assert.isNotOk(res.body.ok);
       })
       .expect(409, done);
   });
@@ -105,8 +105,11 @@ describe("(1.2), User Register created to Update.", function() {
         lastName: config.last_name_default_test
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, true);
-        assert.equal(res.body.data.user.email, config.email_default_test2);
+        assert.isOk(res.body.ok);
+        assert.strictEqual(
+          res.body.data.user.email,
+          config.email_default_test2
+        );
       })
       .expect(201, done);
   });
@@ -125,7 +128,7 @@ describe("(1.3), User Register error with a empty email.", function() {
         lastName: config.last_name_default_test
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, false);
+        assert.isNotOk(res.body.ok);
       })
       .expect(400, done);
   });
@@ -144,7 +147,7 @@ describe("(1.4), User Register error with a empty firstName.", function() {
         lastName: config.last_name_default_test
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, false);
+        assert.isNotOk(res.body.ok);
       })
       .expect(400, done);
   });
@@ -163,7 +166,7 @@ describe("(1.5), User Register error with a empty lastname.", function() {
         lastName: ""
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, false);
+        assert.isNotOk(res.body.ok);
       })
       .expect(400, done);
   });
@@ -182,7 +185,7 @@ describe("(1.6), User Register error with a empty password.", function() {
         lastName: config.last_name_default_test
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, false);
+        assert.isNotOk(res.body.ok);
       })
       .expect(400, done);
   });
@@ -204,7 +207,7 @@ describe(
           lastName: config.last_name_default_test
         })
         .expect(function(res) {
-          assert.equal(res.body.ok, false);
+          assert.isNotOk(res.body.ok);
         })
         .expect(409, done);
     });
@@ -227,13 +230,16 @@ describe(
           lastName: config.last_name_default_test
         })
         .expect(function(res) {
-          assert.equal(res.body.ok, true);
-          assert.equal(res.body.data.user.email, config.email_default_test3);
-          assert.equal(
+          assert.isOk(res.body.ok);
+          assert.strictEqual(
+            res.body.data.user.email,
+            config.email_default_test3
+          );
+          assert.strictEqual(
             res.body.data.user.firstName,
             config.user_name_default_test
           );
-          assert.equal(
+          assert.strictEqual(
             res.body.data.user.lastName,
             config.last_name_default_test
           );
@@ -253,8 +259,8 @@ describe("(1.9), Disable user.", function() {
         isActive: false
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, true);
-        assert.equal(res.body.data.user.isActive, false);
+        assert.isOk(res.body.ok);
+        assert.strictEqual(res.body.data.user.isActive, false);
       })
       .expect(200, done);
   });
@@ -271,7 +277,7 @@ describe("(1.10), Log-in user in the system /api/users/login", function() {
         password: config.password_default_test
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, true);
+        assert.isOk(res.body.ok);
         assert.exists(res.body.data.token);
       })
       .expect(200, done);
@@ -288,6 +294,9 @@ describe("(1.11), Try to access with incorrect password.", function() {
         email: config.email_default_test,
         password: config.password_default_test + "_fake"
       })
+      .expect(function(res) {
+        assert.isNotOk(res.body.ok);
+      })
       .expect(401, done);
   });
 });
@@ -301,6 +310,9 @@ describe("(1.12), Try to access with incorrect email.", function() {
       .send({
         email: config.email_default_test + "_fake",
         password: config.password_default_test
+      })
+      .expect(function(res) {
+        assert.isNotOk(res.body.ok);
       })
       .expect(401, done);
   });
@@ -317,8 +329,8 @@ describe("(2.0), Create a new role.", function() {
         isActive: true
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, true);
-        assert.equal(res.body.data.role.roleName, config.role_test);
+        assert.isOk(res.body.ok);
+        assert.strictEqual(res.body.data.role.roleName, config.role_test);
       })
       .expect(201, done);
   });
@@ -335,7 +347,7 @@ describe("(2.0.1), Try to create a new role with missing field roleName.", funct
         isActive: true
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, false);
+        assert.isNotOk(res.body.ok);
       })
       .expect(400, done);
   });
@@ -353,9 +365,9 @@ describe("(2.1), Update role /api/roles/:role/update", function() {
         isActive: true
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, true);
-        assert.equal(res.body.data.role.isActive, true);
-        assert.equal(res.body.data.role.roleName, config.role_testNew);
+        assert.isOk(res.body.ok);
+        assert.isOk(res.body.data.role.isActive);
+        assert.strictEqual(res.body.data.role.roleName, config.role_testNew);
       })
       .expect(200, done);
   });
@@ -371,8 +383,8 @@ describe("(2.2), Disable role.", function() {
         isActive: false
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, true);
-        assert.equal(res.body.data.role.isActive, false);
+        assert.isOk(res.body.ok);
+        assert.strictEqual(res.body.data.role.isActive, false);
       })
       .expect(200, done);
   });
@@ -389,8 +401,8 @@ describe("(2.3), Create another role", function() {
         isActive: true
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, true);
-        assert.equal(res.body.data.role.roleName, config.role_test2);
+        assert.isOk(res.body.ok);
+        assert.strictEqual(res.body.data.role.roleName, config.role_test2);
       })
       .expect(201, done);
   });
@@ -407,7 +419,7 @@ describe("(2.4), Try to update a role with a name already in use.", function() {
         isActive: true
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, false);
+        assert.isNotOk(res.body.ok);
       })
       .expect(409, done);
   });
@@ -424,7 +436,7 @@ describe("(2.4.1), Try to create a role with a name already in use.", function()
         isActive: true
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, false);
+        assert.isNotOk(res.body.ok);
       })
       .expect(409, done);
   });
@@ -441,8 +453,8 @@ describe("(2.5.0), Create another role in order to use an array of roles.", func
         isActive: true
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, true);
-        assert.equal(res.body.data.role.roleName, config.role_test4);
+        assert.isOk(res.body.ok);
+        assert.strictEqual(res.body.data.role.roleName, config.role_test4);
       })
       .expect(201, done);
   });
@@ -462,8 +474,11 @@ describe(
           roles: config.roles_user
         })
         .expect(function(res) {
-          assert.equal(res.body.ok, true);
-          assert.equal(res.body.data.user.email, config.email_default_test3);
+          assert.isOk(res.body.ok);
+          assert.strictEqual(
+            res.body.data.user.email,
+            config.email_default_test3
+          );
           assert.equal(res.body.data.user.roles.length, 2);
           res.body.data.user.roles.forEach(element => {
             assert.include(config.roles_user, element.roleName);
@@ -488,7 +503,7 @@ describe(
           roles: config.roles_user_disabledRole
         })
         .expect(function(res) {
-          assert.equal(res.body.ok, false);
+          assert.isNotOk(res.body.ok);
         })
         .expect(400, done);
     });
@@ -509,7 +524,7 @@ describe(
           roles: config.roles_user_Fake
         })
         .expect(function(res) {
-          assert.equal(res.body.ok, false);
+          assert.isNotOk(res.body.ok);
         })
         .expect(400, done);
     });
@@ -527,8 +542,8 @@ describe("(3.0), Create a new permission.", function() {
         isActive: true
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, true);
-        assert.equal(
+        assert.isOk(res.body.ok);
+        assert.strictEqual(
           res.body.data.permission.permissionName,
           config.permission_test
         );
@@ -548,7 +563,7 @@ describe("(3.0.1), Try to create a new permission with missing field permissionN
         isActive: true
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, false);
+        assert.isNotOk(res.body.ok);
       })
       .expect(400, done);
   });
@@ -565,12 +580,12 @@ describe("(3.1), Update a permission", function() {
         isActive: true
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, true);
+        assert.isOk(res.body.ok);
         assert.equal(
           res.body.data.permission.permissionName,
           config.permission_testNew
         );
-        assert.equal(res.body.data.permission.isActive, true);
+        assert.strictEqual(res.body.data.permission.isActive, true);
       })
       .expect(200, done);
   });
@@ -586,7 +601,7 @@ describe("(3.2), Disable permission.", function() {
         isActive: false
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, true);
+        assert.isOk(res.body.ok);
         assert.equal(res.body.data.permission.isActive, false);
       })
       .expect(200, done);
@@ -604,8 +619,8 @@ describe("(3.3), Create another permission", function() {
         isActive: true
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, true);
-        assert.equal(
+        assert.isOk(res.body.ok);
+        assert.strictEqual(
           res.body.data.permission.permissionName,
           config.permission_test2
         );
@@ -625,7 +640,7 @@ describe("(3.3.1), Try to create a permission with a name already in use.", func
         isActive: true
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, false);
+        assert.isNotOk(res.body.ok);
       })
       .expect(409, done);
   });
@@ -643,7 +658,7 @@ describe("(3.4), Update a permission with a name already in use.", function() {
         isActive: true
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, false);
+        assert.isNotOk(res.body.ok);
       })
       .expect(409, done);
   });
@@ -660,8 +675,8 @@ describe("(3.5.0), Create another permission in order to use an array of permiss
         isActive: true
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, true);
-        assert.equal(
+        assert.isOk(res.body.ok);
+        assert.strictEqual(
           res.body.data.permission.permissionName,
           config.permission_test4
         );
@@ -684,8 +699,8 @@ describe(
           permissions: config.permission_roles
         })
         .expect(function(res) {
-          assert.equal(res.body.ok, true);
-          assert.equal(res.body.data.role.roleName, config.role_test4);
+          assert.isOk(res.body.ok);
+          assert.strictEqual(res.body.data.role.roleName, config.role_test4);
           assert.equal(res.body.data.role.permissions.length, 2);
           res.body.data.role.permissions.forEach(element => {
             assert.include(config.permission_roles, element.permissionName);
@@ -710,7 +725,7 @@ describe(
           permissions: config.permission_roles_Fake
         })
         .expect(function(res) {
-          assert.equal(res.body.ok, false);
+          assert.isNotOk(res.body.ok);
         })
         .expect(400, done);
     });
@@ -731,7 +746,7 @@ describe(
           permissions: config.permission_roles_disabledPerm
         })
         .expect(function(res) {
-          assert.equal(res.body.ok, false);
+          assert.isNotOk(res.body.ok);
         })
         .expect(400, done);
     });
@@ -752,8 +767,8 @@ describe("(4.0), Register a new user with and array of roles", function() {
         roles: config.roles_user_tester
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, true);
-        assert.equal(res.body.data.user.email, config.email_tester_full);
+        assert.isOk(res.body.ok);
+        assert.strictEqual(res.body.data.user.email, config.email_tester_full);
       })
       .expect(201, done);
   });
@@ -773,7 +788,7 @@ describe("(4.1), Try to register a new user with an invalid array of roles.", fu
         roles: config.roles_user_Fake
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, false);
+        assert.isNotOk(res.body.ok);
       })
       .expect(400, done);
   });
@@ -791,8 +806,8 @@ describe("(4.2), Create another role with an array of permissions.", function() 
         isActive: true
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, true);
-        assert.equal(res.body.data.role.roleName, config.role_perms);
+        assert.isOk(res.body.ok);
+        assert.strictEqual(res.body.data.role.roleName, config.role_perms);
       })
       .expect(201, done);
   });
@@ -810,7 +825,7 @@ describe("(4.3), Try to create a role with invalid permission array.", function(
         isActive: true
       })
       .expect(function(res) {
-        assert.equal(res.body.ok, false);
+        assert.isNotOk(res.body.ok);
       })
       .expect(400, done);
   });
