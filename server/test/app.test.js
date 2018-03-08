@@ -91,6 +91,7 @@ describe("(1.1), User Register that is duplicated", function() {
       .expect(409, done);
   });
 });
+
 //User Register created to Update OK
 describe("(1.2), User Register created to Update.", function() {
   it("should give a 201 code, created", function(done) {
@@ -736,3 +737,81 @@ describe(
     });
   }
 );
+
+//User Register created with roles OK
+describe("(4.0), Register a new user with and array of roles", function() {
+  it("should create a user with a valid array of roles", function(done) {
+    request
+      .post("/api/users/register")
+      .set("Content-Type", "application/json")
+      .send({
+        email: config.email_tester_full,
+        password: config.password_default_test,
+        firstName: config.user_name_tester_full,
+        lastName: config.last_name_tester_full,
+        roles: config.roles_user_tester
+      })
+      .expect(function(res) {
+        assert.equal(res.body.ok, true);
+        assert.equal(res.body.data.user.email, config.email_tester_full);
+      })
+      .expect(201, done);
+  });
+});
+
+//User Register try to create with invalid roles
+describe("(4.1), Try to register a new user with an invalid array of roles.", function() {
+  it("should fail, because a role does not exist or the role is not active", function(done) {
+    request
+      .post("/api/users/register")
+      .set("Content-Type", "application/json")
+      .send({
+        email: config.email_tester_full,
+        password: config.password_default_test,
+        firstName: config.user_name_tester_full,
+        lastName: config.last_name_tester_full,
+        roles: config.roles_user_Fake
+      })
+      .expect(function(res) {
+        assert.equal(res.body.ok, false);
+      })
+      .expect(400, done);
+  });
+});
+
+// Create another role with permission array
+describe("(4.2), Create another role with an array of permissions.", function() {
+  it("should render created 201", function(done) {
+    request
+      .post("/api/roles/create")
+      .set("Content-Type", "application/json")
+      .send({
+        roleName: config.role_perms,
+        permissions: config.permission_roles,
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.equal(res.body.ok, true);
+        assert.equal(res.body.data.role.roleName, config.role_perms);
+      })
+      .expect(201, done);
+  });
+});
+
+// Try to create a role with invalid permission array
+describe("(4.3), Try to create a role with invalid permission array.", function() {
+  it("should fail, because a role does not exist or the role is not active", function(done) {
+    request
+      .post("/api/roles/create")
+      .set("Content-Type", "application/json")
+      .send({
+        roleName: config.role_test,
+        permissions: config.permission_roles_Fake,
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.equal(res.body.ok, false);
+      })
+      .expect(400, done);
+  });
+});

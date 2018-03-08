@@ -3,10 +3,13 @@ module.exports = {
   email_default_test: "email_test@mail.com",
   email_default_test2: "email_test2@mail.com",
   email_default_test3: "email_test3@mail.com",
+  email_tester_full: "userwithroles@email.com",
   password_default_test: "password",
   password_default_test2: "password2",
   user_name_default_test: "username",
   last_name_default_test: "lastname",
+  user_name_tester_full: "userwith",
+  last_name_tester_full: "roles",
 
   // Activate
   isActive: true,
@@ -18,8 +21,10 @@ module.exports = {
   role_test4: "admin_test4",
   role_testNew: "role_updated",
   role_testNew2: "role_updated",
+  role_perms: "rolewithperms",
   roles_user: ["admin_test2", "admin_test4"],
   roles_user_disabledRole: ["role_updated"],
+  roles_user_tester: ["admin_test2", "admin_test4"],
   roles_user_Fake: ["admin_FAKE", "admin_test4"],
 
   // permission
