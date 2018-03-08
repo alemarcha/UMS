@@ -48,6 +48,7 @@ paths:
             - password
             - firstName
             - lastName
+            - roles
           properties:
             email:
               type: string
@@ -66,6 +67,10 @@ paths:
               type: string
               description: User's last name.
               example: Jackson
+            roles:
+              type: array
+              example: ['admin_app1', 'admin_app2']
+              description: User's roles.              
       responses:
         '200':
           description: User add response
@@ -222,7 +227,7 @@ paths:
            description: "roles response"
   /roles/create:
     post:
-      description: "Create a new role"
+      description: Create a new role
       tags:
       - "roles"
       consumes:
@@ -230,14 +235,28 @@ paths:
       produces:
         - application/json
       parameters:
-      - name: "roleName"
-        in: "body"
-        description: "Descriptive role name."
-        required: true
+      - in: "body"
+        name: Create a new Role
+        description: "Descriptive information about a role."
         schema:
-          type: string
-          example:
-            roleName: adminApp
+          type: object
+          required: 
+            - roleName
+            - permissions
+            - isActive
+          properties:
+            roleName:
+              type: string
+              example: adminApp1
+              description: Descriptive role name.
+            permissions:
+              type: array
+              example: ['createPosts','modifyEntries','read']
+              description: Role's permissions.
+            isActive: 
+              type: boolean
+              example: true
+              description: Activation of the role.
       responses:
         '200':
            description: Role save response
@@ -280,14 +299,14 @@ paths:
               type: string
               example: adminHipathia
               description: new role name.  
-            isActive:
-              type: boolean
-              example: true
-              description: Activation of the role.
             permissions:
               type: array
               example: ['create_tasks']
               description: Role's permissions.              
+            isActive:
+              type: boolean
+              example: true
+              description: Activation of the role.
       responses:
         '200':
            description: Role update response
