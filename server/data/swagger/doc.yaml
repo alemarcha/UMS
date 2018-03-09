@@ -20,11 +20,28 @@ schemes:
 paths:
   /users/search:
     get:
-      description: "Return the users"
+      description: "Searching for users active with applied filters "
       tags:
       - "users"
       produces:
       - application/json
+      parameters:
+      - name: email
+        in: query
+        description: user email to search. It will search for every user that contains email parameter.
+        type: string
+      - name: name
+        in: query
+        description: first name to search. It will search for every user that contains first name parameter.
+        type: string
+      - name: lastName
+        in: query
+        description: last name to search. It will search for every user that contains last name parameter.
+        type: string
+      - name: roles
+        in: query
+        description: roles separated by comma which it will search for every user that contains at least one of them
+        type: string
       responses:
          '200':
            description: "users response"

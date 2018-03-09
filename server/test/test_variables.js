@@ -3,10 +3,14 @@ module.exports = {
   email_default_test: "email_test@mail.com",
   email_default_test2: "email_test2@mail.com",
   email_default_test3: "email_test3@mail.com",
+  email_default_test_fake: "email_test_fake@mail.com",
   password_default_test: "password",
   password_default_test2: "password2",
+  user_name_default_test_fake: "username_fake",
   user_name_default_test: "username",
+  user_name_default_test2: "username2",
   last_name_default_test: "lastname",
+  last_name_default_test_fake: "lastname_fake",
 
   // Activate
   isActive: true,

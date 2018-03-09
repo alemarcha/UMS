@@ -125,9 +125,53 @@ exports.register = function(req, res, next) {
 //========================================
 // Search Route
 //========================================
-exports.search = function(req, res) {
-  User.find({})
-    .sort({ name: 1 })
+exports.search = async function(req, res, next) {
+  let filters = { isActive: true };
+  let query = User.find();
+  let name = req.query.name;
+  let lastName = req.query.lastName;
+  let email = req.query.email;
+  let roles = req.query.roles;
+
+  if (!utils.isEmpty(name)) {
+    filters.firstName = {
+      $regex: name,
+      $options: "i"
+    };
+  }
+
+  if (!utils.isEmpty(lastName)) {
+    filters.lastName = {
+      $regex: lastName,
+      $options: "i"
+    };
+  }
+
+  if (!utils.isEmpty(email)) {
+    filters.email = {
+      $regex: email,
+      $options: "i"
+    };
+  }
+
+  if (!utils.isEmpty(roles)) {
+    let arrayRoles = roles.split(",");
+    let getRolesIdByNames = () => {
+      return Role.find({ isActive: true })
+        .where("roleName")
+        .in(arrayRoles)
+        .exec()
+        .then(response => {
+          return response;
+        });
+    };
+    let arrayRolesId = await getRolesIdByNames();
+    query.where("roles").in(arrayRolesId);
+  }
+
+  query
+    .find(filters)
+    .sort({ firstName: 1 })
     .exec((err, response) => {
       if (err) {
         return next({
@@ -136,6 +180,7 @@ exports.search = function(req, res) {
           err: err
         });
       }
+      console.log(response);
       return res.status(200).json({
         ok: true,
         data: { users: response }

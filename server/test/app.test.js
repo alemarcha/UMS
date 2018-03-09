@@ -5,6 +5,7 @@ let app = require("../server.js");
 let config = require("./test_variables.js");
 let request = require("supertest")(app);
 let assert = require("chai").assert;
+let expect = require("chai").expect;
 
 //clean collections
 before(function(done) {
@@ -222,7 +223,7 @@ describe(
         .set("Content-Type", "application/json")
         .send({
           email: config.email_default_test3,
-          firstName: config.user_name_default_test,
+          firstName: config.user_name_default_test2,
           lastName: config.last_name_default_test
         })
         .expect(function(res) {
@@ -230,7 +231,7 @@ describe(
           assert.equal(res.body.data.user.email, config.email_default_test3);
           assert.equal(
             res.body.data.user.firstName,
-            config.user_name_default_test
+            config.user_name_default_test2
           );
           assert.equal(
             res.body.data.user.lastName,
@@ -736,3 +737,213 @@ describe(
     });
   }
 );
+
+// Search 1 User exist by email
+describe("(1.2.0), Search  1 user by email /api/users/search which is not active", function() {
+  it(
+    "should try to find users with a email which contains " +
+      config.email_default_test +
+      " and is not active",
+    function(done) {
+      request
+        .get("/api/users/search")
+        .set("Content-Type", "application/json")
+        .query({
+          email: config.email_default_test
+        })
+        .expect(200)
+        .end(function(err, res) {
+          expect(res.body.ok).to.equal(true);
+          expect(res.body.data.users).to.have.lengthOf(0);
+          done(err);
+        });
+    }
+  );
+});
+
+// Search 1 User exist by email
+describe("(1.2.1), Search 1 active users by exacly match email /api/users/search which is not active", function() {
+  it(
+    "should try to find users with a email which contains " +
+      config.email_default_test3 +
+      " and is active",
+    function(done) {
+      request
+        .get("/api/users/search")
+        .set("Content-Type", "application/json")
+        .query({
+          email: config.email_default_test3
+        })
+        .expect(200)
+        .end(function(err, res) {
+          expect(res.body.ok).to.equal(true);
+          expect(res.body.data.users).to.have.lengthOf(1);
+          res.body.data.users.forEach(user => {
+            expect(user.email).to.have.string(config.email_default_test3);
+          });
+          done(err);
+        });
+    }
+  );
+});
+
+// Search User by email which does not exists
+describe("(1.2.2), Search active users by email which does not exists /api/users/search", function() {
+  it(
+    "should try to find users with a email which contains " +
+      config.email_default_test_fake +
+      " but do not exists",
+    function(done) {
+      request
+        .get("/api/users/search")
+        .set("Content-Type", "application/json")
+        .query({
+          email: config.email_default_test_fake
+        })
+        .expect(200)
+        .end(function(err, res) {
+          expect(res.body.ok).to.equal(true);
+          expect(res.body.data.users).to.have.lengthOf(0);
+          done(err);
+        });
+    }
+  );
+});
+
+// Search 2 Users by name
+describe("(1.2.3),Search active users  by name /api/users/search", function() {
+  it(
+    "should try to find users with a name which contains " +
+      config.user_name_default_test,
+    function(done) {
+      request
+        .get("/api/users/search")
+        .set("Content-Type", "application/json")
+        .query({
+          name: config.user_name_default_test
+        })
+        .expect(200)
+        .end(function(err, res) {
+          expect(res.body.ok).to.equal(true);
+          expect(res.body.data.users).to.have.lengthOf(1);
+          res.body.data.users.forEach(user => {
+            expect(user.firstName).to.have.string(
+              config.user_name_default_test
+            );
+          });
+          done(err);
+        });
+    }
+  );
+});
+
+// Search Users by name which do not exist
+describe("(1.2.4), Search active users by name  which do not exist /api/users/search", function() {
+  it(
+    "should try to find users with a name which contains " +
+      config.user_name_default_test_fake +
+      " but do not exists",
+    function(done) {
+      request
+        .get("/api/users/search")
+        .set("Content-Type", "application/json")
+        .query({
+          name: config.user_name_default_test_fake
+        })
+        .expect(200)
+        .end(function(err, res) {
+          expect(res.body.ok).to.equal(true);
+          expect(res.body.data.users).to.have.lengthOf(0);
+          done(err);
+        });
+    }
+  );
+});
+
+// Search 2 Users by lastName
+describe("(1.2.5), Search active users by lastname /api/users/search", function() {
+  it(
+    "should try to find users with a lastName which contains " +
+      config.last_name_default_test,
+    function(done) {
+      request
+        .get("/api/users/search")
+        .set("Content-Type", "application/json")
+        .query({
+          lastName: config.last_name_default_test
+        })
+        .expect(200)
+        .end(function(err, res) {
+          expect(res.body.ok).to.equal(true);
+          expect(res.body.data.users).to.have.lengthOf(1);
+          res.body.data.users.forEach(user => {
+            expect(user.lastName).to.have.string(config.last_name_default_test);
+          });
+          done(err);
+        });
+    }
+  );
+});
+
+// Search Users by lastName which do not exist
+describe("(1.2.6), Search active users by lastname  which do not exist /api/users/search", function() {
+  it(
+    "should try to find users with a lastName which contains " +
+      config.last_name_default_test_fake +
+      " but do not exists",
+    function(done) {
+      request
+        .get("/api/users/search")
+        .set("Content-Type", "application/json")
+        .query({
+          lastName: config.last_name_default_test_fake
+        })
+        .expect(200)
+        .end(function(err, res) {
+          expect(res.body.ok).to.equal(true);
+          expect(res.body.data.users).to.have.lengthOf(0);
+          done(err);
+        });
+    }
+  );
+});
+
+// Search Users by roles
+describe("(1.2.7), Search active users by roles /api/users/search", function() {
+  it(
+    "should try to find users which contains some of two roles " +
+      config.last_name_default_test,
+    function(done) {
+      request
+        .get("/api/users/search")
+        .set("Content-Type", "application/json")
+        .query({
+          roles: config.role_test2 + "," + config.role_test4
+        })
+        .expect(200)
+        .end(function(err, res) {
+          expect(res.body.ok).to.equal(true);
+          expect(res.body.data.users).to.have.lengthOf(1);
+          done(err);
+        });
+    }
+  );
+});
+
+// Search Users by roles
+describe("(1.2.8), Search active users by roles /api/users/search", function() {
+  it("should try to find users which contains one role. ", function(done) {
+    request
+      .get("/api/users/search")
+      .set("Content-Type", "application/json")
+      .query({
+        roles: config.role_test2
+      })
+      .expect(200)
+      .end(function(err, res) {
+        expect(res.body.ok).to.equal(true);
+        expect(res.body.data.users).to.have.lengthOf(1);
+        done(err);
+      });
+  });
+});
