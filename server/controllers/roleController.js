@@ -9,10 +9,12 @@ const Role = require("../models/role"),
 // Creation Route
 //========================================
 
-exports.create = function(req, res, next) {
+exports.create = async function(req, res, next) {
   // Check for creation errors
   const roleName = req.body.roleName;
+  const permissions = req.body.permissions;
   const isActive = true;
+  const roleCreate = {};
 
   // Return error if no roleName provided
   if (utils.isEmpty(roleName)) {
@@ -21,6 +23,29 @@ exports.create = function(req, res, next) {
       message: "You must enter a role name.",
       err: 400
     });
+  }
+
+  if (!utils.isEmpty(permissions)) {
+    let newPermissions = [];
+    let getPermissionsByName = () => {
+      return Permission.find({ isActive: true })
+        .where("permissionName")
+        .in(permissions)
+        .exec()
+        .then(response => {
+          return response;
+        });
+    };
+    newPermissions = await getPermissionsByName();
+    if (newPermissions.length === permissions.length) {
+      roleCreate.permissions = newPermissions;
+    } else {
+      return next({
+        status: 400,
+        message: "You must enter a valid active permissions array.",
+        err: permissions
+      });
+    }
   }
 
   Role.findOne(
@@ -43,7 +68,8 @@ exports.create = function(req, res, next) {
       // If roleName is unique, create roleName
       let role = new Role({
         roleName: roleName,
-        isActive: isActive
+        isActive: isActive,
+        permissions: roleCreate.permissions
       });
 
       role.save(function(err, role) {

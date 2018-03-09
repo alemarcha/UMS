@@ -43,13 +43,15 @@ exports.login = function(req, res, next) {
 //========================================
 // Registration Route
 //========================================
-exports.register = function(req, res, next) {
+exports.register = async function(req, res, next) {
   // Check for registration errors
   const email = req.body.email;
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
   const password = req.body.password;
+  const roles = req.body.roles;
   const isActive = true;
+  const userCreate = {};
 
   // Return error if no email provided
   if (utils.isEmpty(email)) {
@@ -78,6 +80,29 @@ exports.register = function(req, res, next) {
     });
   }
 
+  if (!utils.isEmpty(roles)) {
+    let newRoles = [];
+    let getRolesByName = () => {
+      return Role.find({ isActive: true })
+        .where("roleName")
+        .in(roles)
+        .exec()
+        .then(response => {
+          return response;
+        });
+    };
+    newRoles = await getRolesByName();
+    if (newRoles.length === roles.length) {
+      userCreate.roles = newRoles;
+    } else {
+      return next({
+        status: 400,
+        message: "You must enter a valid active roles array.",
+        err: roles
+      });
+    }
+  }
+
   User.findOne({ email: email }, function(err, existingUser) {
     if (err) {
       return next(err);
@@ -98,7 +123,8 @@ exports.register = function(req, res, next) {
       password: password,
       firstName: firstName,
       lastName: lastName,
-      isActive: isActive
+      isActive: isActive,
+      roles: userCreate.roles
     });
 
     user.save(function(err, user) {
