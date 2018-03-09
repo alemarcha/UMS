@@ -151,13 +151,13 @@ exports.register = async function(req, res, next) {
 //========================================
 // Search Route
 //========================================
-exports.search = async function(req, res, next) {
+exports.search = function(filter, callback) {
   let filters = { isActive: true };
   let query = User.find();
-  let name = req.query.name;
-  let lastName = req.query.lastName;
-  let email = req.query.email;
-  let roles = req.query.roles;
+  let name = filter.name;
+  let lastName = filter.lastName;
+  let email = filter.email;
+  let roles = filter.roles;
 
   if (!utils.isEmpty(name)) {
     filters.firstName = {
@@ -181,36 +181,36 @@ exports.search = async function(req, res, next) {
   }
 
   if (!utils.isEmpty(roles)) {
-    let arrayRoles = roles.split(",");
-    let getRolesIdByNames = () => {
-      return Role.find({ isActive: true })
-        .where("roleName")
-        .in(arrayRoles)
-        .exec()
-        .then(response => {
-          return response;
-        });
+    async () => {
+      let arrayRoles = roles.split(",");
+      let getRolesIdByNames = () => {
+        return Role.find({ isActive: true })
+          .where("roleName")
+          .in(arrayRoles)
+          .exec()
+          .then(response => {
+            return response;
+          });
+      };
+      let arrayRolesId = await getRolesIdByNames();
+      query.where("roles").in(arrayRolesId);
     };
-    let arrayRolesId = await getRolesIdByNames();
-    query.where("roles").in(arrayRolesId);
   }
-
   query
     .find(filters)
     .sort({ firstName: 1 })
     .exec((err, response) => {
       if (err) {
-        return next({
-          status: 400,
-          message: err.message,
-          err: err
+        callback({
+          ok: false,
+          err: {
+            status: 400,
+            message: err.message,
+            err: err
+          }
         });
       }
-      console.log(response);
-      return res.status(200).json({
-        ok: true,
-        data: { users: response }
-      });
+      callback(null, { ok: true, data: { users: response } });
     });
 };
 

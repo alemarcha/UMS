@@ -6,7 +6,7 @@ let config = require("./test_variables.js");
 let request = require("supertest")(app);
 let assert = require("chai").assert;
 let expect = require("chai").expect;
-
+// Integration tests with TDD Styles
 //clean collections
 before(function(done) {
   function clearCollections() {

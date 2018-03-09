@@ -17,11 +17,20 @@ const requireLogin = passport.authenticate("local", { session: false });
 //   REQUIRE_CLIENT = "Client",
 //   REQUIRE_MEMBER = "Member";
 
+let manageResponse = (err, response, res, next) => {
+  if (err) next(err);
+  sendResponse(200, response, res);
+};
+
+let sendResponse = (status, response, res) => {
+  return res.status(status).json(response);
+};
+
 module.exports = function(app) {
   // Initializing route groups
 
   const apiRoutes = express.Router();
-  userRouter.init(apiRoutes, requireAuth, requireLogin);
+  userRouter.init(apiRoutes, requireAuth, requireLogin, manageResponse);
   roleRouter.init(apiRoutes, requireAuth);
   permissionRouter.init(apiRoutes, requireAuth);
   //=========================
@@ -57,25 +66,35 @@ module.exports = function(app) {
     });
   }
 
+  // Development or test
   if (config.environment === "development" || config.environment === "test") {
     // Handle Errors in api rest
     apiRoutes.use((err, req, res, next) => {
       //TODO Just for development mode
       console.log(err);
-      res.status(err.status || 500).send({
-        ok: false,
-        error: { message: err.message, error: err.err || err }
-      });
+      sendResponse(
+        err.status || 500,
+        {
+          ok: false,
+          error: { message: err.message, error: err.err || err }
+        },
+        res
+      );
     });
   }
 
+  // Production
   if (config.environment !== "development" && config.environment !== "test") {
     // Handle Errors in api rest
     apiRoutes.use((err, req, res, next) => {
-      res.status(err.status || 500).send({
-        ok: false,
-        error: { message: err.message }
-      });
+      sendResponse(
+        err.status || 500,
+        {
+          ok: false,
+          error: { message: err.message, error: { message: err.message } }
+        },
+        res
+      );
     });
   }
 
@@ -83,9 +102,13 @@ module.exports = function(app) {
   app.use("*", (req, res) => {
     //TODO Just for development mode
     console.log(req);
-    res.status(404).send({
-      ok: false,
-      error: { message: "Not Found route", error: req.originalUrl }
-    });
+    sendResponse(
+      404,
+      {
+        ok: false,
+        error: { message: "Not Found route", error: req.originalUrl }
+      },
+      res
+    );
   });
 };
