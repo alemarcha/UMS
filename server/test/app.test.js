@@ -826,7 +826,7 @@ describe("(4.2), Create another role with an array of permissions.", function() 
       .set("Content-Type", "application/json")
       .send({
         roleName: config.role_perms,
-        permissions: config.permission_roles,
+        permissions: config.permission_roles2,
         isActive: true
       })
       .expect(function(res) {
@@ -1074,6 +1074,126 @@ describe("(1.2.8), Search active users by roles /api/users/search", function() {
             return role.roleName === config.role_test2;
           });
           assert.isNotNull(role);
+        });
+        done(err);
+      });
+  });
+});
+
+// Search roles by roleName
+describe("(2.6.0), Search 2 roles by name /api/roles/search which are active", function() {
+  it(
+    "should try to find roles with a name which contains " +
+      config.role_test +
+      " and is active",
+    function(done) {
+      request
+        .get("/api/roles/search")
+        .set("Content-Type", "application/json")
+        .query({
+          name: config.role_test
+        })
+        .expect(200)
+        .end(function(err, res) {
+          assert.isOk(res.body.ok);
+          assert.lengthOf(res.body.data.roles, 2);
+          res.body.data.roles.forEach(role => {
+            expect(role.roleName).to.have.string(config.role_test);
+          });
+          done(err);
+        });
+    }
+  );
+});
+
+// Search role which is not active
+describe("(2.6.1), Search  1 role by name /api/roles/search which is not active", function() {
+  it(
+    "should try to find roles with a name which contains " +
+      config.role_testNew +
+      " and is not active",
+    function(done) {
+      request
+        .get("/api/roles/search")
+        .set("Content-Type", "application/json")
+        .query({
+          name: config.role_testNew
+        })
+        .expect(200)
+        .end(function(err, res) {
+          assert.isOk(res.body.ok);
+          assert.lengthOf(res.body.data.roles, 0);
+          done(err);
+        });
+    }
+  );
+});
+
+// Search role which does not exist
+describe("(2.6.2), Search roles by name /api/roles/search which does not exist", function() {
+  it("should try to find roles with a name whichd does not exist", function(done) {
+    request
+      .get("/api/roles/search")
+      .set("Content-Type", "application/json")
+      .query({
+        name: config.role_test_fake
+      })
+      .expect(200)
+      .end(function(err, res) {
+        assert.isOk(res.body.ok);
+        assert.lengthOf(res.body.data.roles, 0);
+        done(err);
+      });
+  });
+});
+
+// Search Roles by permissions
+describe("(2.6.3), Search active roles by permissions /api/roles/search", function() {
+  it("should try to find users which contains one role. ", function(done) {
+    request
+      .get("/api/roles/search")
+      .set("Content-Type", "application/json")
+      .query({
+        permissions: config.permission_test2 + "," + config.permission_test4
+      })
+      .expect(200)
+      .end(function(err, res) {
+        assert.isOk(res.body.ok);
+        assert.lengthOf(res.body.data.roles, 2);
+        res.body.data.roles.forEach(role => {
+          let permission = role.permissions.find(permission => {
+            return (
+              permission.permissionName === config.permission_test2 ||
+              permission.permissionName === config.permission_test4
+            );
+          });
+          assert.isNotNull(permission);
+        });
+        done(err);
+      });
+  });
+});
+
+// Search Roles by permissions
+describe("(2.6.4), Search active roles by permissions /api/roles/search", function() {
+  it("should try to find roles which contains one permission. ", function(done) {
+    request
+      .get("/api/roles/search")
+      .set("Content-Type", "application/json")
+      .query({
+        permissions: config.permission_test2
+      })
+      .expect(200)
+      .end(function(err, res) {
+        console.log(res.body.data.roles);
+
+        assert.isOk(res.body.ok);
+        assert.lengthOf(res.body.data.roles, 1);
+        res.body.data.roles.forEach(role => {
+          let permissionFind = role.permissions.find(permission => {
+            return permission.permissionName === config.permission_test2;
+          });
+          assert.isNotNull(permissionFind);
         });
         done(err);
       });

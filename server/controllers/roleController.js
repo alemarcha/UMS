@@ -93,20 +93,50 @@ exports.create = async function(req, res, next) {
 //========================================
 // Search Route
 //========================================
+exports.search = async function(filter, callback) {
+  let filters = { isActive: true };
+  let query = Role.find();
+  let name = filter.name;
+  let permissions = filter.permissions;
 
-exports.search = function(req, res) {
-  Role.find({})
-    .sort({ name: 1 })
+  if (!utils.isEmpty(name)) {
+    filters.roleName = {
+      $regex: name,
+      $options: "i"
+    };
+  }
+
+  if (!utils.isEmpty(permissions)) {
+    let arrayPermissions = permissions.split(",");
+    let getPermissionsIdByNames = () => {
+      return Permission.find({ isActive: true })
+        .where("permissionName")
+        .in(arrayPermissions)
+        .exec()
+        .then(response => {
+          return response;
+        });
+    };
+    let arrayPermissionsId = await getPermissionsIdByNames();
+    query.where("permissions").in(arrayPermissionsId);
+  }
+
+  query
+    .find(filters)
+    .populate("permissions")
+    .sort({ roleName: 1 })
     .exec((err, response) => {
       if (err) {
-        return res.status(400).send({ ok: false, error: err });
+        callback({
+          ok: false,
+          err: {
+            status: 400,
+            message: err.message,
+            err: err
+          }
+        });
       }
-      return res.status(200).json({
-        ok: true,
-        data: {
-          roles: response
-        }
-      });
+      callback(null, { ok: true, data: { roles: response } });
     });
 };
 
