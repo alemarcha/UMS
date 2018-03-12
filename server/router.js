@@ -34,7 +34,7 @@ module.exports = function(app) {
   const apiRoutes = express.Router();
   userRouter.init(apiRoutes, requireAuth, requireLogin, manageResponse);
   roleRouter.init(apiRoutes, requireAuth, manageResponse);
-  permissionRouter.init(apiRoutes, requireAuth);
+  permissionRouter.init(apiRoutes, requireAuth, manageResponse);
   //=========================
   // Auth Routes
   //=========================

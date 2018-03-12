@@ -58,20 +58,33 @@ exports.create = function(req, res, next) {
 //========================================
 // Search Route
 //========================================
+exports.search = async function(filter, callback) {
+  let filters = { isActive: true };
+  let query = Permission.find();
+  let name = filter.name;
 
-exports.search = function(req, res) {
-  Permission.find({})
-    .sort({ name: 1 })
+  if (!utils.isEmpty(name)) {
+    filters.permissionName = {
+      $regex: name,
+      $options: "i"
+    };
+  }
+
+  query
+    .find(filters)
+    .sort({ roleName: 1 })
     .exec((err, response) => {
       if (err) {
-        return res.status(400).send({ ok: false, error: err });
+        callback({
+          ok: false,
+          err: {
+            status: 400,
+            message: err.message,
+            err: err
+          }
+        });
       }
-      return res.status(200).json({
-        ok: true,
-        data: {
-          permissions: response
-        }
-      });
+      callback(null, { ok: true, data: { permissions: response } });
     });
 };
 

@@ -40,6 +40,7 @@ module.exports = {
   permission_test2: "create_test2",
   permission_test3: "create_test3",
   permission_test4: "create_test4",
+  permission_test_fake: "create_test4_fake",
   permission_testNew: "permission_updated",
   permission_testNew2: "permission_updated",
   permission_roles: ["create_test2", "create_test4"],

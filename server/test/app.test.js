@@ -855,6 +855,12 @@ describe("(4.3), Try to create a role with invalid permission array.", function(
   });
 });
 
+/**
+ *
+ *  SEARCH users, roles, permissions
+ *
+ * **/
+
 // Search 1 User exist by email
 describe("(1.2.0), Search  1 user by email /api/users/search which is not active", function() {
   it(
@@ -1131,7 +1137,7 @@ describe("(2.6.1), Search  1 role by name /api/roles/search which is not active"
 
 // Search role which does not exist
 describe("(2.6.2), Search roles by name /api/roles/search which does not exist", function() {
-  it("should try to find roles with a name whichd does not exist", function(done) {
+  it("should try to find roles with a name which does not exist", function(done) {
     request
       .get("/api/roles/search")
       .set("Content-Type", "application/json")
@@ -1195,6 +1201,75 @@ describe("(2.6.4), Search active roles by permissions /api/roles/search", functi
           });
           assert.isNotNull(permissionFind);
         });
+        done(err);
+      });
+  });
+});
+
+// Search permissions by permissionName
+describe("(3.6.0), Search 1 permissions by name /api/permissions/search which is active", function() {
+  it(
+    "should try to find permissions with a name which contains " +
+      config.permission_test2 +
+      " and is active",
+    function(done) {
+      request
+        .get("/api/permissions/search")
+        .set("Content-Type", "application/json")
+        .query({
+          name: config.permission_test2
+        })
+        .expect(200)
+        .end(function(err, res) {
+          assert.isOk(res.body.ok);
+          assert.lengthOf(res.body.data.permissions, 1);
+          res.body.data.permissions.forEach(permission => {
+            expect(permission.permissionName).to.have.string(
+              config.permission_test2
+            );
+          });
+          done(err);
+        });
+    }
+  );
+});
+
+// Search permissions by roleName which is not active
+describe("(3.6.1), Search 1 permissions by name /api/permissions/search which is not active", function() {
+  it(
+    "should try to find permissions with a name which contains " +
+      config.permission_testNew +
+      " and is active",
+    function(done) {
+      request
+        .get("/api/permissions/search")
+        .set("Content-Type", "application/json")
+        .query({
+          name: config.permission_testNew
+        })
+        .expect(200)
+        .end(function(err, res) {
+          assert.isOk(res.body.ok);
+          assert.lengthOf(res.body.data.permissions, 0);
+          done(err);
+        });
+    }
+  );
+});
+
+// Search permissions by permissionName which  does not exist
+describe("(3.6.2), Search permissions by name /api/permissions/search whichdoes not exist", function() {
+  it("should try to find roles with a name whichd does not exist ", function(done) {
+    request
+      .get("/api/permissions/search")
+      .set("Content-Type", "application/json")
+      .query({
+        name: config.permission_test_fake
+      })
+      .expect(200)
+      .end(function(err, res) {
+        assert.isOk(res.body.ok);
+        assert.lengthOf(res.body.data.permissions, 0);
         done(err);
       });
   });

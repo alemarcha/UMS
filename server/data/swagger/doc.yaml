@@ -391,6 +391,11 @@ paths:
       - "permission"
       produces:
       - "application/json"
+      parameters:
+      - name: name
+        in: query
+        description: permission name to search. It will search for every permission that contains role name parameter.
+        type: string
       responses:
          '200':
            description: Permissions response
