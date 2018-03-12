@@ -319,6 +319,29 @@ describe("(1.12), Try to access with incorrect email.", function() {
   });
 });
 
+//User Register created OK
+describe("(1.13), Register a new user", function() {
+  it("POST User Register created OK", function(done) {
+    request
+      .post("/api/users/register")
+      .set("Content-Type", "application/json")
+      .send({
+        email: config.email_default_test4,
+        password: config.password_default_test,
+        firstName: config.user_name_default_test4,
+        lastName: config.last_name_default_test
+      })
+      .expect(function(res) {
+        assert.isOk(res.body.ok);
+        assert.strictEqual(
+          res.body.data.user.email,
+          config.email_default_test4
+        );
+      })
+      .expect(201, done);
+  });
+});
+
 // Create Role OK
 describe("(2.0), Create a new role.", function() {
   it("should render created 201", function(done) {
@@ -754,6 +777,84 @@ describe(
   }
 );
 
+//User Register created with roles OK
+describe("(4.0), Register a new user with and array of roles", function() {
+  it("should create a user with a valid array of roles", function(done) {
+    request
+      .post("/api/users/register")
+      .set("Content-Type", "application/json")
+      .send({
+        email: config.email_tester_full,
+        password: config.password_default_test,
+        firstName: config.user_name_tester_full,
+        lastName: config.last_name_tester_full,
+        roles: config.roles_user_tester
+      })
+      .expect(function(res) {
+        assert.isOk(res.body.ok);
+        assert.strictEqual(res.body.data.user.email, config.email_tester_full);
+      })
+      .expect(201, done);
+  });
+});
+
+// User Register try to create with invalid roles
+describe("(4.1), Try to register a new user with an invalid array of roles.", function() {
+  it("should fail, because a role does not exist or the role is not active", function(done) {
+    request
+      .post("/api/users/register")
+      .set("Content-Type", "application/json")
+      .send({
+        email: config.email_default_test5,
+        password: config.password_default_test,
+        firstName: config.user_name_tester_full,
+        lastName: config.last_name_tester_full,
+        roles: config.roles_user_Fake
+      })
+      .expect(function(res) {
+        assert.isNotOk(res.body.ok);
+      })
+      .expect(400, done);
+  });
+});
+
+// Create another role with permission array
+describe("(4.2), Create another role with an array of permissions.", function() {
+  it("should render created 201", function(done) {
+    request
+      .post("/api/roles/create")
+      .set("Content-Type", "application/json")
+      .send({
+        roleName: config.role_perms,
+        permissions: config.permission_roles,
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.isOk(res.body.ok);
+        assert.strictEqual(res.body.data.role.roleName, config.role_perms);
+      })
+      .expect(201, done);
+  });
+});
+
+// Try to create a role with invalid permission array
+describe("(4.3), Try to create a role with invalid permission array.", function() {
+  it("should fail, because a role does not exist or the role is not active", function(done) {
+    request
+      .post("/api/roles/create")
+      .set("Content-Type", "application/json")
+      .send({
+        roleName: config.role_test,
+        permissions: config.permission_roles_Fake,
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.isNotOk(res.body.ok);
+      })
+      .expect(400, done);
+  });
+});
+
 // Search 1 User exist by email
 describe("(1.2.0), Search  1 user by email /api/users/search which is not active", function() {
   it(
@@ -841,7 +942,7 @@ describe("(1.2.3),Search active users  by name /api/users/search", function() {
         .expect(200)
         .end(function(err, res) {
           expect(res.body.ok).to.equal(true);
-          expect(res.body.data.users).to.have.lengthOf(1);
+          expect(res.body.data.users).to.have.lengthOf(2);
           res.body.data.users.forEach(user => {
             expect(user.firstName).to.have.string(
               config.user_name_default_test
@@ -891,7 +992,7 @@ describe("(1.2.5), Search active users by lastname /api/users/search", function(
         .expect(200)
         .end(function(err, res) {
           expect(res.body.ok).to.equal(true);
-          expect(res.body.data.users).to.have.lengthOf(1);
+          expect(res.body.data.users).to.have.lengthOf(2);
           res.body.data.users.forEach(user => {
             expect(user.lastName).to.have.string(config.last_name_default_test);
           });
@@ -926,24 +1027,31 @@ describe("(1.2.6), Search active users by lastname  which do not exist /api/user
 
 // Search Users by roles
 describe("(1.2.7), Search active users by roles /api/users/search", function() {
-  it(
-    "should try to find users which contains some of two roles " +
-      config.last_name_default_test,
-    function(done) {
-      request
-        .get("/api/users/search")
-        .set("Content-Type", "application/json")
-        .query({
-          roles: config.role_test2 + "," + config.role_test4
-        })
-        .expect(200)
-        .end(function(err, res) {
-          expect(res.body.ok).to.equal(true);
-          expect(res.body.data.users).to.have.lengthOf(1);
-          done(err);
+  it("should try to find users which contains some of two roles ", function(done) {
+    request
+      .get("/api/users/search")
+      .set("Content-Type", "application/json")
+      .query({
+        roles: config.role_test2 + "," + config.role_test4
+      })
+      .expect(200)
+      .end(function(err, res) {
+        console.log(res.body.data);
+        expect(res.body.ok).to.equal(true);
+        expect(res.body.data.users).to.have.lengthOf(2);
+        res.body.data.users.forEach(user => {
+          let role = user.roles.find(role => {
+            return (
+              role.roleName === config.role_test4 ||
+              role.roleName === config.role_test2
+            );
+          });
+          assert.isNotNull(role);
         });
-    }
-  );
+
+        done(err);
+      });
+  });
 });
 
 // Search Users by roles
@@ -957,87 +1065,17 @@ describe("(1.2.8), Search active users by roles /api/users/search", function() {
       })
       .expect(200)
       .end(function(err, res) {
+        console.log(res.body.data.users);
+
         expect(res.body.ok).to.equal(true);
         expect(res.body.data.users).to.have.lengthOf(1);
+        res.body.data.users.forEach(user => {
+          let role = user.roles.find(role => {
+            return role.roleName === config.role_test2;
+          });
+          assert.isNotNull(role);
+        });
         done(err);
       });
-  });
-});
-
-//User Register created with roles OK
-describe("(4.0), Register a new user with and array of roles", function() {
-  it("should create a user with a valid array of roles", function(done) {
-    request
-      .post("/api/users/register")
-      .set("Content-Type", "application/json")
-      .send({
-        email: config.email_tester_full,
-        password: config.password_default_test,
-        firstName: config.user_name_tester_full,
-        lastName: config.last_name_tester_full,
-        roles: config.roles_user_tester
-      })
-      .expect(function(res) {
-        assert.isOk(res.body.ok);
-        assert.strictEqual(res.body.data.user.email, config.email_tester_full);
-      })
-      .expect(201, done);
-  });
-});
-
-//User Register try to create with invalid roles
-describe("(4.1), Try to register a new user with an invalid array of roles.", function() {
-  it("should fail, because a role does not exist or the role is not active", function(done) {
-    request
-      .post("/api/users/register")
-      .set("Content-Type", "application/json")
-      .send({
-        email: config.email_tester_full,
-        password: config.password_default_test,
-        firstName: config.user_name_tester_full,
-        lastName: config.last_name_tester_full,
-        roles: config.roles_user_Fake
-      })
-      .expect(function(res) {
-        assert.isNotOk(res.body.ok);
-      })
-      .expect(400, done);
-  });
-});
-
-// Create another role with permission array
-describe("(4.2), Create another role with an array of permissions.", function() {
-  it("should render created 201", function(done) {
-    request
-      .post("/api/roles/create")
-      .set("Content-Type", "application/json")
-      .send({
-        roleName: config.role_perms,
-        permissions: config.permission_roles,
-        isActive: true
-      })
-      .expect(function(res) {
-        assert.isOk(res.body.ok);
-        assert.strictEqual(res.body.data.role.roleName, config.role_perms);
-      })
-      .expect(201, done);
-  });
-});
-
-// Try to create a role with invalid permission array
-describe("(4.3), Try to create a role with invalid permission array.", function() {
-  it("should fail, because a role does not exist or the role is not active", function(done) {
-    request
-      .post("/api/roles/create")
-      .set("Content-Type", "application/json")
-      .send({
-        roleName: config.role_test,
-        permissions: config.permission_roles_Fake,
-        isActive: true
-      })
-      .expect(function(res) {
-        assert.isNotOk(res.body.ok);
-      })
-      .expect(400, done);
   });
 });
