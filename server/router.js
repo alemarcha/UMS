@@ -17,11 +17,13 @@ const requireLogin = passport.authenticate("local", { session: false });
 //   REQUIRE_CLIENT = "Client",
 //   REQUIRE_MEMBER = "Member";
 
+// Manage api response.
 let manageResponse = (err, response, res, next) => {
   if (err) next(err);
   sendResponse(200, response, res);
 };
 
+// Send 200 response
 let sendResponse = (status, response, res) => {
   return res.status(status).json(response);
 };
@@ -54,17 +56,17 @@ module.exports = function(app) {
     });
   });
 
-  if (config.environment === "development") {
-    // Handle Errors in api rest
-    apiRoutes.use((err, req, res, next) => {
-      //TODO Just for development mode
-      console.log(err);
-      res.status(err.status || 500).send({
-        ok: false,
-        error: { message: err.message, error: err.err || err }
-      });
-    });
-  }
+  // if (config.environment === "development") {
+  //   // Handle Errors in api rest
+  //   apiRoutes.use((err, req, res, next) => {
+  //     //TODO Just for development mode
+  //     console.log(err);
+  //     res.status(err.status || 500).send({
+  //       ok: false,
+  //       error: { message: err.message, error: err.err || err }
+  //     });
+  //   });
+  // }
 
   // Development or test
   if (config.environment === "development" || config.environment === "test") {
