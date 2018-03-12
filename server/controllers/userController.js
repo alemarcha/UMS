@@ -151,7 +151,7 @@ exports.register = async function(req, res, next) {
 //========================================
 // Search Route
 //========================================
-exports.search = function(filter, callback) {
+exports.search = async function(filter, callback) {
   let filters = { isActive: true };
   let query = User.find();
   let name = filter.name;
@@ -181,23 +181,22 @@ exports.search = function(filter, callback) {
   }
 
   if (!utils.isEmpty(roles)) {
-    async () => {
-      let arrayRoles = roles.split(",");
-      let getRolesIdByNames = () => {
-        return Role.find({ isActive: true })
-          .where("roleName")
-          .in(arrayRoles)
-          .exec()
-          .then(response => {
-            return response;
-          });
-      };
-      let arrayRolesId = await getRolesIdByNames();
-      query.where("roles").in(arrayRolesId);
+    let arrayRoles = roles.split(",");
+    let getRolesIdByNames = () => {
+      return Role.find({ isActive: true })
+        .where("roleName")
+        .in(arrayRoles)
+        .exec()
+        .then(response => {
+          return response;
+        });
     };
+    let arrayRolesId = await getRolesIdByNames();
+    query.where("roles").in(arrayRolesId);
   }
   query
     .find(filters)
+    .populate("roles")
     .sort({ firstName: 1 })
     .exec((err, response) => {
       if (err) {
