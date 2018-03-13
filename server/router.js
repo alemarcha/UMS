@@ -111,7 +111,6 @@ module.exports = function(app) {
     apiRoutes.use((err, req, res, next) => {
       //TODO Just for development mode
       console.log(err);
-      console.log("tachan");
       sendError(err.status || 500, err.message, err, res);
     });
   }
