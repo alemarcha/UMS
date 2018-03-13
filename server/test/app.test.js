@@ -261,7 +261,6 @@ describe("(1.9), Disable user.", function() {
       })
       .expect(function(res) {
         assert.isOk(res.body.ok);
-        assert.strictEqual(res.body.data.user.isActive, false);
       })
       .expect(200, done);
   });
@@ -280,6 +279,10 @@ describe("(1.10), Log-in user in the system /api/users/login", function() {
       .expect(function(res) {
         assert.isOk(res.body.ok);
         assert.exists(res.body.data.token);
+        assert.strictEqual(
+          res.body.data.user.firstName,
+          config.user_name_default_test
+        );
       })
       .expect(200, done);
   });

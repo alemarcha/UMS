@@ -23,30 +23,27 @@ module.exports.init = function(apiRoutes, requireAuth, manageResponse) {
   //1. Called AuthAttemp to register login params.
   //2. Passport authenticate.
   //3. Once we check correct username and password we call user controller and generate jwt.
-  authRoutes.post(
-    "/login",
-    AuthAttemptController.authAttemptLogger,
-    function(req, res, next) {
-      passport.authenticate("local", { session: false }, (err, user, info) => {
-        if (err) {
-          return next(err);
-        }
-        if (!user) {
-          return next({
-            status: 401,
-            message: info.error,
-            err: info
-          });
-        }
-        return next();
-      })(req, res, next);
-    },
-    (req, res, next) => {
-      UserController.login(req.body, (err, response) => {
+  authRoutes.post("/login", AuthAttemptController.authAttemptLogger, function(
+    req,
+    res,
+    next
+  ) {
+    passport.authenticate("local", { session: false }, (err, user, info) => {
+      if (err) {
+        return next(err);
+      }
+      if (!user) {
+        return next({
+          status: 401,
+          message: info.error,
+          err: info
+        });
+      }
+      return UserController.login(user, (err, response) => {
         manageResponse(err, response, res, next);
       });
-    }
-  );
+    })(req, res, next);
+  });
 
   // Update Routes
   authRoutes.put("/:email/update", UserController.update);

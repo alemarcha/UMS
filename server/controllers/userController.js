@@ -20,8 +20,9 @@ function setUserInfo(user) {
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
-    isActive: user.isActive
-    // role: user.role
+    password: user.password,
+    isActive: user.isActive,
+    roles: user.roles
   };
 }
 
