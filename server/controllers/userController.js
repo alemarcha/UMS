@@ -28,10 +28,9 @@ function setUserInfo(user) {
 //========================================
 // Login Route
 //========================================
-exports.login = function(req, res, next) {
-  let userInfo = setUserInfo(req.user);
-
-  res.status(200).json({
+exports.login = function(user, callback) {
+  let userInfo = setUserInfo(user);
+  callback(null, {
     ok: true,
     data: {
       token: "JWT " + generateToken(userInfo),

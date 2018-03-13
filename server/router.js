@@ -9,7 +9,6 @@ const permissionRouter = require("./router/permissionRouter");
 
 // Middleware to require login/auth
 const requireAuth = passport.authenticate("jwt", { session: false });
-const requireLogin = passport.authenticate("local", { session: false });
 
 // Constants for role types
 // const REQUIRE_ADMIN = "Admin",
@@ -28,11 +27,22 @@ let sendResponse = (status, response, res) => {
   return res.status(status).json(response);
 };
 
+let sendError = (status, message, error, res) => {
+  sendResponse(
+    status,
+    {
+      ok: false,
+      error: { message: message, error: error }
+    },
+    res
+  );
+};
+
 module.exports = function(app) {
   // Initializing route groups
 
   const apiRoutes = express.Router();
-  userRouter.init(apiRoutes, requireAuth, requireLogin, manageResponse);
+  userRouter.init(apiRoutes, requireAuth, manageResponse);
   roleRouter.init(apiRoutes, requireAuth, manageResponse);
   permissionRouter.init(apiRoutes, requireAuth, manageResponse);
   //=========================
@@ -74,14 +84,7 @@ module.exports = function(app) {
     apiRoutes.use((err, req, res, next) => {
       //TODO Just for development mode
       console.log(err);
-      sendResponse(
-        err.status || 500,
-        {
-          ok: false,
-          error: { message: err.message, error: err.err || err }
-        },
-        res
-      );
+      sendError(err.status || 500, err.message, { message: err.message }, res);
     });
   }
 
@@ -89,14 +92,7 @@ module.exports = function(app) {
   if (config.environment !== "development" && config.environment !== "test") {
     // Handle Errors in api rest
     apiRoutes.use((err, req, res, next) => {
-      sendResponse(
-        err.status || 500,
-        {
-          ok: false,
-          error: { message: err.message, error: { message: err.message } }
-        },
-        res
-      );
+      sendError(err.status || 500, err.message, { message: err.message }, res);
     });
   }
 
@@ -104,13 +100,6 @@ module.exports = function(app) {
   app.use("*", (req, res) => {
     //TODO Just for development mode
     console.log(req);
-    sendResponse(
-      404,
-      {
-        ok: false,
-        error: { message: "Not Found route", error: req.originalUrl }
-      },
-      res
-    );
+    sendError(404, "Not Found route", req.originalUrl, res);
   });
 };
