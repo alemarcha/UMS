@@ -34,7 +34,7 @@ exports.login = function(user, callback) {
   callback(null, {
     ok: true,
     data: {
-      token: "JWT " + generateToken(userInfo),
+      token: generateToken(userInfo),
       user: userInfo
     }
   });
@@ -323,4 +323,11 @@ exports.delete = function(req, res, next) {
       return res.status(200).json({ ok: true, data: { user: userDeleted } });
     }
   );
+};
+
+exports.findById = (id, callback) => {
+  console.log(id);
+  return User.findById(id)
+    .populate("roles")
+    .exec(callback);
 };

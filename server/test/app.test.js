@@ -6,7 +6,15 @@ let config = require("./test_variables.js");
 let request = require("supertest")(app);
 let assert = require("chai").assert;
 let expect = require("chai").expect;
-// Integration tests with TDD Styles
+let jwtHashWithDifferentSecretKey =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YTgzZWFlMWQyNWRkMzcwNGQzNDJjM2U4IiwiaWF0IjoxNTIwOTMyNzc4LCJleHAiOjE1MjA5MDIwMDB9.9YYPueJ9Rc8uqbr6duRb8b7FitShG9sCHu9Ti1GFGRI";
+let jwtExpired =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YTgzZWFlMWQyNWRkMzcwNGQzNDJjM2U4IiwiaWF0IjoxNTIwOTMyNzc4LCJleHAiOjE1MjA5MDIwMDB9.RRO7dC1S-bhmZSbgGxsY1MiWETm0_hrqwWLWp7ZK61s";
+let jwtValid = "";
+
+/**
+ * Integration tests with TDD Styles
+ * */
 //clean collections
 before(function(done) {
   function clearCollections() {
@@ -50,6 +58,33 @@ describe("(0.1), GET /api/ping response", function() {
       .expect({
         ok: true
       })
+      .end(done);
+  });
+});
+
+//API OK
+describe("(0.2), GET /api/pingAuth with jwt expired", function() {
+  it("should render 200 ok", function(done) {
+    request
+      .get("/api/pingAuth")
+      .set({ Authorization: "JWT " + jwtExpired })
+      .expect(function(res) {
+        assert.isNotOk(res.body.ok);
+      })
+      .expect(401)
+      .end(done);
+  });
+});
+
+describe("(0.3), GET /api/pingAuth with jwt hashed with different secret key", function() {
+  it("should render 200 ok", function(done) {
+    request
+      .get("/api/pingAuth")
+      .set({ Authorization: "JWT " + jwtHashWithDifferentSecretKey })
+      .expect(function(res) {
+        assert.isNotOk(res.body.ok);
+      })
+      .expect(401)
       .end(done);
   });
 });
@@ -283,8 +318,23 @@ describe("(1.10), Log-in user in the system /api/users/login", function() {
           res.body.data.user.firstName,
           config.user_name_default_test
         );
+        jwtValid = res.body.data.token;
       })
       .expect(200, done);
+  });
+});
+
+//API OK
+describe("(0.4), GET /api/pingAuth response", function() {
+  it("should render 200 ok", function(done) {
+    request
+      .get("/api/pingAuth")
+      .set({ Authorization: "JWT " + jwtValid })
+      .expect(function(res) {
+        assert.isOk(res.body.ok);
+      })
+      .expect(200)
+      .end(done);
   });
 });
 
@@ -1045,7 +1095,6 @@ describe("(1.2.7), Search active users by roles /api/users/search", function() {
       })
       .expect(200)
       .end(function(err, res) {
-        console.log(res.body.data);
         expect(res.body.ok).to.equal(true);
         expect(res.body.data.users).to.have.lengthOf(2);
         res.body.data.users.forEach(user => {
@@ -1074,8 +1123,6 @@ describe("(1.2.8), Search active users by roles /api/users/search", function() {
       })
       .expect(200)
       .end(function(err, res) {
-        console.log(res.body.data.users);
-
         expect(res.body.ok).to.equal(true);
         expect(res.body.data.users).to.have.lengthOf(1);
         res.body.data.users.forEach(user => {
@@ -1194,8 +1241,6 @@ describe("(2.6.4), Search active roles by permissions /api/roles/search", functi
       })
       .expect(200)
       .end(function(err, res) {
-        console.log(res.body.data.roles);
-
         assert.isOk(res.body.ok);
         assert.lengthOf(res.body.data.roles, 1);
         res.body.data.roles.forEach(role => {

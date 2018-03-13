@@ -524,3 +524,25 @@ paths:
       responses:
         '200':
           description: Ping response
+  /pingAuth:
+    get:
+      description: "Ping Api Rest"
+      produces:
+      - application/json
+      parameters:
+      - name: Authorization
+        in: header
+        description: We need an JWT to authorized action. Schema value is following > JWT + Token
+        required: true
+        type: string
+      responses:
+        '200':
+          description: Ping response
+components:
+
+securityDefinitions:
+  token:
+      type: http
+      scheme: bearer
+      in: header
+      bearerFormat: JWT
