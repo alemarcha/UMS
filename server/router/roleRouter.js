@@ -21,5 +21,5 @@ module.exports.init = function(apiRoutes, requireAuth, manageResponse) {
   roleRoutes.put("/:role/update", RoleController.update);
 
   // Delete Routes
-  roleRoutes.put("/:role/delete", RoleController.delete);
+  roleRoutes.delete("/:role/delete", RoleController.delete);
 };

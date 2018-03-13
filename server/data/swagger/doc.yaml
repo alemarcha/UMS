@@ -192,7 +192,7 @@ paths:
         default:
           description: Unexpected error
   /users/{emailId}/delete:
-    put:
+    delete:
       description: "Disable a user"
       tags:
       - "users"
@@ -345,7 +345,7 @@ paths:
         default:
           description: Unexpected error
   /roles/{roleId}/delete:
-    put:
+    delete:
       tags:
       - "roles"
       consumes:
@@ -478,7 +478,7 @@ paths:
         default:
           description: Unexpected error
   /permissions/{permissionId}/delete:
-    put:
+    delete:
       tags:
       - "permission"
       consumes:
@@ -540,9 +540,9 @@ paths:
           description: Ping response
 components:
 
-securityDefinitions:
-  token:
-      type: http
-      scheme: bearer
-      in: header
-      bearerFormat: JWT
+# securityDefinitions:
+#   token:
+#       type: http
+#       scheme: bearer
+#       in: header
+#       bearerFormat: JWT

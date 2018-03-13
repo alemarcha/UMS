@@ -49,5 +49,5 @@ module.exports.init = function(apiRoutes, requireAuth, manageResponse) {
   authRoutes.put("/:email/update", UserController.update);
 
   // Delete Routes
-  authRoutes.put("/:email/delete", UserController.delete);
+  authRoutes.delete("/:email/delete", UserController.delete);
 };

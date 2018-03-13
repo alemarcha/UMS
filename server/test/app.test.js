@@ -289,7 +289,7 @@ describe(
 describe("(1.9), Disable user.", function() {
   it("should set isActive field to false", function(done) {
     request
-      .put("/api/users/" + config.email_default_test + "/delete")
+      .delete("/api/users/" + config.email_default_test + "/delete")
       .set("Content-Type", "application/json")
       .send({
         isActive: false
@@ -672,7 +672,7 @@ describe("(3.1), Update a permission", function() {
 describe("(3.2), Disable permission.", function() {
   it("should set isActive field to false", function(done) {
     request
-      .put("/api/permissions/" + config.permission_testNew + "/delete")
+      .delete("/api/permissions/" + config.permission_testNew + "/delete")
       .set("Content-Type", "application/json")
       .send({
         isActive: false

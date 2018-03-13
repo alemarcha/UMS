@@ -21,5 +21,5 @@ module.exports.init = function(apiRoutes, requireAuth, manageResponse) {
   permissionRoutes.put("/:permission/update", PermissionController.update);
 
   // Delete Routes
-  permissionRoutes.put("/:permission/delete", PermissionController.delete);
+  permissionRoutes.delete("/:permission/delete", PermissionController.delete);
 };
