@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/alemarcha/UMS.svg?branch=master)](https://travis-ci.org/alemarcha/UMS)
+
 # UMS
 
 User management system with MongoDB, Express and NodeJS app. Using Swagger for Docs Api.
@@ -31,7 +32,19 @@ A `docker-compose.yml` looks like this:
     volumes:
     logvolume01: {}
 
-We are storing the mongo data in:
+Using docker-compose(Use remote db or local which we can share with other apps)
+
+production
+
+* remote_db(We are working on it)
+* local_db(We are working on it)
+
+development
+
+* remote_db(We are working on it)
+* local_db(We are working on it)
+
+We are storing the mongo data in when we use utils-docker/docker-shared-mongo(Deprecated) or utils-docker/docker-compose-internal:
 
       - ~/data/mongodb_data/:/data/db
 
@@ -39,15 +52,15 @@ If do you want to change this or the port used in order to connect with mongo, y
 
 ## Config your .env file
 
-1. Copy .env-getting-started and rename it to .env
-2. Config your .env file
+1.  Copy .env-getting-started and rename it to .env
+2.  Config your .env file
 
 After you have installed both:
 
-1. git clone <https://github.com/alemarcha/UMS.git>
-2. cd UMS
-3. docker-compose up
-4. You should see at localhost:3000 our swagger docs now.
+1.  git clone <https://github.com/alemarcha/UMS.git>
+2.  cd UMS
+3.  docker-compose up
+4.  You should see at localhost:3000 our swagger docs now.
 
 ## Getting started without Docker
 
@@ -55,11 +68,11 @@ Firstable you need Nodejs and MongoDB installed.
 
 After that you should follow next steps:
 
-1. git clone <https://github.com/alemarcha/UMS.git>
-2. Install and init server.
-   * cd UMS/server
-   * npm install
-   * npm start
+1.  git clone <https://github.com/alemarcha/UMS.git>
+2.  Install and init server.
+    * cd UMS/server
+    * npm install
+    * npm start
 
 You should see at localhost:3000 our Swagger docs now.
 
@@ -79,6 +92,8 @@ We are using vscode to program, we recommend you to install the following extens
 * npm install
 * npm run test-server
   * You will see results of testing in command line
+
+Moreover you could see our travis CI https://travis-ci.org/alemarcha/UMS
 
 ## Developers
 
