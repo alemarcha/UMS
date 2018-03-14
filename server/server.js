@@ -6,7 +6,7 @@ const express = require("express"),
 
 const router = require("./router");
 const app = express();
-
+app.use(require("express-status-monitor")());
 // Init swagger
 require("./config/swagger").swagger_init(app, express);
 console.log("Swagger Init");
