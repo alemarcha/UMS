@@ -1,0 +1,28 @@
+# Use this to launch mongodb and server at the same moment. We can not share mongodb 
+# with other apps using this docker-compose
+version: "3.5"
+services:
+  server:
+    build:
+      context: .
+      dockerfile: DockerfileServer
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    command: "npm run build-pm2"
+    links:
+      - mongodb
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ~/data/mongodb_data/:/data/db
+  # mongo-seed:
+  #   build: 
+  #     context: .
+  #     dockerfile: DockerfileMongo
+  #   links:
+  #     - mongodb

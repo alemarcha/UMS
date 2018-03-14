@@ -1,0 +1,19 @@
+# Launch this before server
+# Use this to up a mongo container with a network. We create a network because we will need to reach 
+# mongo from server and we need to share with other apps this container.
+version: '3.5'
+services:
+  db:
+    image: mongo
+    container_name: shared_mongodb
+    ports: 
+      - "27017:27017"
+    expose:
+      - "27017"
+    volumes:
+      - ~/data/mongodb_data/:/data/db
+    networks:
+      - mongo_network
+networks:
+  mongo_network:
+    name: mongo_custom_network

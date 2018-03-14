@@ -1,4 +1,4 @@
-version: "3"
+version: "3.5"
 services:
   server:
     build:
@@ -9,20 +9,4 @@ services:
       - /app/node_modules
     ports:
       - "3000:3000"
-    command: "npm start"
-    links:
-      - mongodb
-  mongodb:
-    image: mongo
-    ports:
-      - "27017:27017"
-    volumes:
-      - ~/data/mongodb_data/:/data/db
-  # mongo-seed:
-  #   build: 
-  #     context: .
-  #     dockerfile: DockerfileMongo
-  #   links:
-  #     - mongodb
-
-      
+    command: "npm run build-pm2"

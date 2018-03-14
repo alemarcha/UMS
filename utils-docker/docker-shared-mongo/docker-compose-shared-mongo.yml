@@ -1,0 +1,20 @@
+# Launch this after mongo docker-compose
+# Use this to up the server linked to external local mongo by network
+version: "3.5"
+services:
+  server:
+    build:
+      context: ../../
+      dockerfile: DockerfileServer
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    command: "npm run build-pm2"
+    networks:
+      - mongo_network
+networks:
+  mongo_network:
+    external:
+      name: mongo_custom_network
