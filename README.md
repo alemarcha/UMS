@@ -55,6 +55,19 @@ In this case, you need to write down your local ip where your mongo is, if you j
 
 Same steps that we note before in the case of development, for the production you only need to comment the development line and uncomment the production one.
 
+We recommended created a new private and public keys for production environment instead of data/keys/jwt256.key and data/keys/jwt256.key.pub we have in our repo with development and testing purposes. You can create your keys following:
+
+ssh-keygen -t rsa -b 4096 -f jwtRS256.key
+//Without passphrase
+openssl rsa -in jwtRS256.key -pubout -outform PEM -out jwtRS256.key.pub
+cat jwtRS256.key
+cat jwtRS256.key.pub
+
+You can put wherever you want and put the path in your .env file to work with them. You never must publish your private key. You just should share your public key instead of private.
+
+JWT_PRIVATE_KEY_PATH=data/keys/jwtRS256.key
+JWT_PUBLIC_KEY_PATH=data/keys/jwtRS256.key.pub
+
 ### Testing
 
 In order to do our tests this will be the mongodb route in local:
@@ -71,15 +84,15 @@ If do you want to change this or the port used in order to connect with mongo, y
 
 ## Config your .env file
 
-1. Copy `.env-getting-started` and rename it to .env
-2. Config your `.env` file
+1.  Copy `.env-getting-started` and rename it to .env
+2.  Config your `.env` file
 
 After you have installed both:
 
-1. git clone <https://github.com/alemarcha/UMS.git>
-2. cd UMS
-3. docker-compose up
-4. You should see at localhost:3000 our swagger docs now.
+1.  git clone <https://github.com/alemarcha/UMS.git>
+2.  cd UMS
+3.  docker-compose up
+4.  You should see at localhost:3000 our swagger docs now.
 
 ## Getting started without Docker
 
@@ -87,8 +100,8 @@ Firstable you need Nodejs and MongoDB installed.
 
 After that you should follow next steps:
 
-1. git clone <https://github.com/alemarcha/UMS.git>
-2. Install and init server.
+1.  git clone <https://github.com/alemarcha/UMS.git>
+2.  Install and init server.
     * cd UMS/server
     * npm install
     * npm start

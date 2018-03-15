@@ -5,7 +5,7 @@ services: mongodb
 before_install:
     - cd server
 before_script:
-    - sleep 15
+    - sleep 10
 install:
     - npm install 
 script:
