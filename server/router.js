@@ -59,33 +59,6 @@ module.exports = function(app) {
     });
   });
 
-  // Ping routes
-  apiRoutes.get(
-    "/pingAuth",
-    function(req, res, next) {
-      passport.authenticate("jwt", { session: false }, (err, user, info) => {
-        if (err) {
-          return next(err);
-        }
-        if (!user) {
-          return next({
-            status: 401,
-            message: info.message,
-            err: info
-          });
-        }
-        req.user = user;
-        return next();
-      })(req, res, next);
-    },
-    function(req, res) {
-      res.status(200).json({
-        ok: true,
-        data: req.user
-      });
-    }
-  );
-
   // Private routes
   apiRoutes.get("/protected", requireAuth, function(req, res, next) {
     res.status(200).json({

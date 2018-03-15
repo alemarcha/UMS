@@ -1,4 +1,11 @@
 process.env.ENVIRONMENT = "test";
+process.env.PORT = 3030;
+process.env.SECRET_KEY = "My_Secret_KEY";
+let jwtHashWithDifferentSecretKey =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YTgzZWFlMWQyNWRkMzcwNGQzNDJjM2U4IiwiaWF0IjoxNTIwOTMyNzc4LCJleHAiOjE1MjA5MDIwMDB9.9YYPueJ9Rc8uqbr6duRb8b7FitShG9sCHu9Ti1GFGRI";
+let jwtExpired =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YTgzZWFlMWQyNWRkMzcwNGQzNDJjM2U4IiwiaWF0IjoxNTIwOTMyNzc4LCJleHAiOjE1MjA5MDIwMDB9.RRO7dC1S-bhmZSbgGxsY1MiWETm0_hrqwWLWp7ZK61s";
+let jwtValid = "";
 
 let mongoose = require("mongoose");
 let app = require("../server.js");
@@ -6,11 +13,6 @@ let config = require("./test_variables.js");
 let request = require("supertest")(app);
 let assert = require("chai").assert;
 let expect = require("chai").expect;
-let jwtHashWithDifferentSecretKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YTgzZWFlMWQyNWRkMzcwNGQzNDJjM2U4IiwiaWF0IjoxNTIwOTMyNzc4LCJleHAiOjE1MjA5MDIwMDB9.9YYPueJ9Rc8uqbr6duRb8b7FitShG9sCHu9Ti1GFGRI";
-let jwtExpired =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YTgzZWFlMWQyNWRkMzcwNGQzNDJjM2U4IiwiaWF0IjoxNTIwOTMyNzc4LCJleHAiOjE1MjA5MDIwMDB9.RRO7dC1S-bhmZSbgGxsY1MiWETm0_hrqwWLWp7ZK61s";
-let jwtValid = "";
 
 /**
  * Integration tests with TDD Styles
@@ -63,10 +65,10 @@ describe("(0.1), GET /api/ping response", function() {
 });
 
 //API OK
-describe("(0.2), GET /api/pingAuth with jwt expired", function() {
-  it("should render 200 ok", function(done) {
+describe("(0.2), GET /api/users/validJWT with jwt expired", function() {
+  it("should render 401", function(done) {
     request
-      .get("/api/pingAuth")
+      .get("/api/users/validJWT")
       .set({ Authorization: "JWT " + jwtExpired })
       .expect(function(res) {
         assert.isNotOk(res.body.ok);
@@ -76,10 +78,10 @@ describe("(0.2), GET /api/pingAuth with jwt expired", function() {
   });
 });
 
-describe("(0.3), GET /api/pingAuth with jwt hashed with different secret key", function() {
+describe("(0.3), GET /api/users/validJWT with jwt hashed with different secret key", function() {
   it("should render 200 ok", function(done) {
     request
-      .get("/api/pingAuth")
+      .get("/api/users/validJWT")
       .set({ Authorization: "JWT " + jwtHashWithDifferentSecretKey })
       .expect(function(res) {
         assert.isNotOk(res.body.ok);
@@ -325,10 +327,10 @@ describe("(1.10), Log-in user in the system /api/users/login", function() {
 });
 
 //API OK
-describe("(0.4), GET /api/pingAuth response", function() {
+describe("(1.10.1), GET /api/users/validJWT response", function() {
   it("should render 200 ok", function(done) {
     request
-      .get("/api/pingAuth")
+      .get("/api/users/validJWT")
       .set({ Authorization: "JWT " + jwtValid })
       .expect(function(res) {
         assert.isOk(res.body.ok);

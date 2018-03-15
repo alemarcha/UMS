@@ -50,4 +50,34 @@ module.exports.init = function(apiRoutes, requireAuth, manageResponse) {
 
   // Delete Routes
   authRoutes.delete("/:email/delete", UserController.delete);
+
+  // check JWT valid
+  authRoutes.get(
+    "/validJWT",
+    function(req, res, next) {
+      passport.authenticate(
+        "jwt",
+        { session: false },
+        (err, userData, info) => {
+          if (err) {
+            return next(err);
+          }
+          if (!userData) {
+            return next({
+              status: 401,
+              message: info.message,
+              err: info
+            });
+          }
+          req.userData = userData;
+          return next();
+        }
+      )(req, res, next);
+    },
+    (req, res, next) => {
+      UserController.validJWT(req.userData, (err, response) => {
+        manageResponse(err, response, res, next);
+      });
+    }
+  );
 };
