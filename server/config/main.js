@@ -7,7 +7,16 @@ let loadVariablesByEnvironment = () => {
     //host
     host_swagger: process.env.HOST_SWAGGER || "localhost",
     //SALT_FACTOR for hash bcrypt password
-    SALT_FACTOR: process.env.SALT_FACTOR || 5
+    SALT_FACTOR: process.env.SALT_FACTOR || 5,
+    jwtPrivateKeyPath: process.env.JWT_PRIVATE_KEY_PATH,
+    jwtPublicKeyPath: process.env.JWT_PUBLIC_KEY_PATH,
+    signOptionsJwt: {
+      issuer: process.env.JWT_ISSUER || "UMS",
+      subject: process.env.JWT_SUBJECT || "alexis.martinez@juntadeandalucia.es",
+      audience: process.env.JWT_AUDIENCE || "UMS.com",
+      expiresIn: process.env.JWT_EXPIRES || "24h",
+      algorithm: "RS256"
+    }
   };
   switch (environmentVariables.environment) {
     case "test":

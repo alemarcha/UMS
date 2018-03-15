@@ -5,8 +5,13 @@ const passport = require("passport"),
   config = require("./main"),
   JwtStrategy = require("passport-jwt").Strategy,
   ExtractJwt = require("passport-jwt").ExtractJwt,
-  LocalStrategy = require("passport-local");
+  LocalStrategy = require("passport-local"),
+  fs = require("fs");
 
+const publicKey = fs.readFileSync(
+  global.__basedir + config.jwtPublicKeyPath,
+  "utf8"
+);
 // Setting up local login strategy
 const localOptions = { usernameField: "email" };
 const localLogin = new LocalStrategy(localOptions, function(
@@ -44,7 +49,8 @@ const jwtOptions = {
   // Telling Passport to check authorization headers for JWT -> Authorization: JWT Token
   jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("JWT"),
   // Telling Passport where to find the secret
-  secretOrKey: config.secret
+  secretOrKey: publicKey,
+  algorithms: ["RS256"]
 };
 
 // Setting up JWT login strategy

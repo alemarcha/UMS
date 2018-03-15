@@ -5,12 +5,16 @@ const jwt = require("jsonwebtoken"),
   User = require("../models/user"),
   Role = require("../models/role"),
   config = require("../config/main"),
-  utils = require("utils")._;
+  utils = require("utils")._,
+  fs = require("fs");
+
+const privateKey = fs.readFileSync(
+  global.__basedir + config.jwtPrivateKeyPath,
+  "utf8"
+);
 
 function generateToken(user) {
-  return jwt.sign(user, config.secret, {
-    expiresIn: 10080 // in seconds
-  });
+  return jwt.sign(user, privateKey, config.signOptionsJwt);
 }
 
 // Set user info from request

@@ -4,6 +4,7 @@ const express = require("express"),
   mongoose = require("mongoose"),
   config = require("./config/main");
 
+global.__basedir = __dirname + "/";
 const router = require("./router");
 const app = express();
 app.use(require("express-status-monitor")());
