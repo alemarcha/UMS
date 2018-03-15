@@ -48,7 +48,9 @@ UserSchema.pre("save", function(next) {
 
   if (!user.isModified("password")) return next();
 
-  this.constructor.hashPassword(user.password, 5, function(hash) {
+  this.constructor.hashPassword(user.password, config.SALT_FACTOR, function(
+    hash
+  ) {
     user.password = hash;
     next();
   });
