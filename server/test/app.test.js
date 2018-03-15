@@ -1322,3 +1322,17 @@ describe("(3.6.2), Search permissions by name /api/permissions/search whichdoes 
       });
   });
 });
+
+// Cover 404 error
+describe("Handle 404 error test", function() {
+  it("should try to find a route that does not exist ", function(done) {
+    request
+      .get("/api/asfsz")
+      .set("Content-Type", "application/json")
+      .expect(404)
+      .end(function(err, res) {
+        assert.isNotOk(res.body.ok);
+        done(err);
+      });
+  });
+});
