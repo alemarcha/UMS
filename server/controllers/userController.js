@@ -40,6 +40,13 @@ exports.login = function(user, callback) {
   });
 };
 
+exports.validJWT = function(userData, callback) {
+  let userInfo = setUserInfo(userData.user);
+  callback(null, {
+    ok: true,
+    data: { user: userInfo, token: userData.token }
+  });
+};
 //========================================
 // Registration Route
 //========================================

@@ -129,6 +129,22 @@ paths:
            description: User login
          '400':
            description: Bad Request
+  /validJWT:
+    get:
+      description: "Check whether a JWT is valid or not."
+      tags:
+      - "users"
+      produces:
+      - application/json
+      parameters:
+      - name: Authorization
+        in: header
+        description: We need an JWT to authorized action. Schema value is following > JWT + Token
+        required: true
+        type: string
+      responses:
+        '200':
+          description: Ping response
   /users/{emailId}/update :
     put:
       description: "Update a user"
@@ -524,21 +540,7 @@ paths:
       responses:
         '200':
           description: Ping response
-  /pingAuth:
-    get:
-      description: "Ping Api Rest"
-      produces:
-      - application/json
-      parameters:
-      - name: Authorization
-        in: header
-        description: We need an JWT to authorized action. Schema value is following > JWT + Token
-        required: true
-        type: string
-      responses:
-        '200':
-          description: Ping response
-components:
+
 
 # securityDefinitions:
 #   token:
