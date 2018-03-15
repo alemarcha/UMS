@@ -99,7 +99,7 @@ module.exports = function(app) {
   // Handle 404 error.
   app.use("*", (req, res) => {
     //TODO Just for development mode
-    console.log(req);
+    // console.log(req);
     sendError(404, "Not Found route", req.originalUrl, res);
   });
 };
