@@ -1,6 +1,4 @@
 process.env.ENVIRONMENT = "test";
-process.env.PORT = 3030;
-process.env.SECRET_KEY = "My_Secret_KEY";
 let jwtHashWithDifferentSecretKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YTgzZWFlMWQyNWRkMzcwNGQzNDJjM2U4IiwiaWF0IjoxNTIwOTMyNzc4LCJleHAiOjE1MjA5MDIwMDB9.9YYPueJ9Rc8uqbr6duRb8b7FitShG9sCHu9Ti1GFGRI";
 let jwtExpired =
