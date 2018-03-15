@@ -57,11 +57,11 @@ Same steps that we note before in the case of development, for the production yo
 
 We recommended created a new private and public keys for production environment instead of data/keys/jwt256.key and data/keys/jwt256.key.pub we have in our repo with development and testing purposes. You can create your keys following:
 
-ssh-keygen -t rsa -b 4096 -f jwtRS256.key
-//Without passphrase
-openssl rsa -in jwtRS256.key -pubout -outform PEM -out jwtRS256.key.pub
-cat jwtRS256.key
-cat jwtRS256.key.pub
+    ssh-keygen -t rsa -b 4096 -f jwtRS256.key
+    #Without passphrase
+    openssl rsa -in jwtRS256.key -pubout -outform PEM -out jwtRS256.key.pub
+    cat jwtRS256.key
+    cat jwtRS256.key.pub
 
 You can put wherever you want and put the path in your .env file to work with them. You never must publish your private key. You just should share your public key instead of private.
 
