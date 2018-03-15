@@ -33,25 +33,33 @@ Using `docker-compose` (Use remote db or a local one in which we can share with 
 
 ### Development
 
-* remote_db
+* To use a `remote_db`
 
 If do you want to connect to a existing remote mongo server, you should write down in your dotenv file:
 
-    ENVIRONMENT=development_remote
-    DB_development_remote=mongodb://{USER}:{PASSWORD}@{IP_DATABASE}:27017/database_ums
+    ENVIRONMENT=development
 
-* local_db
+And uncomment the following line:
+
+    DB_DEV=mongodb://{USER}:{PASSWORD}@{IP_DATABASE}:27017/database_ums
+
+* To use a `local_db`
 
 Or in the contrary you already has a mongo running in your set up, then you should type the info like this:
 
-    ENVIRONMENT=development_local
     DB_development_local=mongodb://{YOUR_IP_DATABASE}:{YOUR_PORT_DATABASE}/database_ums
 
 In this case, you need to write down your local ip where your mongo is, if you just type localhost this will not work.
 
 ### Production
 
-Same steps that we note before in the case of development, for the production you only need to change the development word for the production one.
+Same steps that we note before in the case of development, for the production you only need to comment the development line and uncomment the production one.
+
+### Testing
+
+In order to do our tests this will be the mongodb route in local:
+
+    DB_TEST=mongodb://localhost:27017/ums_test
 
 ### Data storage
 
@@ -89,14 +97,31 @@ You should see at localhost:3000 our Swagger docs now.
 
 ## Info for development
 
-We are using vscode to program, we recommend you to install the following extensions:
+We are using Visual Studio Code to programming, if you are planning to replicate the way we are doing it, we recommend you to install the following extensions:
+
+`Launch VS Code Quick Open (Ctrl+P), paste the following command, and press enter.`
 
 * Docker
+
+> ext install PeterJausovec.vscode-docker
+
 * ESLint
+
+> ext install dbaeumer.vscode-eslint
+
 * Prettier - Code formatter
+
+> ext install esbenp.prettier-vscode
+
 * YAML support for vscode
+
+> ext install redhat.vscode-yaml
+
 * Swagger Viewer (in order to preview the doc)
-* pm2 for server monitoring
+
+> ext install Arjun.swagger-viewer
+
+* Install pm2 with npm for server monitoring
 
          npm install pm2@latest -g
 
@@ -104,10 +129,11 @@ We are using vscode to program, we recommend you to install the following extens
 
 * cd UMS/server
 * npm install
-* npm run test-server
-* You will see results of testing in command line
+* npm run test
 
-Moreover you could see our [travis CI](https://travis-ci.org/alemarcha/UMS)
+You will see results of testing in command line
+
+### Moreover you could see our [travis CI](https://travis-ci.org/alemarcha/UMS)
 
 ## Developers
 
