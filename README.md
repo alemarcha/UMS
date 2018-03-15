@@ -53,6 +53,8 @@ In this case, you need to write down your local ip where your mongo is, if you j
 
 Same steps that we note before in the case of development, for the production you only need to change the development word for the production one.
 
+### Data storage
+
 We are storing the mongo data in when we use utils-docker/docker-shared-mongo(Deprecated) or utils-docker/docker-compose-internal:
 
       - ~/data/mongodb_data/:/data/db
