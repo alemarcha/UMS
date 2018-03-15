@@ -129,7 +129,7 @@ paths:
            description: User login
          '400':
            description: Bad Request
-  /validJWT:
+  /users/validJWT:
     get:
       description: "Check whether a JWT is valid or not."
       tags:
