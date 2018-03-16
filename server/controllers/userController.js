@@ -233,7 +233,7 @@ exports.update = async function(req, res, next) {
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
   const roles = req.body.roles;
-  const isActive = true;
+  const isActive = req.body.isActive;
   const userUpdate = {};
 
   if (utils.isEmpty(identifyEmail)) {
@@ -283,7 +283,7 @@ exports.update = async function(req, res, next) {
     userUpdate.isActive = isActive;
   }
 
-  User.findOneAndUpdate({ email: identifyEmail }, userUpdate, {
+  User.findOneAndUpdate({ email: identifyEmail, isActive: true }, userUpdate, {
     new: true
   })
     .populate("roles")
@@ -306,7 +306,81 @@ exports.update = async function(req, res, next) {
       return res.status(200).json({ ok: true, data: { user: userUpdated } });
     });
 };
+exports.updatePassword = async function(params, body, callback) {
+  const identifyEmail = params.email;
+  const currentPassword = body.currentPassword;
+  const newPassword = body.newPassword;
+  const repeatNewPassword = body.repeatNewPassword;
+  const userUpdate = {};
+  if (
+    utils.isEmpty(currentPassword) ||
+    utils.isEmpty(newPassword) ||
+    utils.isEmpty(repeatNewPassword)
+  ) {
+    return callback({
+      status: 405,
+      message:
+        "Current password, new password or repeat new password are not correct",
+      err: {}
+    });
+  }
 
+  if (newPassword !== repeatNewPassword) {
+    return callback({
+      status: 400,
+      message: "New password and repeat new password are not equals",
+      err: {}
+    });
+  }
+
+  let getUseActiveByEmail = () => {
+    return User.findOne({ isActive: true, email: identifyEmail })
+      .exec()
+      .then(response => {
+        return response;
+      });
+  };
+  let userToUpdate = await getUseActiveByEmail();
+
+  if (utils.isEmpty(userToUpdate)) {
+    return callback({
+      status: 400,
+      message: "User does not exist",
+      err: identifyEmail
+    });
+  }
+
+  userToUpdate.comparePassword(currentPassword, function(err, isMatch) {
+    if (err) {
+      return callback({
+        status: 400,
+        message: err.message,
+        err: err
+      });
+    }
+    if (!isMatch) {
+      return callback({
+        status: 400,
+        message: "Current password is not correct",
+        err: identifyEmail
+      });
+    }
+    User.hashPassword(newPassword, config.SALT_FACTOR, function(hashPassword) {
+      console.log("prueba7");
+
+      userToUpdate.update({ password: hashPassword }).exec((err, response) => {
+        if (err) {
+          return callback({
+            status: 400,
+            message: err.message,
+            err: err
+          });
+        }
+        callback(null, { ok: true, data: { user: response } });
+      });
+    });
+  });
+};
 //========================================
 // Delete User Route
 //========================================

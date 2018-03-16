@@ -47,6 +47,11 @@ module.exports.init = function(apiRoutes, requireAuth, manageResponse) {
 
   // Update Routes
   authRoutes.put("/:email/update", UserController.update);
+  authRoutes.put("/:email/updatePassword", (req, res, next) => {
+    UserController.updatePassword(req.params, req.body, (err, response) => {
+      manageResponse(err, response, res, next);
+    });
+  });
 
   // Delete Routes
   authRoutes.delete("/:email/delete", UserController.delete);

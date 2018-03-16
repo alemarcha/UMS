@@ -250,9 +250,164 @@ describe(
   }
 );
 
+//User updated Password with no correct current password OK
+describe(
+  "(1.8.1), PUT Update password with no correct current password /api/users/" +
+    config.email_default_test2 +
+    "/updatePassword",
+  function() {
+    it("should render ok", function(done) {
+      request
+        .put("/api/users/" + config.email_default_test2 + "/updatePassword")
+        .set("Content-Type", "application/json")
+        .send({
+          currentPassword: config.password_default_test2 + "fake",
+          newPassword: config.password_default_test2_new,
+          repeatNewPassword: config.password_default_test2_new
+        })
+        .expect(function(res) {
+          assert.isNotOk(res.body.ok);
+        })
+        .expect(400, done);
+    });
+  }
+);
+//User updated Password with empty current password no OK
+describe(
+  "(1.8.2), PUT Update password with empty current password /api/users/" +
+    config.email_default_test2 +
+    "/updatePassword",
+  function() {
+    it("should render ok", function(done) {
+      request
+        .put("/api/users/" + config.email_default_test2 + "/updatePassword")
+        .set("Content-Type", "application/json")
+        .send({
+          currentPassword: "",
+          newPassword: config.password_default_test2_new,
+          repeatNewPassword: config.password_default_test2_new
+        })
+        .expect(function(res) {
+          assert.isNotOk(res.body.ok);
+        })
+        .expect(405, done);
+    });
+  }
+);
+
+//User updated Password with empty new password no OK
+describe(
+  "(1.8.3), PUT Update password with empty new password  /api/users/" +
+    config.email_default_test2 +
+    "/updatePassword",
+  function() {
+    it("should render ok", function(done) {
+      request
+        .put("/api/users/" + config.email_default_test2 + "/updatePassword")
+        .set("Content-Type", "application/json")
+        .send({
+          currentPassword: config.password_default_test2,
+          newPassword: "",
+          repeatNewPassword: config.password_default_test2_new
+        })
+        .expect(function(res) {
+          assert.isNotOk(res.body.ok);
+        })
+        .expect(405, done);
+    });
+  }
+);
+
+//User updated Password with not equals new password no OK
+describe(
+  "(1.8.4), PUT Update password with not equals new password /api/users/" +
+    config.email_default_test2 +
+    "/updatePassword",
+  function() {
+    it("should render ok", function(done) {
+      request
+        .put("/api/users/" + config.email_default_test2 + "/updatePassword")
+        .set("Content-Type", "application/json")
+        .send({
+          currentPassword: config.password_default_test2,
+          newPassword: config.password_default_test2_new + "fake",
+          repeatNewPassword: config.password_default_test2_new
+        })
+        .expect(function(res) {
+          assert.isNotOk(res.body.ok);
+        })
+        .expect(400, done);
+    });
+  }
+);
+
+//User updated Password OK
+describe(
+  "(1.8), PUT Update password correct user /api/users/" +
+    config.email_default_test2 +
+    "/updatePassword",
+  function() {
+    it("should render ok", function(done) {
+      request
+        .put("/api/users/" + config.email_default_test2 + "/updatePassword")
+        .set("Content-Type", "application/json")
+        .send({
+          currentPassword: config.password_default_test2,
+          newPassword: config.password_default_test2_new,
+          repeatNewPassword: config.password_default_test2_new
+        })
+        .expect(function(res) {
+          assert.isOk(res.body.ok);
+          console.log(res.body);
+        })
+        .expect(200, done);
+    });
+  }
+);
+
+//User Login user with new Password OK
+describe("(1.8.1), Log-in user in the system /api/users/login", function() {
+  it("should render not ok", function(done) {
+    request
+      .post("/api/users/login")
+      .set("Content-Type", "application/json")
+      .send({
+        email: config.email_default_test2,
+        password: config.password_default_test2_new
+      })
+      .expect(function(res) {
+        assert.isOk(res.body.ok);
+        assert.exists(res.body.data.token);
+        assert.strictEqual(
+          res.body.data.user.email,
+          config.email_default_test2
+        );
+        jwtValid = res.body.data.token;
+      })
+      .expect(200, done);
+  });
+});
+
+//User Login user with old Password NO OK
+describe("(1.8.2), Log-in user in the system /api/users/login", function() {
+  it("should render ok", function(done) {
+    request
+      .post("/api/users/login")
+      .set("Content-Type", "application/json")
+      .send({
+        email: config.email_default_test2,
+        password: config.password_default_test2
+      })
+      .expect(function(res) {
+        assert.isNotOk(res.body.ok);
+      })
+      .expect(401, done);
+  });
+});
+
 //User updated OK
 describe(
-  "(1.8), PUT Update correct user /api/users/" +
+  "(1.8.3), PUT Update correct user /api/users/" +
     config.email_default_test2 +
     "/update",
   function() {

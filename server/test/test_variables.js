@@ -9,6 +9,7 @@ module.exports = {
   email_tester_full: "userwithroles@email.com",
   password_default_test: "password",
   password_default_test2: "password2",
+  password_default_test2_new: "password2New",
   user_name_default_test_fake: "username_fake",
   user_name_default_test: "username",
   user_name_default_test2: "username2",

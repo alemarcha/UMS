@@ -167,7 +167,6 @@ paths:
           type: object
           required: 
             - email
-            - password
             - firstName
             - lastName
             - isActive
@@ -177,11 +176,6 @@ paths:
               type: string
               example: jack@email.com
               description: User's email.
-            password:
-              type: string
-              description: User's password.
-              example: passw
-              format: "password"
             firstName:
               type: string
               description: User's first name.
@@ -201,6 +195,55 @@ paths:
       responses:
         '200':
            description: User update response
+        '201':
+          description: Updated
+        '405':
+          description: Invalid input
+        default:
+          description: Unexpected error
+  /users/{emailId}/updatePassword:
+    put:
+      description: "Update password user"
+      tags:
+      - "users"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+      - name: emailId
+        in: path
+        description: user email to fetch
+        required: true
+        type: string
+      - in: body
+        name: Update
+        description: User info in order to update.
+        schema:
+          type: object
+          required: 
+            - currentPassword
+            - newPassword
+            - repeatNewPassword
+          properties:
+            currentPassword:
+              type: string
+              description: Current User's password.
+              example: passw
+              format: "password"
+            newPassword:
+              type: string
+              description: New User's password.
+              example: passw
+              format: "password"
+            repeatNewPassword:
+              type: string
+              description: Repat new User's password.
+              example: passw
+              format: "password"
+      responses:
+        '200':
+           description: Password User update response
         '201':
           description: Updated
         '405':
