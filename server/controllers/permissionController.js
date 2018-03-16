@@ -7,7 +7,6 @@ const Permission = require("../models/permission"),
 //========================================
 // Creation Route
 //========================================
-
 exports.create = function(req, res, next) {
   // Check for creation errors
   const permissionName = req.body.permissionName;
@@ -32,9 +31,10 @@ exports.create = function(req, res, next) {
 
     // If permissionName is not unique, return error
     if (existingPermissionName) {
-      return res.status(409).send({
-        ok: false,
-        error: "That permission name is already in use."
+      return next({
+        status: 409,
+        message: "That permission name is already in use.",
+        err: 409
       });
     }
 
@@ -91,7 +91,6 @@ exports.search = async function(filter, callback) {
 //========================================
 // Update Permission Route
 //========================================
-
 exports.update = function(req, res, next) {
   const identifyPermission = req.params.permission;
   const permission = req.body.newPermissionName;
@@ -114,7 +113,6 @@ exports.update = function(req, res, next) {
     permissionUpdate.isActive = isActive;
   }
 
-  // use our permission model to find the permission we want
   Permission.findOneAndUpdate(
     { permissionName: identifyPermission },
     permissionUpdate,
@@ -122,14 +120,16 @@ exports.update = function(req, res, next) {
     function(err, permissionUpdated) {
       if (err) {
         if (err.code === 11000) {
-          return res.status(409).send({
-            ok: false,
-            error: "That permissionName is already in use."
+          return next({
+            status: 409,
+            message: "That permissionName is already in use.",
+            err: permissionUpdated
           });
         } else {
-          res.status(400).send({
-            ok: false,
-            error: err
+          return next({
+            status: 400,
+            message: err.message,
+            err: err
           });
         }
       }
