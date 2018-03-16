@@ -62,6 +62,20 @@ describe("(0.1), GET /api/ping response", function() {
   });
 });
 
+// Cover 404 error
+describe("(0.1.1), Handle 404 error test", function() {
+  it("should try to find a route that does not exist ", function(done) {
+    request
+      .get("/api/asfsz")
+      .set("Content-Type", "application/json")
+      .expect(404)
+      .end(function(err, res) {
+        assert.isNotOk(res.body.ok);
+        done(err);
+      });
+  });
+});
+
 //API OK
 describe("(0.2), GET /api/users/validJWT with jwt expired", function() {
   it("should render 401", function(done) {
@@ -1318,20 +1332,6 @@ describe("(3.6.2), Search permissions by name /api/permissions/search whichdoes 
       .end(function(err, res) {
         assert.isOk(res.body.ok);
         assert.lengthOf(res.body.data.permissions, 0);
-        done(err);
-      });
-  });
-});
-
-// Cover 404 error
-describe("Handle 404 error test", function() {
-  it("should try to find a route that does not exist ", function(done) {
-    request
-      .get("/api/asfsz")
-      .set("Content-Type", "application/json")
-      .expect(404)
-      .end(function(err, res) {
-        assert.isNotOk(res.body.ok);
         done(err);
       });
   });
