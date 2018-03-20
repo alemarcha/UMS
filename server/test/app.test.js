@@ -357,7 +357,7 @@ describe(
 
 //User updated Password OK
 describe(
-  "(1.8), PUT Update password correct user /api/users/" +
+  "(1.8.5), PUT Update password correct user /api/users/" +
     config.email_default_test2 +
     "/updatePassword",
   function() {
@@ -380,7 +380,7 @@ describe(
 );
 
 //User Login user with new Password OK
-describe("(1.8.1), Log-in user in the system /api/users/login", function() {
+describe("(1.8.6), Log-in user in the system /api/users/login", function() {
   it("should render not ok", function(done) {
     request
       .post("/api/users/login")
@@ -403,7 +403,7 @@ describe("(1.8.1), Log-in user in the system /api/users/login", function() {
 });
 
 //User Login user with old Password NO OK
-describe("(1.8.2), Log-in user in the system /api/users/login", function() {
+describe("(1.8.7), Log-in user in the system /api/users/login", function() {
   it("should render ok", function(done) {
     request
       .post("/api/users/login")
@@ -421,7 +421,7 @@ describe("(1.8.2), Log-in user in the system /api/users/login", function() {
 
 //User updated OK
 describe(
-  "(1.8.3), PUT Update correct user /api/users/" +
+  "(1.8.8), PUT Update correct user /api/users/" +
     config.email_default_test2 +
     "/update",
   function() {
@@ -454,22 +454,6 @@ describe(
   }
 );
 
-// Delete User
-describe("(1.9), Disable user.", function() {
-  it("should set isActive field to false", function(done) {
-    request
-      .delete("/api/users/" + config.email_default_test + "/delete")
-      .set("Content-Type", "application/json")
-      .send({
-        isActive: false
-      })
-      .expect(function(res) {
-        assert.isOk(res.body.ok);
-      })
-      .expect(200, done);
-  });
-});
-
 //User log-in OK
 describe("(1.10), Log-in user in the system /api/users/login", function() {
   it("should render ok", function(done) {
@@ -494,7 +478,7 @@ describe("(1.10), Log-in user in the system /api/users/login", function() {
 });
 
 //API OK
-describe("(1.10.1), GET /api/users/validJWT response", function() {
+describe("(1.10.1), GET /api/users/validJWT", function() {
   it("should render 200 ok", function(done) {
     request
       .get("/api/users/validJWT")
@@ -504,6 +488,64 @@ describe("(1.10.1), GET /api/users/validJWT response", function() {
       })
       .expect(200)
       .end(done);
+  });
+});
+
+//API NO OK
+describe("(1.10.2), GET /api/users/refreshJWT with no valid JWT", function() {
+  it("should render 401", function(done) {
+    request
+      .get("/api/users/refreshJWT")
+      .set({ Authorization: "JWT " + jwtHashWithDifferentSecretKey })
+      .expect(function(res) {
+        assert.isNotOk(res.body.ok);
+      })
+      .expect(401)
+      .end(done);
+  });
+});
+
+//API NO OK
+describe("(1.10.3), GET /api/users/refreshJWT with JWT expired", function() {
+  it("should render 401", function(done) {
+    request
+      .get("/api/users/refreshJWT")
+      .set({ Authorization: "JWT " + jwtExpired })
+      .expect(function(res) {
+        assert.isNotOk(res.body.ok);
+      })
+      .expect(401)
+      .end(done);
+  });
+});
+
+//API OK
+describe("(1.10.4), GET /api/users/refreshJWT with JWT expired response", function() {
+  it("should render 200 ok", function(done) {
+    request
+      .get("/api/users/refreshJWT")
+      .set({ Authorization: "JWT " + jwtValid })
+      .expect(function(res) {
+        assert.isOk(res.body.ok);
+      })
+      .expect(200)
+      .end(done);
+  });
+});
+
+// Delete User
+describe("(1.9), Disable user.", function() {
+  it("should set isActive field to false", function(done) {
+    request
+      .delete("/api/users/" + config.email_default_test + "/delete")
+      .set("Content-Type", "application/json")
+      .send({
+        isActive: false
+      })
+      .expect(function(res) {
+        assert.isOk(res.body.ok);
+      })
+      .expect(200, done);
   });
 });
 

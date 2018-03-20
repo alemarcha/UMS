@@ -6,7 +6,8 @@ const jwt = require("jsonwebtoken"),
   Role = require("../models/role"),
   config = require("../config/main"),
   utils = require("utils")._,
-  fs = require("fs");
+  fs = require("fs"),
+  randtoken = require("rand-token");
 
 const privateKey = fs.readFileSync(
   global.__basedir + config.jwtPrivateKeyPath,
@@ -16,9 +17,16 @@ const privateKey = fs.readFileSync(
 function generateToken(user) {
   return jwt.sign(user, privateKey, config.signOptionsJwt);
 }
+function generateRefreshToken() {
+  return randtoken.uid(256);
+}
 
 // Set user info from request
-function setUserInfo(user) {
+function setUserInfo(user, refreshToken = generateRefreshToken()) {
+  // token expiring time for external services
+  let timeObject = new Date();
+  const expToken = new Date(timeObject.valueOf() + 10 * 60000);
+
   return {
     _id: user._id,
     firstName: user.firstName,
@@ -26,31 +34,94 @@ function setUserInfo(user) {
     email: user.email,
     password: user.password,
     isActive: user.isActive,
-    roles: user.roles
+    roles: user.roles,
+    expToken: expToken,
+    refreshToken: refreshToken
   };
 }
+
+exports.findById = (id, callback) => {
+  console.log(id);
+  return User.findById(id)
+    .populate("roles")
+    .exec(callback);
+};
 
 //========================================
 // Login Route
 //========================================
 exports.login = function(user, callback) {
   let userInfo = setUserInfo(user);
-  callback(null, {
-    ok: true,
-    data: {
-      token: generateToken(userInfo),
-      user: userInfo
+  let token = generateToken(userInfo);
+  let tokens = user.tokens;
+  tokens.push({
+    refreshToken: userInfo.refreshToken,
+    token: token,
+    active: true
+  });
+  user.update({ tokens: tokens }, function(err, res) {
+    console.log(err);
+    if (err) {
+      return next({
+        status: 400,
+        message: err.message,
+        err: err
+      });
     }
+    callback(null, {
+      ok: true,
+      data: {
+        token: token,
+        user: userInfo
+      }
+    });
   });
 };
 
+//========================================
+// Valid JWT Route
+//========================================
 exports.validJWT = function(userData, callback) {
-  let userInfo = setUserInfo(userData.user);
+  let userInfo = setUserInfo(userData.user, userData.refreshToken);
   callback(null, {
     ok: true,
     data: { user: userInfo, token: userData.token }
   });
 };
+
+//========================================
+// Refresh JWT Route
+//========================================
+exports.refreshJWT = function(userData, callback) {
+  let userInfo = setUserInfo(userData.user, userData.refreshToken);
+
+  let newToken = generateToken(userInfo);
+  // We update the refresh token with a new related token to this refreshToken
+  let tokens = userData.user.tokens.map(tokenIt => {
+    if (tokenIt.refreshToken === userData.refreshToken) {
+      tokenIt.token = newToken;
+    }
+    return tokenIt;
+  });
+
+  userData.user.update({ tokens: tokens }, function(err, res) {
+    if (err) {
+      return next({
+        status: 400,
+        message: err.message,
+        err: err
+      });
+    }
+    callback(null, {
+      ok: true,
+      data: {
+        token: newToken,
+        user: userInfo
+      }
+    });
+  });
+};
+
 //========================================
 // Registration Route
 //========================================
@@ -151,7 +222,6 @@ exports.register = async function(req, res, next) {
       res.status(201).json({
         ok: true,
         data: {
-          token: "JWT " + generateToken(userInfo),
           user: userInfo
         }
       });
@@ -306,6 +376,10 @@ exports.update = async function(req, res, next) {
       return res.status(200).json({ ok: true, data: { user: userUpdated } });
     });
 };
+
+//========================================
+// Update Password Route
+//========================================
 exports.updatePassword = async function(params, body, callback) {
   const identifyEmail = params.email;
   const currentPassword = body.currentPassword;
@@ -381,6 +455,7 @@ exports.updatePassword = async function(params, body, callback) {
     });
   });
 };
+
 //========================================
 // Delete User Route
 //========================================
@@ -408,11 +483,4 @@ exports.delete = function(req, res, next) {
       return res.status(200).json({ ok: true, data: { user: userDeleted } });
     }
   );
-};
-
-exports.findById = (id, callback) => {
-  console.log(id);
-  return User.findById(id)
-    .populate("roles")
-    .exec(callback);
 };

@@ -84,7 +84,7 @@ module.exports = function(app) {
     apiRoutes.use((err, req, res, next) => {
       //TODO Just for development mode
       console.log(err);
-      sendError(err.status || 500, err.message, err, res);
+      sendError(err.status || 500, err.message || "", err, res);
     });
   }
 

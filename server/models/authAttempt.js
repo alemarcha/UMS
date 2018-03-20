@@ -8,15 +8,21 @@ const AuthAttemptSchema = new Schema(
   {
     userAttempt: {
       type: String,
-      lowercase: true,
-      required: true
+      lowercase: true
     },
     passwordAttempt: {
+      type: String,
+      lowercase: true
+    },
+    tokenAttempt: {
+      type: String
+    },
+    ip: {
       type: String,
       lowercase: true,
       required: true
     },
-    ip: {
+    type: {
       type: String,
       lowercase: true,
       required: true

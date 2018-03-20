@@ -21,6 +21,7 @@
     "passport": "^0.4.0",
     "passport-jwt": "^3.0.1",
     "passport-local": "^1.0.0",
+    "rand-token": "^0.4.0",
     "swagger-jsdoc": "^1.9.7",
     "swagger-model-validator": "^2.2.8",
     "swagger-node-express": "^2.1.3",

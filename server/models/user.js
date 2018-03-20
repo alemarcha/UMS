@@ -35,6 +35,19 @@ const UserSchema = new Schema(
       type: Boolean
     },
     roles: [{ type: Schema.Types.ObjectId, ref: "Role" }],
+    tokens: [
+      {
+        refreshToken: {
+          type: String
+        },
+        token: {
+          type: String
+        },
+        active: {
+          type: Boolean
+        }
+      }
+    ],
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date }
   },

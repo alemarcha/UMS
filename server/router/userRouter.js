@@ -85,4 +85,38 @@ module.exports.init = function(apiRoutes, requireAuth, manageResponse) {
       });
     }
   );
+
+  //1. Called AuthAttemp to register refresh params.
+  //2. Passport authenticate jwt check if jwt is valid, not expired and user contains refresh token passed in jwt.
+  //3. Once we check jwt and refresh token are valid we call user controller and generate jwt.
+  authRoutes.get(
+    "/refreshJWT",
+    AuthAttemptController.refreshJWTAttemptLogger,
+    function(req, res, next) {
+      passport.authenticate(
+        "jwt",
+        { session: false },
+        (err, userData, info) => {
+          if (err) {
+            return next(err);
+          }
+          if (!userData) {
+            return next({
+              status: 401,
+              message: info.message,
+              err: info
+            });
+          }
+          req.userData = userData;
+          return next();
+        }
+      )(req, res, next);
+    },
+    (req, res, next) => {
+      // Once we know that jwt token is valid and not expired, we move forward to generate new token
+      UserController.refreshJWT(req.userData, (err, response) => {
+        manageResponse(err, response, res, next);
+      });
+    }
+  );
 };

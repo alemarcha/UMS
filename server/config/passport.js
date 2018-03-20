@@ -6,7 +6,8 @@ const passport = require("passport"),
   JwtStrategy = require("passport-jwt").Strategy,
   ExtractJwt = require("passport-jwt").ExtractJwt,
   LocalStrategy = require("passport-local"),
-  fs = require("fs");
+  fs = require("fs"),
+  utils = require("utils")._;
 
 const publicKey = fs.readFileSync(
   global.__basedir + config.jwtPublicKeyPath,
@@ -19,7 +20,7 @@ const localLogin = new LocalStrategy(localOptions, function(
   password,
   done
 ) {
-  User.findOne({ email: email }, function(err, user) {
+  User.findOne({ email: email, isActive: true }, function(err, user) {
     if (err) {
       return done(err);
     }
@@ -55,15 +56,32 @@ const jwtOptions = {
 
 // Setting up JWT login strategy
 const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done) {
+  // if jwt token is no valid or expired will return a 401 http code
   UserController.findById(payload._id, (err, user) => {
     if (err) {
       // console.log(jwtOptions);
       return done(err, false);
     }
     if (user) {
-      done(null, { user: user, token: jwtOptions.jwtFromRequest });
+      // Check if user contains given refresh token and is active
+      let refreshToken = user.tokens.find(tokenBd => {
+        return tokenBd.refreshToken === payload.refreshToken && tokenBd.active;
+      });
+      if (!utils.isEmpty(refreshToken)) {
+        done(null, {
+          user: user,
+          token: jwtOptions.jwtFromRequest,
+          refreshToken: payload.refreshToken
+        });
+      } else {
+        done(null, false, {
+          error: "Refresh token no valid. Please login."
+        });
+      }
     } else {
-      done(null, false);
+      done(null, false, {
+        error: "JWT no valid. Please login."
+      });
     }
   });
 });
