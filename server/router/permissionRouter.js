@@ -7,19 +7,35 @@ module.exports.init = function(apiRoutes, requireAuth, manageResponse) {
   // Set permission as subgroup/middleware to apiRoutes
   apiRoutes.use("/permissions", permissionRoutes);
 
-  // Search Routes
+  // Search Routes /api/permissions/search
   permissionRoutes.get("/search", (req, res, next) => {
-    PermissionController.search(req.query, (err, response) => {
-      manageResponse(err, response, res, next);
+    PermissionController.search(req.query, (err, status, response) => {
+      manageResponse(err, status, response, res, next);
     });
   });
 
-  // Create Routes
-  permissionRoutes.post("/create", PermissionController.create);
+  // Create Routes /api/permissions/create
+  permissionRoutes.post("/create", (req, res, next) => {
+    PermissionController.create(req.body, (err, status, response) => {
+      manageResponse(err, status, response, res, next);
+    });
+  });
 
-  // Update Routes
-  permissionRoutes.put("/:permission/update", PermissionController.update);
+  // Update Routes /api/permissions/{permission}/update
+  permissionRoutes.put("/:permission/update", (req, res, next) => {
+    PermissionController.update(
+      req.params,
+      req.body,
+      (err, status, response) => {
+        manageResponse(err, status, response, res, next);
+      }
+    );
+  });
 
-  // Delete Routes
-  permissionRoutes.delete("/:permission/delete", PermissionController.delete);
+  // Delete Routes /api/permissions/{permission}/delete
+  permissionRoutes.delete("/:permission/delete", (req, res, next) => {
+    PermissionController.delete(req.params, (err, status, response) => {
+      manageResponse(err, status, response, res, next);
+    });
+  });
 };

@@ -7,14 +7,14 @@ const Permission = require("../models/permission"),
 //========================================
 // Creation Route
 //========================================
-exports.create = function(req, res, next) {
+exports.create = function(body, callback) {
   // Check for creation errors
-  const permissionName = req.body.permissionName;
+  const permissionName = body.permissionName;
   const isActive = true;
 
   // Return error if no permissionName provided
   if (utils.isEmpty(permissionName)) {
-    return next({
+    return callback({
       status: 400,
       message: "You must enter a permission name.",
       err: 400
@@ -26,12 +26,12 @@ exports.create = function(req, res, next) {
     existingPermissionName
   ) {
     if (err) {
-      return next(err);
+      return callback(err);
     }
 
     // If permissionName is not unique, return error
     if (existingPermissionName) {
-      return next({
+      return callback({
         status: 409,
         message: "That permission name is already in use.",
         err: 409
@@ -46,11 +46,16 @@ exports.create = function(req, res, next) {
 
     permission.save(function(err, permission) {
       if (err) {
-        return res.status(400).send({ ok: false, error: err });
+        return callback({
+          status: 400,
+          message: err.message,
+          err: err
+        });
       }
-      return res
-        .status(201)
-        .json({ ok: true, data: { permission: permission } });
+      return callback(null, 201, {
+        ok: true,
+        data: { permission: permission }
+      });
     });
   });
 };
@@ -75,30 +80,27 @@ exports.search = async function(filter, callback) {
     .sort({ roleName: 1 })
     .exec((err, response) => {
       if (err) {
-        callback({
-          ok: false,
-          err: {
-            status: 400,
-            message: err.message,
-            err: err
-          }
+        return callback({
+          status: 400,
+          message: err.message,
+          err: err
         });
       }
-      callback(null, { ok: true, data: { permissions: response } });
+      callback(null, 200, { ok: true, data: { permissions: response } });
     });
 };
 
 //========================================
 // Update Permission Route
 //========================================
-exports.update = function(req, res, next) {
-  const identifyPermission = req.params.permission;
-  const permission = req.body.newPermissionName;
-  const isActive = req.body.isActive;
+exports.update = function(params, body, callback) {
+  const identifyPermission = params.permission;
+  const permission = body.newPermissionName;
+  const isActive = body.isActive;
   const permissionUpdate = {};
 
   if (utils.isEmpty(identifyPermission)) {
-    return next({
+    return callback({
       status: 400,
       message: "Permission provided incorrect",
       err: identifyPermission
@@ -120,22 +122,23 @@ exports.update = function(req, res, next) {
     function(err, permissionUpdated) {
       if (err) {
         if (err.code === 11000) {
-          return next({
+          return callback({
             status: 409,
             message: "That permissionName is already in use.",
             err: permissionUpdated
           });
         } else {
-          return next({
+          return callback({
             status: 400,
             message: err.message,
             err: err
           });
         }
       }
-      return res
-        .status(200)
-        .json({ ok: true, data: { permission: permissionUpdated } });
+      return callback(null, 200, {
+        ok: true,
+        data: { permission: permissionUpdated }
+      });
     }
   );
 };
@@ -143,30 +146,34 @@ exports.update = function(req, res, next) {
 //========================================
 // Delete Permission Route
 //========================================
-exports.delete = function(req, res, next) {
-  const identifyPermission = req.params.permission;
-  const isActive = false;
+exports.delete = function(params, callback) {
+  const identifyPermission = params.permission;
   const permissionUpdate = {};
 
-  if (!utils.isEmpty(isActive)) {
-    permissionUpdate.isActive = isActive;
+  permissionUpdate.isActive = false;
+  if (utils.isEmpty(identifyPermission)) {
+    return callback({
+      status: 400,
+      message: "You must introduce a permission",
+      err: 400
+    });
   }
-
   Permission.findOneAndUpdate(
     { permissionName: identifyPermission },
     permissionUpdate,
     { new: true },
     function(err, permissionDeleted) {
       if (err) {
-        return next({
+        return callback({
           status: 401,
           message: err.message,
           err: err
         });
       }
-      return res
-        .status(200)
-        .json({ ok: true, data: { permission: permissionDeleted } });
+      return callback(null, 200, {
+        ok: true,
+        data: { permission: permissionDeleted }
+      });
     }
   );
 };

@@ -9,16 +9,16 @@ const Role = require("../models/role"),
 // Creation Route
 //========================================
 
-exports.create = async function(req, res, next) {
+exports.create = async function(body, callback) {
   // Check for creation errors
-  const roleName = req.body.roleName;
-  const permissions = req.body.permissions;
+  const roleName = body.roleName;
+  const permissions = body.permissions;
   const isActive = true;
   const roleCreate = {};
 
   // Return error if no roleName provided
   if (utils.isEmpty(roleName)) {
-    return next({
+    return callback({
       status: 400,
       message: "You must enter a role name.",
       err: 400
@@ -40,7 +40,7 @@ exports.create = async function(req, res, next) {
     if (newPermissions.length === permissions.length) {
       roleCreate.permissions = newPermissions;
     } else {
-      return next({
+      return callback({
         status: 400,
         message: "You must enter a valid active permissions array.",
         err: permissions
@@ -54,14 +54,15 @@ exports.create = async function(req, res, next) {
     },
     function(err, existingRoleName) {
       if (err) {
-        return next(err);
+        return callback(err);
       }
 
       // If roleName is not unique, return error
       if (existingRoleName) {
-        return res.status(409).send({
-          ok: false,
-          error: "That roleName is already in use."
+        return callback({
+          status: 409,
+          message: "That roleName is already in use.",
+          err: 409
         });
       }
 
@@ -74,12 +75,13 @@ exports.create = async function(req, res, next) {
 
       role.save(function(err, role) {
         if (err) {
-          return res.status(400).send({
-            ok: false,
-            error: err
+          return callback({
+            status: 400,
+            message: err.message,
+            err: err
           });
         }
-        return res.status(201).json({
+        return callback(null, 201, {
           ok: true,
           data: {
             role: role
@@ -128,15 +130,12 @@ exports.search = async function(filter, callback) {
     .exec((err, response) => {
       if (err) {
         callback({
-          ok: false,
-          err: {
-            status: 400,
-            message: err.message,
-            err: err
-          }
+          status: 400,
+          message: err.message,
+          err: err
         });
       }
-      callback(null, { ok: true, data: { roles: response } });
+      callback(null, 200, { ok: true, data: { roles: response } });
     });
 };
 
@@ -144,15 +143,15 @@ exports.search = async function(filter, callback) {
 // Update Role Route
 //========================================
 
-exports.update = async function(req, res, next) {
-  const identifyRole = req.params.role;
-  const role = req.body.newRoleName;
-  const permissions = req.body.permissions;
-  const isActive = req.body.isActive;
+exports.update = async function(params, body, callback) {
+  const identifyRole = params.role;
+  const role = body.newRoleName;
+  const permissions = body.permissions;
+  const isActive = body.isActive;
   const roleUpdate = {};
 
   if (utils.isEmpty(identifyRole)) {
-    return next({
+    return callback({
       status: 400,
       message: "Role provided incorrect",
       err: identifyRole
@@ -161,6 +160,9 @@ exports.update = async function(req, res, next) {
 
   if (!utils.isEmpty(role)) {
     roleUpdate.roleName = role;
+  }
+  if (!utils.isEmpty(isActive)) {
+    roleUpdate.isActive = isActive;
   }
 
   // permissions array
@@ -179,16 +181,12 @@ exports.update = async function(req, res, next) {
     if (newPermissions.length === permissions.length) {
       roleUpdate.permissions = newPermissions;
     } else {
-      return next({
+      return callback({
         status: 400,
         message: "permissions to update are not correct",
         err: permissions
       });
     }
-  }
-
-  if (!utils.isEmpty(isActive)) {
-    roleUpdate.isActive = isActive;
   }
 
   Role.findOneAndUpdate({ roleName: identifyRole }, roleUpdate, {
@@ -198,48 +196,60 @@ exports.update = async function(req, res, next) {
     .exec(function(err, roleUpdated) {
       if (err) {
         if (err.code === 11000) {
-          return next({
+          return callback({
             status: 409,
             message: "That roleName is already in use.",
             err: roleUpdated
           });
         } else {
-          return next({
+          return callback({
             status: 400,
             message: err.message,
             err: err
           });
         }
       }
-      return res.status(200).json({ ok: true, data: { role: roleUpdated } });
+      return callback(null, 200, { ok: true, data: { role: roleUpdated } });
     });
 };
 
 //========================================
 // Delete Role Route
 //========================================
-exports.delete = function(req, res, next) {
-  const identifyRole = req.params.role;
-  const isActive = false;
+exports.delete = function(params, callback) {
+  const identifyRole = params.role;
   const roleUpdate = {};
 
-  if (!utils.isEmpty(isActive)) {
-    roleUpdate.isActive = isActive;
+  roleUpdate.isActive = false;
+
+  if (utils.isEmpty(identifyRole)) {
+    return callback({
+      status: 400,
+      message: "You must introduce a role",
+      err: 400
+    });
   }
 
   Role.findOneAndUpdate(
-    { role: identifyRole },
+    { roleName: identifyRole },
     roleUpdate,
     { new: true },
     function(err, roleDeleted) {
       if (err) {
-        return next({
+        return callback({
           status: 401,
           message: err.message,
           err: err
         });
       }
-      return res.status(200).json({ ok: true, data: { role: roleDeleted } });
+      if (utils.isEmpty(roleDeleted)) {
+        return callback({
+          status: 400,
+          message: "Entity: " + identifyRole + " not found",
+          err: 400
+        });
+      }
+      return callback(null, 200, { ok: true, data: { role: roleDeleted } });
     }
   );
 };

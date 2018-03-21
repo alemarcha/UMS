@@ -9,17 +9,21 @@ module.exports.init = function(apiRoutes, requireAuth, manageResponse) {
   // Set user routes as subgroup/middleware to apiRoutes
   apiRoutes.use("/users", authRoutes);
 
-  // Search Routes
+  // Search Routes /api/users/search
   authRoutes.get("/search", (req, res, next) => {
-    UserController.search(req.query, (err, response) => {
-      manageResponse(err, response, res, next);
+    UserController.search(req.query, (err, status, response) => {
+      manageResponse(err, status, response, res, next);
     });
   });
 
-  // Register Routes
-  authRoutes.post("/register", UserController.register);
+  // Register Routes /api/users/register
+  authRoutes.post("/register", (req, res, next) => {
+    UserController.register(req.body, (err, status, response) => {
+      manageResponse(err, status, response, res, next);
+    });
+  });
 
-  // Login route.
+  // Login route. /api/users/login
   //1. Called AuthAttemp to register login params.
   //2. Passport authenticate.
   //3. Once we check correct username and password we call user controller and generate jwt.
@@ -39,24 +43,37 @@ module.exports.init = function(apiRoutes, requireAuth, manageResponse) {
           err: info
         });
       }
-      return UserController.login(user, (err, response) => {
-        manageResponse(err, response, res, next);
+      return UserController.login(user, (err, status, response) => {
+        manageResponse(err, status, response, res, next);
       });
     })(req, res, next);
   });
 
-  // Update Routes
-  authRoutes.put("/:email/update", UserController.update);
+  // Update Routes /api/users/{email}/update
+  authRoutes.put("/:email/update", (req, res, next) => {
+    UserController.update(req.params, req.body, (err, status, response) => {
+      manageResponse(err, status, response, res, next);
+    });
+  });
+  // Update Password Routes /api/users/{email}/updatePassword
   authRoutes.put("/:email/updatePassword", (req, res, next) => {
-    UserController.updatePassword(req.params, req.body, (err, response) => {
-      manageResponse(err, response, res, next);
+    UserController.updatePassword(
+      req.params,
+      req.body,
+      (err, status, response) => {
+        manageResponse(err, status, response, res, next);
+      }
+    );
+  });
+
+  // Delete Routes /api/users/{email}/delete
+  authRoutes.delete("/:email/delete", (req, res, next) => {
+    UserController.delete(req.params, (err, status, response) => {
+      manageResponse(err, status, response, res, next);
     });
   });
 
-  // Delete Routes
-  authRoutes.delete("/:email/delete", UserController.delete);
-
-  // check JWT valid
+  // check JWT valid /api/users/validJWT
   authRoutes.get(
     "/validJWT",
     function(req, res, next) {
@@ -80,12 +97,13 @@ module.exports.init = function(apiRoutes, requireAuth, manageResponse) {
       )(req, res, next);
     },
     (req, res, next) => {
-      UserController.validJWT(req.userData, (err, response) => {
-        manageResponse(err, response, res, next);
+      UserController.validJWT(req.userData, (err, status, response) => {
+        manageResponse(err, status, response, res, next);
       });
     }
   );
 
+  // RefreshJWT /api/users/refreshJWT
   //1. Called AuthAttemp to register refresh params.
   //2. Passport authenticate jwt check if jwt is valid, not expired and user contains refresh token passed in jwt.
   //3. Once we check jwt and refresh token are valid we call user controller and generate jwt.
@@ -114,8 +132,8 @@ module.exports.init = function(apiRoutes, requireAuth, manageResponse) {
     },
     (req, res, next) => {
       // Once we know that jwt token is valid and not expired, we move forward to generate new token
-      UserController.refreshJWT(req.userData, (err, response) => {
-        manageResponse(err, response, res, next);
+      UserController.refreshJWT(req.userData, (err, status, response) => {
+        manageResponse(err, status, response, res, next);
       });
     }
   );

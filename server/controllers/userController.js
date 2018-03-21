@@ -41,7 +41,6 @@ function setUserInfo(user, refreshToken = generateRefreshToken()) {
 }
 
 exports.findById = (id, callback) => {
-  console.log(id);
   return User.findById(id)
     .populate("roles")
     .exec(callback);
@@ -62,13 +61,13 @@ exports.login = function(user, callback) {
   user.update({ tokens: tokens }, function(err, res) {
     console.log(err);
     if (err) {
-      return next({
+      return callback({
         status: 400,
         message: err.message,
         err: err
       });
     }
-    callback(null, {
+    callback(null, 200, {
       ok: true,
       data: {
         token: token,
@@ -83,7 +82,7 @@ exports.login = function(user, callback) {
 //========================================
 exports.validJWT = function(userData, callback) {
   let userInfo = setUserInfo(userData.user, userData.refreshToken);
-  callback(null, {
+  callback(null, 200, {
     ok: true,
     data: { user: userInfo, token: userData.token }
   });
@@ -106,13 +105,13 @@ exports.refreshJWT = function(userData, callback) {
 
   userData.user.update({ tokens: tokens }, function(err, res) {
     if (err) {
-      return next({
+      return callback({
         status: 400,
         message: err.message,
         err: err
       });
     }
-    callback(null, {
+    callback(null, 200, {
       ok: true,
       data: {
         token: newToken,
@@ -125,19 +124,19 @@ exports.refreshJWT = function(userData, callback) {
 //========================================
 // Registration Route
 //========================================
-exports.register = async function(req, res, next) {
+exports.register = async function(body, callback) {
   // Check for registration errors
-  const email = req.body.email;
-  const firstName = req.body.firstName;
-  const lastName = req.body.lastName;
-  const password = req.body.password;
-  const roles = req.body.roles;
+  const email = body.email;
+  const firstName = body.firstName;
+  const lastName = body.lastName;
+  const password = body.password;
+  const roles = body.roles;
   const isActive = true;
   const userCreate = {};
 
   // Return error if no email provided
   if (utils.isEmpty(email)) {
-    return next({
+    return callback({
       status: 400,
       message: "You must enter an email address.",
       err: 400
@@ -146,7 +145,7 @@ exports.register = async function(req, res, next) {
 
   // Return error if full name not provided
   if (utils.isEmpty(firstName) || utils.isEmpty(lastName)) {
-    return next({
+    return callback({
       status: 400,
       message: "You must enter your full name.",
       err: 400
@@ -155,7 +154,7 @@ exports.register = async function(req, res, next) {
 
   // Return error if no password provided
   if (utils.isEmpty(password)) {
-    return next({
+    return callback({
       status: 400,
       message: "You must enter a password.",
       err: 400
@@ -177,7 +176,7 @@ exports.register = async function(req, res, next) {
     if (newRoles.length === roles.length) {
       userCreate.roles = newRoles;
     } else {
-      return next({
+      return callback({
         status: 400,
         message: "You must enter a valid active roles array.",
         err: roles
@@ -187,12 +186,12 @@ exports.register = async function(req, res, next) {
 
   User.findOne({ email: email }, function(err, existingUser) {
     if (err) {
-      return next(err);
+      return callback(err);
     }
 
     // If user is not unique, return error
     if (existingUser) {
-      return next({
+      return callback({
         status: 409,
         message: "That email address is already in use.",
         err: existingUser
@@ -211,7 +210,7 @@ exports.register = async function(req, res, next) {
 
     user.save(function(err, user) {
       if (err) {
-        return next({
+        return callback({
           status: 400,
           message: err.message,
           err: err
@@ -219,7 +218,7 @@ exports.register = async function(req, res, next) {
       }
       // Respond with JWT if user was created
       let userInfo = setUserInfo(user);
-      res.status(201).json({
+      callback(null, 201, {
         ok: true,
         data: {
           user: userInfo
@@ -282,32 +281,29 @@ exports.search = async function(filter, callback) {
     .exec((err, response) => {
       if (err) {
         callback({
-          ok: false,
-          err: {
-            status: 400,
-            message: err.message,
-            err: err
-          }
+          status: 400,
+          message: err.message,
+          err: err
         });
       }
-      callback(null, { ok: true, data: { users: response } });
+      callback(null, 200, { ok: true, data: { users: response } });
     });
 };
 
 //========================================
 // Update User Route
 //========================================
-exports.update = async function(req, res, next) {
-  const identifyEmail = req.params.email;
-  const email = req.body.email;
-  const firstName = req.body.firstName;
-  const lastName = req.body.lastName;
-  const roles = req.body.roles;
-  const isActive = req.body.isActive;
+exports.update = async function(params, body, callback) {
+  const identifyEmail = params.email;
+  const email = body.email;
+  const firstName = body.firstName;
+  const lastName = body.lastName;
+  const roles = body.roles;
+  const isActive = body.isActive;
   const userUpdate = {};
 
   if (utils.isEmpty(identifyEmail)) {
-    return next({
+    return callback({
       status: 400,
       message: "Email address to update is not correct",
       err: identifyEmail
@@ -341,7 +337,7 @@ exports.update = async function(req, res, next) {
     if (newRoles.length === roles.length) {
       userUpdate.roles = newRoles;
     } else {
-      return next({
+      return callback({
         status: 400,
         message: "roles to update are not correct",
         err: roles
@@ -360,20 +356,20 @@ exports.update = async function(req, res, next) {
     .exec(function(err, userUpdated) {
       if (err) {
         if (err.code === 11000) {
-          return next({
+          return callback({
             status: 409,
             message: "That email address is already in use.",
             err: userUpdated
           });
         } else {
-          return next({
+          return callback({
             status: 400,
             message: err.message,
             err: err
           });
         }
       }
-      return res.status(200).json({ ok: true, data: { user: userUpdated } });
+      return callback(null, 200, { ok: true, data: { user: userUpdated } });
     });
 };
 
@@ -440,8 +436,6 @@ exports.updatePassword = async function(params, body, callback) {
       });
     }
     User.hashPassword(newPassword, config.SALT_FACTOR, function(hashPassword) {
-      console.log("prueba7");
-
       userToUpdate.update({ password: hashPassword }).exec((err, response) => {
         if (err) {
           return callback({
@@ -450,7 +444,7 @@ exports.updatePassword = async function(params, body, callback) {
             err: err
           });
         }
-        callback(null, { ok: true, data: { user: response } });
+        callback(null, 200, { ok: true, data: { user: response } });
       });
     });
   });
@@ -459,8 +453,8 @@ exports.updatePassword = async function(params, body, callback) {
 //========================================
 // Delete User Route
 //========================================
-exports.delete = function(req, res, next) {
-  const identifyEmail = req.params.email;
+exports.delete = function(params, callback) {
+  const identifyEmail = params.email;
   const isActive = false;
   const userUpdate = {};
 
@@ -474,13 +468,13 @@ exports.delete = function(req, res, next) {
     { new: true },
     function(err, userDeleted) {
       if (err) {
-        return next({
+        return callback({
           status: 401,
           message: err.message,
           err: err
         });
       }
-      return res.status(200).json({ ok: true, data: { user: userDeleted } });
+      return callback(null, 200, { ok: true, data: { user: userDeleted } });
     }
   );
 };

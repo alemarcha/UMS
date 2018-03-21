@@ -648,11 +648,11 @@ describe("(2.1), Update role /api/roles/:role/update", function() {
       .put("/api/roles/" + config.role_test + "/update")
       .set("Content-Type", "application/json")
       .send({
-        roleName: config.role_test,
         newRoleName: config.role_testNew,
         isActive: true
       })
       .expect(function(res) {
+        console.log(res.body);
         assert.isOk(res.body.ok);
         assert.isOk(res.body.data.role.isActive);
         assert.strictEqual(res.body.data.role.roleName, config.role_testNew);
@@ -665,12 +665,12 @@ describe("(2.1), Update role /api/roles/:role/update", function() {
 describe("(2.2), Disable role.", function() {
   it("should set isActive field to false", function(done) {
     request
-      .put("/api/roles/" + config.role_testNew + "/update")
+      .delete("/api/roles/" + config.role_testNew + "/delete")
       .set("Content-Type", "application/json")
-      .send({
-        isActive: false
-      })
+      .send({})
       .expect(function(res) {
+        console.log(res.body.data);
+
         assert.isOk(res.body.ok);
         assert.strictEqual(res.body.data.role.isActive, false);
       })

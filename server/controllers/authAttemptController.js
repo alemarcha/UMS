@@ -1,4 +1,4 @@
-("use strict");
+"use strict";
 
 const AuthAttempt = require("../models/authAttempt"),
   User = require("../models/user"),
@@ -6,6 +6,7 @@ const AuthAttempt = require("../models/authAttempt"),
   utils = require("utils")._,
   jwt = require("jsonwebtoken");
 
+// audit each login attempt
 exports.authAttemptLogger = function(req, res, next) {
   let email = req.body.email;
   let password = req.body.password;
@@ -36,6 +37,7 @@ exports.authAttemptLogger = function(req, res, next) {
   });
 };
 
+// audit each refresh token attempt
 exports.refreshJWTAttemptLogger = function(req, res, next) {
   let email = "";
   let ip = (
@@ -45,6 +47,7 @@ exports.refreshJWTAttemptLogger = function(req, res, next) {
     req.connection.socket.remoteAddress
   ).split(",")[0];
 
+  // Recover old jwt and the user email from it if token is correct.
   let tokenAttempt = req.headers["authorization"];
   if (!utils.isEmpty(tokenAttempt)) {
     if (!utils.isEmpty(tokenAttempt)) {
