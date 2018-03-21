@@ -30,7 +30,8 @@ console.log(
 );
 
 // Setting up basic middleware for all Express requests
-app.use(logger("dev")); // Log requests to API using morgan
+// Log requests to API using morgan
+app.use(logger("dev"));
 
 // Parse urlencoded bodies to JSON
 app.use(bodyParser.urlencoded({ extended: false }));
