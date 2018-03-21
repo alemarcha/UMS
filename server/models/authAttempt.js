@@ -1,7 +1,7 @@
 const mongoose = require("mongoose"),
   Schema = mongoose.Schema;
+  
 //================================
-//
 // AuthAttemp Schema
 //================================
 const AuthAttemptSchema = new Schema(

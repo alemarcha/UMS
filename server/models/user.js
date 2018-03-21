@@ -3,8 +3,9 @@ const mongoose = require("mongoose"),
   bcrypt = require("bcrypt-nodejs"),
   config = require("../config/main");
 
-var validateEmail = function(email) {
-  var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+// validate email function for email attribute in our model
+let re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+let validateEmail = function(email) {
   return re.test(email);
 };
 
@@ -18,11 +19,8 @@ const UserSchema = new Schema(
       lowercase: true,
       unique: true,
       required: true,
-      validate: [validateEmail, "Please fill a valid email address"],
-      match: [
-        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-        "Please fill a valid email address"
-      ]
+      validate: [validateEmail, "Please fill with a valid email address"],
+      match: [re, "Please fill a valid email address"]
     },
     password: {
       type: String,
@@ -55,6 +53,7 @@ const UserSchema = new Schema(
     timestamps: true
   }
 );
+
 // Pre-save of user to database, hash password if password is modified or new
 UserSchema.pre("save", function(next) {
   const user = this;
@@ -80,6 +79,7 @@ UserSchema.methods.comparePassword = function(candidatePassword, cb) {
   });
 };
 
+// Hash a password which is given by parameters
 UserSchema.statics.hashPassword = function(
   plainPassword,
   saltRounds = config.SALT_FACTOR,

@@ -6,7 +6,6 @@ const mongoose = require("mongoose"),
 //================================
 // Permission Schema
 //================================
-
 const PermissionSchema = new Schema(
   {
     permissionName: {

@@ -6,7 +6,6 @@ const mongoose = require("mongoose"),
 //================================
 // Role Schema
 //================================
-
 const RoleSchema = new Schema(
   {
     roleName: {
