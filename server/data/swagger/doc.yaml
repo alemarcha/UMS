@@ -145,6 +145,22 @@ paths:
       responses:
         '200':
           description: Ping response
+  /users/refreshJWT:
+    get:
+      description: "Refresh jwt if jwt valid is passed."
+      tags:
+      - "users"
+      produces:
+      - application/json
+      parameters:
+      - name: Authorization
+        in: header
+        description: We need an JWT to authorized action. Schema value is following > JWT + Token
+        required: true
+        type: string
+      responses:
+        '200':
+          description: Ping response
   /users/{emailId}/update :
     put:
       description: "Update a user"
