@@ -39,8 +39,6 @@ let loadVariableTestEnvironment = environmentVariables => {
   environmentVariables.database = process.env.DB_TEST;
   // Setting port for server
   environmentVariables.port = process.env.PORT_TEST || 3030;
-  // Secret key for JWT signing and encryption
-  environmentVariables.secret = "My_Secret_KEY";
 
   return environmentVariables;
 };
@@ -49,8 +47,6 @@ let loadVariableDevEnvironment = environmentVariables => {
   environmentVariables.database = process.env.DB_DEV;
   // Setting port for server
   environmentVariables.port = process.env.PORT_DEV || 3000;
-  // Secret key for JWT signing and encryption
-  environmentVariables.secret = process.env.SECRET_KEY_DEV || "My_Secret_KEY";
 
   return environmentVariables;
 };
@@ -60,8 +56,6 @@ let loadVariableProductionEnvironment = environmentVariables => {
   environmentVariables.database = process.env.DB;
   // Setting port for server
   environmentVariables.port = process.env.PORT || 3000;
-  // Secret key for JWT signing and encryption
-  environmentVariables.secret = process.env.SECRET_KEY || "My_Secret_KEY";
 
   return environmentVariables;
 };
