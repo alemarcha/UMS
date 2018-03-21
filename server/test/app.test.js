@@ -76,8 +76,8 @@ describe("(0.1.1), Handle 404 error test", function() {
   });
 });
 
-//API OK
-describe("(0.2), GET /api/users/validJWT with jwt expired", function() {
+// Check if JWT is expired
+describe("(1.0.0), GET /api/users/validJWT with jwt expired", function() {
   it("should render 401", function(done) {
     request
       .get("/api/users/validJWT")
@@ -90,7 +90,8 @@ describe("(0.2), GET /api/users/validJWT with jwt expired", function() {
   });
 });
 
-describe("(0.3), GET /api/users/validJWT with jwt hashed with different secret key", function() {
+// Check if JWT is valid
+describe("(1.0.1), GET /api/users/validJWT with jwt hashed with different secret key", function() {
   it("should render 200 ok", function(done) {
     request
       .get("/api/users/validJWT")
@@ -104,7 +105,7 @@ describe("(0.3), GET /api/users/validJWT with jwt hashed with different secret k
 });
 
 //User Register created OK
-describe("(1.0), Register a new user", function() {
+describe("(1.1,0), Register a new user", function() {
   it("POST User Register created OK", function(done) {
     request
       .post("/api/users/register")
@@ -123,27 +124,8 @@ describe("(1.0), Register a new user", function() {
   });
 });
 
-//User Register duplicated
-describe("(1.1), User Register that is duplicated", function() {
-  it("should fail, expected a 409 code", function(done) {
-    request
-      .post("/api/users/register")
-      .set("Content-Type", "application/json")
-      .send({
-        email: config.email_default_test,
-        password: config.password_default_test,
-        firstName: config.user_name_default_test,
-        lastName: config.last_name_default_test
-      })
-      .expect(function(res) {
-        assert.isNotOk(res.body.ok);
-      })
-      .expect(409, done);
-  });
-});
-
 //User Register created to Update OK
-describe("(1.2), User Register created to Update.", function() {
+describe("(1.1.1), User Register created to Update.", function() {
   it("should give a 201 code, created", function(done) {
     request
       .post("/api/users/register")
@@ -165,8 +147,50 @@ describe("(1.2), User Register created to Update.", function() {
   });
 });
 
+//User Register created OK
+describe("(1.1.2), Register a new user", function() {
+  it("POST User Register created OK", function(done) {
+    request
+      .post("/api/users/register")
+      .set("Content-Type", "application/json")
+      .send({
+        email: config.email_default_test4,
+        password: config.password_default_test,
+        firstName: config.user_name_default_test4,
+        lastName: config.last_name_default_test
+      })
+      .expect(function(res) {
+        assert.isOk(res.body.ok);
+        assert.strictEqual(
+          res.body.data.user.email,
+          config.email_default_test4
+        );
+      })
+      .expect(201, done);
+  });
+});
+
+//User Register duplicated
+describe("(1.1.3), User Register that is duplicated", function() {
+  it("should fail, expected a 409 code", function(done) {
+    request
+      .post("/api/users/register")
+      .set("Content-Type", "application/json")
+      .send({
+        email: config.email_default_test,
+        password: config.password_default_test,
+        firstName: config.user_name_default_test,
+        lastName: config.last_name_default_test
+      })
+      .expect(function(res) {
+        assert.isNotOk(res.body.ok);
+      })
+      .expect(409, done);
+  });
+});
+
 //User Register error email empty
-describe("(1.3), User Register error with a empty email.", function() {
+describe("(1.1.4), User Register error with a empty email.", function() {
   it("should fail, expected a 400 code", function(done) {
     request
       .post("/api/users/register")
@@ -185,7 +209,7 @@ describe("(1.3), User Register error with a empty email.", function() {
 });
 
 //User Register error firstName empty
-describe("(1.4), User Register error with a empty firstName.", function() {
+describe("(1.1.5), User Register error with a empty firstName.", function() {
   it("should fail, expected a 400 code", function(done) {
     request
       .post("/api/users/register")
@@ -204,7 +228,7 @@ describe("(1.4), User Register error with a empty firstName.", function() {
 });
 
 //User Register error lastname empty
-describe("(1.5), User Register error with a empty lastname.", function() {
+describe("(1.1.6), User Register error with a empty lastname.", function() {
   it("should fail, expected a 400 code", function(done) {
     request
       .post("/api/users/register")
@@ -223,7 +247,7 @@ describe("(1.5), User Register error with a empty lastname.", function() {
 });
 
 //User Register error password empty
-describe("(1.6), User Register error with a empty password.", function() {
+describe("(1.1.7), User Register error with a empty password.", function() {
   it("should fail, expected a 400 code", function(done) {
     request
       .post("/api/users/register")
@@ -243,7 +267,7 @@ describe("(1.6), User Register error with a empty password.", function() {
 
 //User updated user duplicate email OK
 describe(
-  "(1.7), PUT Update incorrect user /api/users/" +
+  "(1.2.0), PUT Update incorrect user /api/users/" +
     config.email_default_test2 +
     "/update",
   function() {
@@ -266,7 +290,7 @@ describe(
 
 //User updated Password with no correct current password OK
 describe(
-  "(1.8.1), PUT Update password with no correct current password /api/users/" +
+  "(1.3.0), PUT Update password with no correct current password /api/users/" +
     config.email_default_test2 +
     "/updatePassword",
   function() {
@@ -288,7 +312,7 @@ describe(
 );
 //User updated Password with empty current password no OK
 describe(
-  "(1.8.2), PUT Update password with empty current password /api/users/" +
+  "(1.3.1), PUT Update password with empty current password /api/users/" +
     config.email_default_test2 +
     "/updatePassword",
   function() {
@@ -311,7 +335,7 @@ describe(
 
 //User updated Password with empty new password no OK
 describe(
-  "(1.8.3), PUT Update password with empty new password  /api/users/" +
+  "(1.3.2), PUT Update password with empty new password /api/users/" +
     config.email_default_test2 +
     "/updatePassword",
   function() {
@@ -334,7 +358,7 @@ describe(
 
 //User updated Password with not equals new password no OK
 describe(
-  "(1.8.4), PUT Update password with not equals new password /api/users/" +
+  "(1.3.3), PUT Update password with not equals new password /api/users/" +
     config.email_default_test2 +
     "/updatePassword",
   function() {
@@ -357,7 +381,7 @@ describe(
 
 //User updated Password OK
 describe(
-  "(1.8.5), PUT Update password correct user /api/users/" +
+  "(1.3.4), PUT Update password correct user /api/users/" +
     config.email_default_test2 +
     "/updatePassword",
   function() {
@@ -380,7 +404,7 @@ describe(
 );
 
 //User Login user with new Password OK
-describe("(1.8.6), Log-in user in the system /api/users/login", function() {
+describe("(1.4.0), Log-in user in the system with new Password /api/users/login", function() {
   it("should render not ok", function(done) {
     request
       .post("/api/users/login")
@@ -403,7 +427,7 @@ describe("(1.8.6), Log-in user in the system /api/users/login", function() {
 });
 
 //User Login user with old Password NO OK
-describe("(1.8.7), Log-in user in the system /api/users/login", function() {
+describe("(1.4.1), Log-in user in the system with old Password /api/users/login", function() {
   it("should render ok", function(done) {
     request
       .post("/api/users/login")
@@ -419,9 +443,32 @@ describe("(1.8.7), Log-in user in the system /api/users/login", function() {
   });
 });
 
+//User log-in OK
+describe("(1.4.2), Log-in user in the system /api/users/login", function() {
+  it("should render ok", function(done) {
+    request
+      .post("/api/users/login")
+      .set("Content-Type", "application/json")
+      .send({
+        email: config.email_default_test,
+        password: config.password_default_test
+      })
+      .expect(function(res) {
+        assert.isOk(res.body.ok);
+        assert.exists(res.body.data.token);
+        assert.strictEqual(
+          res.body.data.user.firstName,
+          config.user_name_default_test
+        );
+        jwtValid = res.body.data.token;
+      })
+      .expect(200, done);
+  });
+});
+
 //User updated OK
 describe(
-  "(1.8.8), PUT Update correct user /api/users/" +
+  "(1.2.1), PUT Update correct user /api/users/" +
     config.email_default_test2 +
     "/update",
   function() {
@@ -454,31 +501,8 @@ describe(
   }
 );
 
-//User log-in OK
-describe("(1.10), Log-in user in the system /api/users/login", function() {
-  it("should render ok", function(done) {
-    request
-      .post("/api/users/login")
-      .set("Content-Type", "application/json")
-      .send({
-        email: config.email_default_test,
-        password: config.password_default_test
-      })
-      .expect(function(res) {
-        assert.isOk(res.body.ok);
-        assert.exists(res.body.data.token);
-        assert.strictEqual(
-          res.body.data.user.firstName,
-          config.user_name_default_test
-        );
-        jwtValid = res.body.data.token;
-      })
-      .expect(200, done);
-  });
-});
-
-//API OK
-describe("(1.10.1), GET /api/users/validJWT", function() {
+//API Check if JWT save after login is valid
+describe("(1.0.2), Check if JWT save after login is valid", function() {
   it("should render 200 ok", function(done) {
     request
       .get("/api/users/validJWT")
@@ -491,8 +515,8 @@ describe("(1.10.1), GET /api/users/validJWT", function() {
   });
 });
 
-//API NO OK
-describe("(1.10.2), GET /api/users/refreshJWT with no valid JWT", function() {
+// API Try to refresh invalid token
+describe("(1.0.3), GET Try to refresh invalid token", function() {
   it("should render 401", function(done) {
     request
       .get("/api/users/refreshJWT")
@@ -505,8 +529,8 @@ describe("(1.10.2), GET /api/users/refreshJWT with no valid JWT", function() {
   });
 });
 
-//API NO OK
-describe("(1.10.3), GET /api/users/refreshJWT with JWT expired", function() {
+// API Try to refresh an expired token
+describe("(1.0.4), API Try to refresh an expired token", function() {
   it("should render 401", function(done) {
     request
       .get("/api/users/refreshJWT")
@@ -519,8 +543,8 @@ describe("(1.10.3), GET /api/users/refreshJWT with JWT expired", function() {
   });
 });
 
-//API OK
-describe("(1.10.4), GET /api/users/refreshJWT with JWT expired response", function() {
+// API Try to refresh a valid token
+describe("(1.0.5), Try to refresh a valid token ", function() {
   it("should render 200 ok", function(done) {
     request
       .get("/api/users/refreshJWT")
@@ -534,7 +558,7 @@ describe("(1.10.4), GET /api/users/refreshJWT with JWT expired response", functi
 });
 
 // Delete User
-describe("(1.9), Disable user.", function() {
+describe("(1.5.0), Disable user.", function() {
   it("should set isActive field to false", function(done) {
     request
       .delete("/api/users/" + config.email_default_test + "/delete")
@@ -550,7 +574,7 @@ describe("(1.9), Disable user.", function() {
 });
 
 // 401 Unauthorized password
-describe("(1.11), Try to access with incorrect password.", function() {
+describe("(1.4.3), Try to access with incorrect password.", function() {
   it("should give an error 401, unauthorized", function(done) {
     request
       .post("/api/users/login")
@@ -567,7 +591,7 @@ describe("(1.11), Try to access with incorrect password.", function() {
 });
 
 // 401 Unauthorized user
-describe("(1.12), Try to access with incorrect email.", function() {
+describe("(1.4.4), Try to access with incorrect email.", function() {
   it("should give an error 401, unauthorized", function(done) {
     request
       .post("/api/users/login")
@@ -583,31 +607,31 @@ describe("(1.12), Try to access with incorrect email.", function() {
   });
 });
 
-//User Register created OK
-describe("(1.13), Register a new user", function() {
-  it("POST User Register created OK", function(done) {
-    request
-      .post("/api/users/register")
-      .set("Content-Type", "application/json")
-      .send({
-        email: config.email_default_test4,
-        password: config.password_default_test,
-        firstName: config.user_name_default_test4,
-        lastName: config.last_name_default_test
-      })
-      .expect(function(res) {
-        assert.isOk(res.body.ok);
-        assert.strictEqual(
-          res.body.data.user.email,
-          config.email_default_test4
-        );
-      })
-      .expect(201, done);
-  });
-});
+//User updated Password with no correct current password OK
+describe(
+  "(1.3.5), PUT Update password with no correct current password /api/users/" +
+    config.email_default_test2 +
+    "/updatePassword",
+  function() {
+    it("should render ok", function(done) {
+      request
+        .put("/api/users/" + config.email_default_test2 + "/updatePassword")
+        .set("Content-Type", "application/json")
+        .send({
+          currentPassword: config.password_default_test2 + "fake",
+          newPassword: config.password_default_test2_new,
+          repeatNewPassword: config.password_default_test2_new
+        })
+        .expect(function(res) {
+          assert.isNotOk(res.body.ok);
+        })
+        .expect(400, done);
+    });
+  }
+);
 
 // Create Role OK
-describe("(2.0), Create a new role.", function() {
+describe("(2.0.0), Create a new role.", function() {
   it("should render created 201", function(done) {
     request
       .post("/api/roles/create")
@@ -623,63 +647,8 @@ describe("(2.0), Create a new role.", function() {
       .expect(201, done);
   });
 });
-
-// Create role with empty field
-describe("(2.0.1), Try to create a new role with missing field roleName.", function() {
-  it("should fail, expected a 400 code", function(done) {
-    request
-      .post("/api/roles/create")
-      .set("Content-Type", "application/json")
-      .send({
-        roleName: "",
-        isActive: true
-      })
-      .expect(function(res) {
-        assert.isNotOk(res.body.ok);
-      })
-      .expect(400, done);
-  });
-});
-
-// Update Role OK
-describe("(2.1), Update role /api/roles/:role/update", function() {
-  it("should render ok", function(done) {
-    request
-      .put("/api/roles/" + config.role_test + "/update")
-      .set("Content-Type", "application/json")
-      .send({
-        newRoleName: config.role_testNew,
-        isActive: true
-      })
-      .expect(function(res) {
-        console.log(res.body);
-        assert.isOk(res.body.ok);
-        assert.isOk(res.body.data.role.isActive);
-        assert.strictEqual(res.body.data.role.roleName, config.role_testNew);
-      })
-      .expect(200, done);
-  });
-});
-
-// Delete Role
-describe("(2.2), Disable role.", function() {
-  it("should set isActive field to false", function(done) {
-    request
-      .delete("/api/roles/" + config.role_testNew + "/delete")
-      .set("Content-Type", "application/json")
-      .send({})
-      .expect(function(res) {
-        console.log(res.body.data);
-
-        assert.isOk(res.body.ok);
-        assert.strictEqual(res.body.data.role.isActive, false);
-      })
-      .expect(200, done);
-  });
-});
-
 // Create role in order to check duplicity
-describe("(2.3), Create another role", function() {
+describe("(2.0.1), Create another role", function() {
   it("should render ok", function(done) {
     request
       .post("/api/roles/create")
@@ -696,42 +665,8 @@ describe("(2.3), Create another role", function() {
   });
 });
 
-// Update a role that already exists
-describe("(2.4), Try to update a role with a name already in use.", function() {
-  it("should fail, 409 Conflict", function(done) {
-    request
-      .put("/api/roles/" + config.role_test2 + "/update")
-      .set("Content-Type", "application/json")
-      .send({
-        newRoleName: config.role_testNew2,
-        isActive: true
-      })
-      .expect(function(res) {
-        assert.isNotOk(res.body.ok);
-      })
-      .expect(409, done);
-  });
-});
-
-// Create a role that already exists
-describe("(2.4.1), Try to create a role with a name already in use.", function() {
-  it("should fail, 409 Conflict", function(done) {
-    request
-      .post("/api/roles/create")
-      .set("Content-Type", "application/json")
-      .send({
-        roleName: config.role_test2,
-        isActive: true
-      })
-      .expect(function(res) {
-        assert.isNotOk(res.body.ok);
-      })
-      .expect(409, done);
-  });
-});
-
 // Create another role
-describe("(2.5.0), Create another role in order to use an array of roles.", function() {
+describe("(2.0.2), Create another role in order to use an array of roles.", function() {
   it("should render created 201", function(done) {
     request
       .post("/api/roles/create")
@@ -748,9 +683,79 @@ describe("(2.5.0), Create another role in order to use an array of roles.", func
   });
 });
 
+// Create role with empty field
+describe("(2.0.3), Try to create a new role with missing field roleName.", function() {
+  it("should fail, expected a 400 code", function(done) {
+    request
+      .post("/api/roles/create")
+      .set("Content-Type", "application/json")
+      .send({
+        roleName: "",
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.isNotOk(res.body.ok);
+      })
+      .expect(400, done);
+  });
+});
+
+// Create a role that already exists
+describe("(2.0.4), Try to create a role with a name already in use.", function() {
+  it("should fail, 409 Conflict", function(done) {
+    request
+      .post("/api/roles/create")
+      .set("Content-Type", "application/json")
+      .send({
+        roleName: config.role_test2,
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.isNotOk(res.body.ok);
+      })
+      .expect(409, done);
+  });
+});
+
+// Update Role OK
+describe("(2.1.0), Update role /api/roles/:role/update", function() {
+  it("should render ok", function(done) {
+    request
+      .put("/api/roles/" + config.role_test + "/update")
+      .set("Content-Type", "application/json")
+      .send({
+        newRoleName: config.role_testNew,
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.isOk(res.body.ok);
+        assert.isOk(res.body.data.role.isActive);
+        assert.strictEqual(res.body.data.role.roleName, config.role_testNew);
+      })
+      .expect(200, done);
+  });
+});
+
+// Update a role that already exists
+describe("(2.1.1), Try to update a role with a name already in use.", function() {
+  it("should fail, 409 Conflict", function(done) {
+    request
+      .put("/api/roles/" + config.role_test2 + "/update")
+      .set("Content-Type", "application/json")
+      .send({
+        newRoleName: config.role_testNew2,
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.isNotOk(res.body.ok);
+      })
+      .expect(409, done);
+  });
+});
+
 // Update user with an array of roles
 describe(
-  "(2.5.1), PUT Update user with an array of roles /api/users/" +
+  "(1.2.2), PUT Update user with an array of roles /api/users/" +
     config.email_default_test3 +
     "/update",
   function() {
@@ -777,9 +782,24 @@ describe(
   }
 );
 
+// Delete Role
+describe("(2.2.0), Disable role.", function() {
+  it("should set isActive field to false", function(done) {
+    request
+      .delete("/api/roles/" + config.role_testNew + "/delete")
+      .set("Content-Type", "application/json")
+      .send({})
+      .expect(function(res) {
+        assert.isOk(res.body.ok);
+        assert.strictEqual(res.body.data.role.isActive, false);
+      })
+      .expect(200, done);
+  });
+});
+
 // Try to update a user with an array of roles with a permission disabled
 describe(
-  "(2.5.2), Try to update user with an array of roles that are disabled /api/users/" +
+  "(1.2.3), Try to update user with an array of roles that are disabled /api/users/" +
     config.email_default_test3 +
     "/update",
   function() {
@@ -800,7 +820,7 @@ describe(
 
 // Update the user with a role array in which one of them does not exist
 describe(
-  "(2.5.3), Try to update a user with a role that does not exist /api/users/" +
+  "(1.2.4), Try to update a user with a role that does not exist /api/users/" +
     config.email_default_test +
     "/update",
   function() {
@@ -820,7 +840,7 @@ describe(
 );
 
 // Create permission OK
-describe("(3.0), Create a new permission.", function() {
+describe("(3.0.0), Create a new permission.", function() {
   it("should render created 201 code", function(done) {
     request
       .post("/api/permissions/create")
@@ -840,8 +860,67 @@ describe("(3.0), Create a new permission.", function() {
   });
 });
 
+// Create permission
+describe("(3.0.1), Create another permission", function() {
+  it("should render ok", function(done) {
+    request
+      .post("/api/permissions/create")
+      .set("Content-Type", "application/json")
+      .send({
+        permissionName: config.permission_test2,
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.isOk(res.body.ok);
+        assert.strictEqual(
+          res.body.data.permission.permissionName,
+          config.permission_test2
+        );
+      })
+      .expect(201, done);
+  });
+});
+
+// Create another permission
+describe("(3.0.2), Create another permission in order to use an array of permissions.", function() {
+  it("should render created 201", function(done) {
+    request
+      .post("/api/permissions/create")
+      .set("Content-Type", "application/json")
+      .send({
+        permissionName: config.permission_test4,
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.isOk(res.body.ok);
+        assert.strictEqual(
+          res.body.data.permission.permissionName,
+          config.permission_test4
+        );
+      })
+      .expect(201, done);
+  });
+});
+
+// Try to create a permission with a name already in use
+describe("(3.0.3), Try to create a permission with a name already in use.", function() {
+  it("should render ok", function(done) {
+    request
+      .post("/api/permissions/create")
+      .set("Content-Type", "application/json")
+      .send({
+        permissionName: config.permission_test2,
+        isActive: true
+      })
+      .expect(function(res) {
+        assert.isNotOk(res.body.ok);
+      })
+      .expect(409, done);
+  });
+});
+
 // Create permission with empty field
-describe("(3.0.1), Try to create a new permission with missing field permissionName.", function() {
+describe("(3.0.4), Try to create a new permission with missing field permissionName.", function() {
   it("should fail, expected a 400 code", function(done) {
     request
       .post("/api/permissions/create")
@@ -858,7 +937,7 @@ describe("(3.0.1), Try to create a new permission with missing field permissionN
 });
 
 // Update Permission OK
-describe("(3.1), Update a permission", function() {
+describe("(3.1.0), Update a permission", function() {
   it("should render ok", function(done) {
     request
       .put("/api/permissions/" + config.permission_test + "/update")
@@ -879,63 +958,8 @@ describe("(3.1), Update a permission", function() {
   });
 });
 
-// Delete Permission
-describe("(3.2), Disable permission.", function() {
-  it("should set isActive field to false", function(done) {
-    request
-      .delete("/api/permissions/" + config.permission_testNew + "/delete")
-      .set("Content-Type", "application/json")
-      .send({
-        isActive: false
-      })
-      .expect(function(res) {
-        assert.isOk(res.body.ok);
-        assert.equal(res.body.data.permission.isActive, false);
-      })
-      .expect(200, done);
-  });
-});
-
-// Create permission in order to check duplicity
-describe("(3.3), Create another permission", function() {
-  it("should render ok", function(done) {
-    request
-      .post("/api/permissions/create")
-      .set("Content-Type", "application/json")
-      .send({
-        permissionName: config.permission_test2,
-        isActive: true
-      })
-      .expect(function(res) {
-        assert.isOk(res.body.ok);
-        assert.strictEqual(
-          res.body.data.permission.permissionName,
-          config.permission_test2
-        );
-      })
-      .expect(201, done);
-  });
-});
-
-// Try to create a permission with a name already in use
-describe("(3.3.1), Try to create a permission with a name already in use.", function() {
-  it("should render ok", function(done) {
-    request
-      .post("/api/permissions/create")
-      .set("Content-Type", "application/json")
-      .send({
-        permissionName: config.permission_test2,
-        isActive: true
-      })
-      .expect(function(res) {
-        assert.isNotOk(res.body.ok);
-      })
-      .expect(409, done);
-  });
-});
-
 // Update a permission that already exists
-describe("(3.4), Update a permission with a name already in use.", function() {
+describe("(3.1.1), Update a permission with a name already in use.", function() {
   it("should fail, 409 Conflict", function(done) {
     request
       .put("/api/permissions/" + config.permission_test2 + "/update")
@@ -952,30 +976,9 @@ describe("(3.4), Update a permission with a name already in use.", function() {
   });
 });
 
-// Create another permission
-describe("(3.5.0), Create another permission in order to use an array of permissions.", function() {
-  it("should render created 201", function(done) {
-    request
-      .post("/api/permissions/create")
-      .set("Content-Type", "application/json")
-      .send({
-        permissionName: config.permission_test4,
-        isActive: true
-      })
-      .expect(function(res) {
-        assert.isOk(res.body.ok);
-        assert.strictEqual(
-          res.body.data.permission.permissionName,
-          config.permission_test4
-        );
-      })
-      .expect(201, done);
-  });
-});
-
 // Update role with an array of permissions
 describe(
-  "(3.5.1), Update a role with an array of permissions /api/roles/" +
+  "(2.1.2), Update a role with an array of permissions /api/roles/" +
     config.role_test4 +
     "/update",
   function() {
@@ -1001,7 +1004,7 @@ describe(
 
 // Update the role with a permission array in which one of them does not exist
 describe(
-  "(3.5.2), Try to update a role with a permission that does not exist /api/roles/" +
+  "(2.1.3), Try to update a role with a permission that does not exist /api/roles/" +
     config.permission_testNew +
     "/update",
   function() {
@@ -1020,9 +1023,26 @@ describe(
   }
 );
 
+// Delete Permission
+describe("(3.2.0), Disable permission.", function() {
+  it("should set isActive field to false", function(done) {
+    request
+      .delete("/api/permissions/" + config.permission_testNew + "/delete")
+      .set("Content-Type", "application/json")
+      .send({
+        isActive: false
+      })
+      .expect(function(res) {
+        assert.isOk(res.body.ok);
+        assert.equal(res.body.data.permission.isActive, false);
+      })
+      .expect(200, done);
+  });
+});
+
 // Update role with an array of permissions with a permission disabled
 describe(
-  "(3.5.3), Update a role with an array of permissions with a permission disabled /api/roles/" +
+  "(2.1.4), Update a role with an array of permissions with a permission disabled /api/roles/" +
     config.role_test4 +
     "/update",
   function() {
@@ -1042,7 +1062,7 @@ describe(
 );
 
 //User Register created with roles OK
-describe("(4.0), Register a new user with and array of roles", function() {
+describe("(1.1.8), Register a new user with and array of roles", function() {
   it("should create a user with a valid array of roles", function(done) {
     request
       .post("/api/users/register")
@@ -1063,7 +1083,7 @@ describe("(4.0), Register a new user with and array of roles", function() {
 });
 
 // User Register try to create with invalid roles
-describe("(4.1), Try to register a new user with an invalid array of roles.", function() {
+describe("(1.1.9), Try to register a new user with an invalid array of roles.", function() {
   it("should fail, because a role does not exist or the role is not active", function(done) {
     request
       .post("/api/users/register")
@@ -1083,7 +1103,7 @@ describe("(4.1), Try to register a new user with an invalid array of roles.", fu
 });
 
 // Create another role with permission array
-describe("(4.2), Create another role with an array of permissions.", function() {
+describe("(2.0.5), Create another role with an array of permissions.", function() {
   it("should render created 201", function(done) {
     request
       .post("/api/roles/create")
@@ -1102,7 +1122,7 @@ describe("(4.2), Create another role with an array of permissions.", function() 
 });
 
 // Try to create a role with invalid permission array
-describe("(4.3), Try to create a role with invalid permission array.", function() {
+describe("(2.0.6), Try to create a role with invalid permission array.", function() {
   it("should fail, because a role does not exist or the role is not active", function(done) {
     request
       .post("/api/roles/create")
@@ -1126,7 +1146,7 @@ describe("(4.3), Try to create a role with invalid permission array.", function(
  * **/
 
 // Search 1 User exist by email
-describe("(1.2.0), Search  1 user by email /api/users/search which is not active", function() {
+describe("(1.6.0), Search  1 user by email which is not active", function() {
   it(
     "should try to find users with a email which contains " +
       config.email_default_test +
@@ -1149,7 +1169,7 @@ describe("(1.2.0), Search  1 user by email /api/users/search which is not active
 });
 
 // Search 1 User exist by email
-describe("(1.2.1), Search 1 active users by exacly match email /api/users/search which is not active", function() {
+describe("(1.6.1), Search 1 active users by exacly match email which is not active", function() {
   it(
     "should try to find users with a email which contains " +
       config.email_default_test3 +
@@ -1175,7 +1195,7 @@ describe("(1.2.1), Search 1 active users by exacly match email /api/users/search
 });
 
 // Search User by email which does not exists
-describe("(1.2.2), Search active users by email which does not exists /api/users/search", function() {
+describe("(1.6.2), Search active users by email which does not exists", function() {
   it(
     "should try to find users with a email which contains " +
       config.email_default_test_fake +
@@ -1198,7 +1218,7 @@ describe("(1.2.2), Search active users by email which does not exists /api/users
 });
 
 // Search 2 Users by name
-describe("(1.2.3),Search active users  by name /api/users/search", function() {
+describe("(1.6.3),Search active users  by name ", function() {
   it(
     "should try to find users with a name which contains " +
       config.user_name_default_test,
@@ -1225,7 +1245,7 @@ describe("(1.2.3),Search active users  by name /api/users/search", function() {
 });
 
 // Search Users by name which do not exist
-describe("(1.2.4), Search active users by name  which do not exist /api/users/search", function() {
+describe("(1.6.4), Search active users by name  which do not exist", function() {
   it(
     "should try to find users with a name which contains " +
       config.user_name_default_test_fake +
@@ -1248,7 +1268,7 @@ describe("(1.2.4), Search active users by name  which do not exist /api/users/se
 });
 
 // Search 2 Users by lastName
-describe("(1.2.5), Search active users by lastname /api/users/search", function() {
+describe("(1.6.5), Search active users by lastname", function() {
   it(
     "should try to find users with a lastName which contains " +
       config.last_name_default_test,
@@ -1273,7 +1293,7 @@ describe("(1.2.5), Search active users by lastname /api/users/search", function(
 });
 
 // Search Users by lastName which do not exist
-describe("(1.2.6), Search active users by lastname  which do not exist /api/users/search", function() {
+describe("(1.6.6), Search active users by lastname  which do not exist", function() {
   it(
     "should try to find users with a lastName which contains " +
       config.last_name_default_test_fake +
@@ -1296,7 +1316,7 @@ describe("(1.2.6), Search active users by lastname  which do not exist /api/user
 });
 
 // Search Users by roles
-describe("(1.2.7), Search active users by roles /api/users/search", function() {
+describe("(1.6.7), Search active users by roles", function() {
   it("should try to find users which contains some of two roles ", function(done) {
     request
       .get("/api/users/search")
@@ -1324,7 +1344,7 @@ describe("(1.2.7), Search active users by roles /api/users/search", function() {
 });
 
 // Search Users by roles
-describe("(1.2.8), Search active users by roles /api/users/search", function() {
+describe("(1.6.8), Search active users by roles", function() {
   it("should try to find users which contains one role. ", function(done) {
     request
       .get("/api/users/search")
@@ -1348,7 +1368,7 @@ describe("(1.2.8), Search active users by roles /api/users/search", function() {
 });
 
 // Search roles by roleName
-describe("(2.6.0), Search 2 roles by name /api/roles/search which are active", function() {
+describe("(2.3.0), Search 2 roles by name which are active", function() {
   it(
     "should try to find roles with a name which contains " +
       config.role_test +
@@ -1374,7 +1394,7 @@ describe("(2.6.0), Search 2 roles by name /api/roles/search which are active", f
 });
 
 // Search role which is not active
-describe("(2.6.1), Search  1 role by name /api/roles/search which is not active", function() {
+describe("(2.3.1), Search  1 role by name which is not active", function() {
   it(
     "should try to find roles with a name which contains " +
       config.role_testNew +
@@ -1397,7 +1417,7 @@ describe("(2.6.1), Search  1 role by name /api/roles/search which is not active"
 });
 
 // Search role which does not exist
-describe("(2.6.2), Search roles by name /api/roles/search which does not exist", function() {
+describe("(2.3.2), Search roles by name which does not exist", function() {
   it("should try to find roles with a name which does not exist", function(done) {
     request
       .get("/api/roles/search")
@@ -1415,7 +1435,7 @@ describe("(2.6.2), Search roles by name /api/roles/search which does not exist",
 });
 
 // Search Roles by permissions
-describe("(2.6.3), Search active roles by permissions /api/roles/search", function() {
+describe("(2.3.3), Search active roles by permissions", function() {
   it("should try to find users which contains one role. ", function(done) {
     request
       .get("/api/roles/search")
@@ -1442,7 +1462,7 @@ describe("(2.6.3), Search active roles by permissions /api/roles/search", functi
 });
 
 // Search Roles by permissions
-describe("(2.6.4), Search active roles by permissions /api/roles/search", function() {
+describe("(2.3.4), Search active roles by permissions", function() {
   it("should try to find roles which contains one permission. ", function(done) {
     request
       .get("/api/roles/search")
@@ -1466,7 +1486,7 @@ describe("(2.6.4), Search active roles by permissions /api/roles/search", functi
 });
 
 // Search permissions by permissionName
-describe("(3.6.0), Search 1 permissions by name /api/permissions/search which is active", function() {
+describe("(3.3.0), Search 1 permissions by name which is active", function() {
   it(
     "should try to find permissions with a name which contains " +
       config.permission_test2 +
@@ -1494,7 +1514,7 @@ describe("(3.6.0), Search 1 permissions by name /api/permissions/search which is
 });
 
 // Search permissions by roleName which is not active
-describe("(3.6.1), Search 1 permissions by name /api/permissions/search which is not active", function() {
+describe("(3.3.1), Search 1 permissions by name which is not active", function() {
   it(
     "should try to find permissions with a name which contains " +
       config.permission_testNew +
@@ -1517,7 +1537,7 @@ describe("(3.6.1), Search 1 permissions by name /api/permissions/search which is
 });
 
 // Search permissions by permissionName which  does not exist
-describe("(3.6.2), Search permissions by name /api/permissions/search whichdoes not exist", function() {
+describe("(3.3.2), Search permissions by name which does not exist", function() {
   it("should try to find roles with a name whichd does not exist ", function(done) {
     request
       .get("/api/permissions/search")
