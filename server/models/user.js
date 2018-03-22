@@ -1,8 +1,8 @@
 const mongoose = require("mongoose"),
   Schema = mongoose.Schema,
   bcrypt = require("bcrypt-nodejs"),
-  config = require("../config/main");
-
+  config = require("../config/main"),
+  uuidv1 = require("uuid/v1");
 // validate email function for email attribute in our model
 let re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 let validateEmail = function(email) {
@@ -14,6 +14,10 @@ let validateEmail = function(email) {
 //================================
 const UserSchema = new Schema(
   {
+    uuid: {
+      type: String,
+      default: uuidv1()
+    },
     email: {
       type: String,
       lowercase: true,
@@ -54,10 +58,14 @@ const UserSchema = new Schema(
   }
 );
 
+UserSchema.index(
+  { _id: 1, uuid: 1, email: 1 },
+  { name: "key_properties_index" }
+);
+
 // Pre-save of user to database, hash password if password is modified or new
 UserSchema.pre("save", function(next) {
   const user = this;
-
   if (!user.isModified("password")) return next();
 
   this.constructor.hashPassword(user.password, config.SALT_FACTOR, function(
