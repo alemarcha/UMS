@@ -77,10 +77,13 @@ It is possible to use nginx as a very efficient HTTP load balancer to distribute
 We use round-robin method.
 
 If we want to deploy more than one instance and use load balancing we need to execute following command:
-docker-compose up --state server_1=num_of_instances_you_want
+
+         docker-compose up --state server_1=num_of_instances_you_want
 
 instead of docker just
-docker-compose up which just will deploy one instance
+
+         docker-compose up 
+which just will deploy one instance
 
 ### Testing
 
