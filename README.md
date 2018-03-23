@@ -1,4 +1,4 @@
-# UMS
+# UMS https://alemarcha.github.io/UMS/
 
 [![Build Status](https://travis-ci.org/alemarcha/UMS.svg?branch=master)](https://travis-ci.org/alemarcha/UMS)
 
@@ -6,7 +6,7 @@ User management system with MongoDB, Express and NodeJS app. Using Swagger for D
 
 ## Installation with Docker
 
-Firstable you need [Docker](https://www.docker.com/) and [docker-compose](https://docs.docker.com/compose/install/) installed and MongoDB installed.
+Firstable you need [Docker](https://www.docker.com/) and [docker-compose](https://docs.docker.com/compose/install/) installed and internal or external MongoDB installed.
 You can follow this links to [install docker on ubuntu 16-04es](https://www.digitalocean.com/community/tutorials/como-instalar-y-usar-docker-en-ubuntu-16-04-es) and [install docker-compose on ubuntu 16-04](https://www.digitalocean.com/community/tutorials/how-to-install-docker-compose-on-ubuntu-16-04).
 
 We are using docker-compose file _version 3.0_, so maybe you need to update to at least that version:
@@ -68,6 +68,20 @@ You can put wherever you want and put the path in your .env file to work with th
 JWT_PRIVATE_KEY_PATH=data/keys/jwtRS256.key
 JWT_PUBLIC_KEY_PATH=data/keys/jwtRS256.key.pub
 
+### Load balancing mode
+
+Load balancing across multiple application instances is a commonly used technique for optimizing resource utilization, maximizing throughput, reducing latency, and ensuring fault-tolerant configurations.
+
+It is possible to use nginx as a very efficient HTTP load balancer to distribute traffic to several application servers and to improve performance, scalability and reliability of web applications with nginx.
+
+We use round-robin method.
+
+If we want to deploy more than one instance and use load balancing we need to execute following command:
+docker-compose up --state server_1=num_of_instances_you_want
+
+instead of docker just
+docker-compose up which just will deploy one instance
+
 ### Testing
 
 In order to do our tests this will be the mongodb route in local:
@@ -92,7 +106,7 @@ After you have installed both:
 1.  git clone <https://github.com/alemarcha/UMS.git>
 2.  cd UMS
 3.  docker-compose up
-4.  You should see at localhost:3000 our swagger docs now.
+4.  You should see at localhost:8082 our swagger docs now.
 
 ## Getting started without Docker
 
@@ -106,7 +120,7 @@ After that you should follow next steps:
     * npm install
     * npm start
 
-You should see at localhost:3000 our Swagger docs now.
+You should see at localhost:8082 our Swagger docs now.
 
 ## Info for development
 

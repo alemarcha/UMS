@@ -1,11 +1,10 @@
 const express = require("express"),
   passportService = require("./config/passport"),
   passport = require("passport"),
-  config = require("./config/main");
-
-const userRouter = require("./router/userRouter");
-const roleRouter = require("./router/roleRouter");
-const permissionRouter = require("./router/permissionRouter");
+  config = require("./config/main"),
+  userRouter = require("./router/userRouter"),
+  roleRouter = require("./router/roleRouter"),
+  permissionRouter = require("./router/permissionRouter");
 
 // Middleware to require login/auth
 const requireAuth = passport.authenticate("jwt", { session: false });
