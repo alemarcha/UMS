@@ -7,7 +7,7 @@ module.exports.swagger_init = function(app, express) {
 
   const routerSwagger = express.Router();
   const options = YAML.load("./data/swagger/doc.yaml");
-  options.host = config.host_swagger + ":" + config.port;
+  options.host = config.host_swagger + ":" + 8082;
   // const swaggerDoc = swaggerJSDoc(options)
   // swaggerModelValidator(swaggerDoc)
 
