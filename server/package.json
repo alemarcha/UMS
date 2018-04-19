@@ -15,8 +15,8 @@
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.2",
     "dotenv": "^5.0.1",
-    "express": "^4.16.2",
-    "mongoose": "^5.0.8",
+    "express": "^4.16.3",
+    "mongoose": "^5.0.15",
     "morgan": "^1.9.0",
     "passport": "^0.4.0",
     "passport-jwt": "^3.0.1",
@@ -33,8 +33,8 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "express-status-monitor": "^1.0.1",
-    "mocha": "^5.0.1",
-    "nyc": "^11.5.0",
+    "mocha": "^5.1.1",
+    "nyc": "^11.7.1",
     "supertest": "^3.0.0"
   }
 }
