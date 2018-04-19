@@ -23,10 +23,9 @@ mongoose.connect(config.database, function(err, database) {
 // Start the server
 const server = app.listen(config.port);
 console.log(
-  "Your server is running on port " +
-    config.port +
-    ". Environment " +
-    config.environment
+  "Your server is running on port: 8082.\nEnvironment: " +
+    config.environment +
+    "\nCTRL + click: <http://localhost:8082/api/docs/> to see this in your browser."
 );
 
 // Setting up basic middleware for all Express requests
