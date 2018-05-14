@@ -1,7 +1,8 @@
 {
   "name": "ums",
   "version": "1.0.0",
-  "description": "User Management system to handle users, roles and permissions in a system. ",
+  "description":
+    "User Management system to handle users, roles and permissions in a system. ",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -16,7 +17,7 @@
     "body-parser": "^1.18.2",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
-    "mongoose": "^5.0.17",
+    "mongoose": "^5.1.0",
     "morgan": "^1.9.0",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
@@ -34,7 +35,7 @@
     "chai": "^4.1.2",
     "express-status-monitor": "^1.0.1",
     "mocha": "^5.1.1",
-    "nyc": "^11.7.2",
-    "supertest": "^3.0.0"
+    "nyc": "^11.7.3",
+    "supertest": "^3.1.0"
   }
 }
