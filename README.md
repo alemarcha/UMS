@@ -102,15 +102,15 @@ If do you want to change this or the port used in order to connect with mongo, y
 
 ## Config your .env file
 
-1.  Copy `.env-getting-started` and rename it to .env
-2.  Config your `.env` file
+1. Copy `.env-getting-started` and rename it to .env
+2. Config your `.env` file
 
 After you have installed both:
 
-1.  git clone <https://github.com/alemarcha/UMS.git>
-2.  cd UMS
-3.  docker-compose up
-4.  You should see at localhost:8082 our swagger docs now.
+1. git clone <https://github.com/alemarcha/UMS.git>
+2. cd UMS
+3. docker-compose up
+4. You should see at localhost:8082 our swagger docs now.
 
 ## Getting started without Docker
 
@@ -118,8 +118,8 @@ Firstable you need Nodejs and MongoDB installed.
 
 After that you should follow next steps:
 
-1.  git clone <https://github.com/alemarcha/UMS.git>
-2.  Install and init server.
+1. git clone <https://github.com/alemarcha/UMS.git>
+2. Install and init server.
     * cd UMS/server
     * npm install
     * npm start
