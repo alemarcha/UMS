@@ -47,7 +47,7 @@ And uncomment the following line:
 
 Or in the contrary you already has a mongo running in your set up, then you should type the info like this:
 
-    DB_development_local=mongodb://{YOUR_IP_DATABASE}:{YOUR_PORT_DATABASE}/database_ums
+    DB_DEV=mongodb://{YOUR_IP_DATABASE}:{YOUR_PORT_DATABASE}/database_ums
 
 In this case, you need to write down your local ip where your mongo is, if you just type localhost this will not work.
 
@@ -78,11 +78,12 @@ We use round-robin method.
 
 If we want to deploy more than one instance and use load balancing we need to execute following command:
 
-         docker-compose up --state server_1=num_of_instances_you_want
+         docker-compose up --scale server_1=num_of_instances_you_want
 
 instead of docker just
 
-         docker-compose up 
+         docker-compose up
+
 which just will deploy one instance
 
 ### Testing
@@ -162,6 +163,11 @@ We are using Visual Studio Code to programming, if you are planning to replicate
 * npm run test
 
 You will see results of testing in command line
+
+## Stress test http with hey
+
+cd ~/go/bin/
+./hey -n 5000 -c 500 http://localhost:8082/api/users/search
 
 ### Moreover you could see our [travis CI](https://travis-ci.org/alemarcha/UMS)
 
